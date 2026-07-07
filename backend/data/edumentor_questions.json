@@ -1,0 +1,818 @@
+{
+  "meta": {
+    "titre": "Banque de questions - Test diagnostique EduMentor AI",
+    "domaine_pilote": "Introduction a l IA",
+    "version": "1.0",
+    "total_questions": 60,
+    "questions_par_tentative": 20,
+    "selection": "aleatoire",
+    "note_sur_le_niveau": "Le niveau est calcule uniquement a la fin, selon le score global (en pourcentage).",
+    "seuils_niveau": {
+      "debutant": {
+        "min": 0,
+        "max": 40
+      },
+      "intermediaire": {
+        "min": 41,
+        "max": 75
+      },
+      "avance": {
+        "min": 76,
+        "max": 100
+      }
+    },
+    "themes": [
+      "Chatbots IA",
+      "Deep Learning",
+      "IA responsable",
+      "Introduction à l'IA",
+      "LLM",
+      "Machine Learning",
+      "Prompt Engineering",
+      "RAG"
+    ],
+    "format_reponse": "correct_index est un entier 0-3 indiquant la bonne reponse dans le tableau options."
+  },
+  "questions": [
+    {
+      "id": 1,
+      "theme": "Introduction à l'IA",
+      "question": "Que signifie l'acronyme « IA » ?",
+      "options": [
+        "Information Automatique",
+        "Intelligence Artificielle",
+        "Interface Avancée",
+        "Intégration Algorithmique"
+      ],
+      "correct_index": 1,
+      "explanation": "IA signifie Intelligence Artificielle : des systèmes capables d'imiter des comportements humains intelligents."
+    },
+    {
+      "id": 2,
+      "theme": "Introduction à l'IA",
+      "question": "Comment définit-on le mieux l'intelligence artificielle ?",
+      "options": [
+        "Un simple tableur de calculs",
+        "Un langage de programmation",
+        "La capacité de machines à imiter des comportements humains intelligents",
+        "Un type de matériel informatique"
+      ],
+      "correct_index": 2,
+      "explanation": "L'IA désigne des systèmes qui réalisent des tâches nécessitant normalement l'intelligence humaine."
+    },
+    {
+      "id": 3,
+      "theme": "Introduction à l'IA",
+      "question": "Lequel de ces exemples est une application courante de l'IA ?",
+      "options": [
+        "Une calculatrice simple",
+        "Un assistant vocal comme Siri",
+        "Un fichier texte",
+        "Une clé USB"
+      ],
+      "correct_index": 1,
+      "explanation": "Les assistants vocaux utilisent l'IA pour comprendre la parole et y répondre."
+    },
+    {
+      "id": 4,
+      "theme": "Introduction à l'IA",
+      "question": "Quelle est la différence entre IA faible et IA forte ?",
+      "options": [
+        "L'IA faible est spécialisée dans une tâche, l'IA forte serait polyvalente comme un humain",
+        "L'IA faible est moins chère",
+        "L'IA forte fonctionne sans électricité",
+        "Il n'y a aucune différence"
+      ],
+      "correct_index": 0,
+      "explanation": "L'IA faible (actuelle) est spécialisée ; l'IA forte, polyvalente et hypothétique, n'existe pas encore."
+    },
+    {
+      "id": 5,
+      "theme": "Introduction à l'IA",
+      "question": "Qui est considéré comme un pionnier de l'IA, à l'origine d'un célèbre test ?",
+      "options": [
+        "Albert Einstein",
+        "Alan Turing",
+        "Isaac Newton",
+        "Thomas Edison"
+      ],
+      "correct_index": 1,
+      "explanation": "Alan Turing a proposé le « test de Turing », fondateur dans l'histoire de l'IA."
+    },
+    {
+      "id": 6,
+      "theme": "Introduction à l'IA",
+      "question": "Que cherche à évaluer le « test de Turing » ?",
+      "options": [
+        "La vitesse d'un ordinateur",
+        "La capacité d'une machine à tenir une conversation indistinguable de celle d'un humain",
+        "La mémoire disponible",
+        "La consommation électrique"
+      ],
+      "correct_index": 1,
+      "explanation": "Le test de Turing mesure si une machine peut se faire passer pour un humain lors d'un dialogue."
+    },
+    {
+      "id": 7,
+      "theme": "Introduction à l'IA",
+      "question": "Lequel de ces domaines n'est PAS un sous-domaine de l'IA ?",
+      "options": [
+        "La vision par ordinateur",
+        "Le traitement du langage naturel",
+        "La comptabilité analytique",
+        "L'apprentissage automatique"
+      ],
+      "correct_index": 2,
+      "explanation": "La comptabilité analytique est une discipline de gestion, sans rapport avec l'IA."
+    },
+    {
+      "id": 8,
+      "theme": "Introduction à l'IA",
+      "question": "Quelle relation existe entre IA, Machine Learning (ML) et Deep Learning (DL) ?",
+      "options": [
+        "Ce sont trois choses totalement indépendantes",
+        "DL contient ML, qui contient l'IA",
+        "Le DL est un sous-ensemble du ML, lui-même sous-ensemble de l'IA",
+        "IA et ML sont identiques"
+      ],
+      "correct_index": 2,
+      "explanation": "Le Deep Learning est inclus dans le Machine Learning, lui-même inclus dans l'IA."
+    },
+    {
+      "id": 9,
+      "theme": "Machine Learning",
+      "question": "Qu'est-ce que le machine learning (apprentissage automatique) ?",
+      "options": [
+        "Programmer chaque règle à la main",
+        "Apprendre à partir de données sans être explicitement programmé pour chaque cas",
+        "Réparer du matériel informatique",
+        "Un type de tableur"
+      ],
+      "correct_index": 1,
+      "explanation": "Le ML permet à un modèle d'apprendre des motifs à partir de données plutôt que via des règles codées à la main."
+    },
+    {
+      "id": 10,
+      "theme": "Machine Learning",
+      "question": "Quels sont les trois grands types d'apprentissage automatique ?",
+      "options": [
+        "Rapide, lent, moyen",
+        "Supervisé, non supervisé, par renforcement",
+        "Local, distant, hybride",
+        "Visuel, textuel, sonore"
+      ],
+      "correct_index": 1,
+      "explanation": "Les trois familles sont l'apprentissage supervisé, non supervisé et par renforcement."
+    },
+    {
+      "id": 11,
+      "theme": "Machine Learning",
+      "question": "L'apprentissage supervisé utilise des données...",
+      "options": [
+        "étiquetées (avec la bonne réponse connue)",
+        "sans aucune étiquette",
+        "toujours fausses",
+        "uniquement des images"
+      ],
+      "correct_index": 0,
+      "explanation": "En apprentissage supervisé, chaque exemple d'entraînement est accompagné de sa réponse attendue."
+    },
+    {
+      "id": 12,
+      "theme": "Machine Learning",
+      "question": "À quoi sert principalement l'apprentissage non supervisé ?",
+      "options": [
+        "À prédire un prix exact",
+        "À trouver des structures ou groupes dans des données non étiquetées",
+        "À jouer à des jeux vidéo",
+        "À corriger l'orthographe"
+      ],
+      "correct_index": 1,
+      "explanation": "Sans étiquettes, il révèle des regroupements (clusters) ou des structures cachées dans les données."
+    },
+    {
+      "id": 13,
+      "theme": "Machine Learning",
+      "question": "Comment un agent apprend-il en apprentissage par renforcement ?",
+      "options": [
+        "En lisant un manuel",
+        "Par essais et erreurs, guidé par des récompenses",
+        "En copiant un autre programme",
+        "En étant reprogrammé chaque jour"
+      ],
+      "correct_index": 1,
+      "explanation": "L'agent teste des actions et ajuste son comportement selon les récompenses reçues."
+    },
+    {
+      "id": 14,
+      "theme": "Machine Learning",
+      "question": "Qu'est-ce que le surapprentissage (overfitting) ?",
+      "options": [
+        "Le modèle est trop simple",
+        "Le modèle apprend trop les données d'entraînement et généralise mal aux nouvelles données",
+        "Le modèle s'entraîne trop vite",
+        "Le modèle manque de données"
+      ],
+      "correct_index": 1,
+      "explanation": "Un modèle en surapprentissage mémorise les détails de l'entraînement mais échoue sur des données inédites."
+    },
+    {
+      "id": 15,
+      "theme": "Machine Learning",
+      "question": "À quoi sert le jeu de données de test ?",
+      "options": [
+        "À entraîner le modèle",
+        "À évaluer le modèle sur des données qu'il n'a jamais vues",
+        "À stocker les mots de passe",
+        "À afficher l'interface"
+      ],
+      "correct_index": 1,
+      "explanation": "Le jeu de test mesure la capacité du modèle à généraliser à de nouvelles données."
+    },
+    {
+      "id": 16,
+      "theme": "Machine Learning",
+      "question": "La régression sert principalement à prédire...",
+      "options": [
+        "une catégorie (ex : spam ou non)",
+        "une valeur numérique continue (ex : un prix)",
+        "une image",
+        "un mot de passe"
+      ],
+      "correct_index": 1,
+      "explanation": "La régression prédit une valeur continue, contrairement à la classification qui prédit une catégorie."
+    },
+    {
+      "id": 17,
+      "theme": "Deep Learning",
+      "question": "Qu'est-ce que le deep learning ?",
+      "options": [
+        "Un tableur avancé",
+        "Un sous-ensemble du ML basé sur des réseaux de neurones à plusieurs couches",
+        "Une base de données",
+        "Un langage de programmation"
+      ],
+      "correct_index": 1,
+      "explanation": "Le deep learning utilise des réseaux de neurones profonds (plusieurs couches) pour apprendre."
+    },
+    {
+      "id": 18,
+      "theme": "Deep Learning",
+      "question": "De quoi s'inspire un réseau de neurones artificiels ?",
+      "options": [
+        "Du fonctionnement des neurones du cerveau",
+        "D'un moteur de voiture",
+        "D'un réseau électrique domestique",
+        "D'un tableau Excel"
+      ],
+      "correct_index": 0,
+      "explanation": "Les réseaux de neurones artificiels s'inspirent, de façon simplifiée, des neurones biologiques."
+    },
+    {
+      "id": 19,
+      "theme": "Deep Learning",
+      "question": "Que calcule schématiquement un neurone artificiel ?",
+      "options": [
+        "Une somme pondérée de ses entrées suivie d'une fonction d'activation",
+        "La racine carrée d'un nombre",
+        "Le nombre de pixels d'une image",
+        "La date du jour"
+      ],
+      "correct_index": 0,
+      "explanation": "Un neurone combine ses entrées pondérées puis applique une fonction d'activation."
+    },
+    {
+      "id": 20,
+      "theme": "Deep Learning",
+      "question": "À quoi sert une fonction d'activation dans un réseau de neurones ?",
+      "options": [
+        "À éteindre le réseau",
+        "À introduire de la non-linéarité pour apprendre des relations complexes",
+        "À colorer les graphiques",
+        "À compresser les fichiers"
+      ],
+      "correct_index": 1,
+      "explanation": "Sans non-linéarité, le réseau ne pourrait modéliser que des relations linéaires simples."
+    },
+    {
+      "id": 21,
+      "theme": "Deep Learning",
+      "question": "Quel type de réseau est particulièrement adapté au traitement des images ?",
+      "options": [
+        "Le réseau convolutif (CNN)",
+        "Le tableur",
+        "Le réseau de neurones à une seule entrée",
+        "La base de données relationnelle"
+      ],
+      "correct_index": 0,
+      "explanation": "Les CNN (réseaux convolutifs) sont conçus pour extraire des motifs visuels dans les images."
+    },
+    {
+      "id": 22,
+      "theme": "Deep Learning",
+      "question": "Historiquement, quel type de réseau est adapté aux données séquentielles (texte, séries temporelles) ?",
+      "options": [
+        "Le CNN",
+        "Le RNN (réseau de neurones récurrent)",
+        "Le tableur",
+        "Le pare-feu"
+      ],
+      "correct_index": 1,
+      "explanation": "Les RNN traitent des séquences en conservant une mémoire des éléments précédents."
+    },
+    {
+      "id": 23,
+      "theme": "Deep Learning",
+      "question": "De quoi le deep learning a-t-il généralement besoin pour bien fonctionner ?",
+      "options": [
+        "De très peu de données",
+        "De grandes quantités de données et de puissance de calcul",
+        "D'aucune donnée",
+        "Uniquement d'un tableur"
+      ],
+      "correct_index": 1,
+      "explanation": "Les modèles profonds exigent beaucoup de données et de ressources de calcul (souvent des GPU)."
+    },
+    {
+      "id": 24,
+      "theme": "LLM",
+      "question": "Que signifie « LLM » ?",
+      "options": [
+        "Local Learning Machine",
+        "Large Language Model (grand modèle de langage)",
+        "Long Logic Method",
+        "Linear Learning Model"
+      ],
+      "correct_index": 1,
+      "explanation": "LLM = Large Language Model, un grand modèle de langage entraîné sur d'énormes corpus de texte."
+    },
+    {
+      "id": 25,
+      "theme": "LLM",
+      "question": "Sur quel type de données un LLM est-il principalement entraîné ?",
+      "options": [
+        "Des images uniquement",
+        "D'énormes quantités de texte",
+        "Des fichiers audio",
+        "Des feuilles de calcul"
+      ],
+      "correct_index": 1,
+      "explanation": "Un LLM apprend le langage à partir de très vastes ensembles de textes."
+    },
+    {
+      "id": 26,
+      "theme": "LLM",
+      "question": "Quelle architecture est à la base des LLM modernes ?",
+      "options": [
+        "Le Transformer",
+        "Le tableur",
+        "Le CNN classique",
+        "La base SQL"
+      ],
+      "correct_index": 0,
+      "explanation": "L'architecture Transformer (attention) est le socle des grands modèles de langage actuels."
+    },
+    {
+      "id": 27,
+      "theme": "LLM",
+      "question": "Comment un LLM génère-t-il fondamentalement du texte ?",
+      "options": [
+        "En copiant une page web",
+        "En prédisant le prochain token (mot/fragment) le plus probable",
+        "En tirant au hasard des lettres",
+        "En traduisant depuis l'anglais"
+      ],
+      "correct_index": 1,
+      "explanation": "Un LLM prédit le token suivant, un à un, en fonction du contexte précédent."
+    },
+    {
+      "id": 28,
+      "theme": "LLM",
+      "question": "Qu'est-ce qu'un « token » pour un LLM ?",
+      "options": [
+        "Un mot de passe",
+        "Une unité de texte (un mot ou un fragment de mot)",
+        "Un type de fichier",
+        "Une carte graphique"
+      ],
+      "correct_index": 1,
+      "explanation": "Un token est l'unité de base que le modèle manipule : souvent un mot ou une partie de mot."
+    },
+    {
+      "id": 29,
+      "theme": "LLM",
+      "question": "Qu'est-ce qu'une « hallucination » d'un LLM ?",
+      "options": [
+        "Un bug d'affichage",
+        "Une information inventée mais présentée comme plausible",
+        "Une panne de serveur",
+        "Un ralentissement du modèle"
+      ],
+      "correct_index": 1,
+      "explanation": "Une hallucination est une réponse fausse mais formulée de façon convaincante."
+    },
+    {
+      "id": 30,
+      "theme": "LLM",
+      "question": "Lequel de ces éléments est un exemple de LLM ?",
+      "options": [
+        "Photoshop",
+        "GPT-4",
+        "Excel",
+        "MySQL"
+      ],
+      "correct_index": 1,
+      "explanation": "GPT-4 est un grand modèle de langage ; les autres sont des logiciels ou bases de données."
+    },
+    {
+      "id": 31,
+      "theme": "LLM",
+      "question": "En quoi consiste le « fine-tuning » d'un LLM ?",
+      "options": [
+        "Éteindre le modèle",
+        "Ajuster un modèle pré-entraîné sur des données spécifiques à une tâche",
+        "Effacer ses données",
+        "Changer sa couleur"
+      ],
+      "correct_index": 1,
+      "explanation": "Le fine-tuning spécialise un modèle déjà entraîné en le réentraînant sur des données ciblées."
+    },
+    {
+      "id": 32,
+      "theme": "Prompt Engineering",
+      "question": "Qu'est-ce que le prompt engineering ?",
+      "options": [
+        "Réparer un ordinateur",
+        "L'art de concevoir des instructions claires pour obtenir de bonnes réponses d'un modèle",
+        "Un langage de programmation",
+        "Une technique de câblage réseau"
+      ],
+      "correct_index": 1,
+      "explanation": "Le prompt engineering consiste à formuler des instructions efficaces pour guider le modèle."
+    },
+    {
+      "id": 33,
+      "theme": "Prompt Engineering",
+      "question": "Qu'est-ce qu'un « prompt » ?",
+      "options": [
+        "La réponse du modèle",
+        "L'instruction ou le texte fourni en entrée au modèle",
+        "Une erreur",
+        "Un bouton de l'interface"
+      ],
+      "correct_index": 1,
+      "explanation": "Le prompt est l'entrée (question, consigne, contexte) que l'on donne au modèle."
+    },
+    {
+      "id": 34,
+      "theme": "Prompt Engineering",
+      "question": "Que signifie le « zero-shot prompting » ?",
+      "options": [
+        "Demander sans fournir d'exemple",
+        "Fournir dix exemples",
+        "Poser dix questions à la fois",
+        "Ne rien écrire"
+      ],
+      "correct_index": 0,
+      "explanation": "En zero-shot, on demande directement la tâche sans donner d'exemple au modèle."
+    },
+    {
+      "id": 35,
+      "theme": "Prompt Engineering",
+      "question": "Que signifie le « few-shot prompting » ?",
+      "options": [
+        "Ne donner aucun exemple",
+        "Fournir quelques exemples dans le prompt pour guider le modèle",
+        "Utiliser peu de mémoire",
+        "Répondre rapidement"
+      ],
+      "correct_index": 1,
+      "explanation": "En few-shot, on inclut quelques exemples pour montrer au modèle le format attendu."
+    },
+    {
+      "id": 36,
+      "theme": "Prompt Engineering",
+      "question": "Que vise la technique « chain-of-thought » (chaîne de pensée) ?",
+      "options": [
+        "Accélérer le modèle",
+        "Inciter le modèle à raisonner étape par étape",
+        "Réduire la taille du texte",
+        "Changer de langue"
+      ],
+      "correct_index": 1,
+      "explanation": "La chaîne de pensée pousse le modèle à détailler son raisonnement, ce qui améliore les réponses complexes."
+    },
+    {
+      "id": 37,
+      "theme": "Prompt Engineering",
+      "question": "Quelles caractéristiques rendent un prompt efficace ?",
+      "options": [
+        "Vague et court",
+        "Clair, précis et contextualisé",
+        "Rempli de fautes",
+        "Sans aucune instruction"
+      ],
+      "correct_index": 1,
+      "explanation": "Un bon prompt est clair, précis et fournit le contexte nécessaire à une bonne réponse."
+    },
+    {
+      "id": 38,
+      "theme": "Prompt Engineering",
+      "question": "En quoi consiste le « role prompting » ?",
+      "options": [
+        "Assigner un rôle ou une persona au modèle (ex : « Tu es un professeur »)",
+        "Changer la couleur du texte",
+        "Limiter le nombre de mots",
+        "Désactiver le modèle"
+      ],
+      "correct_index": 0,
+      "explanation": "Donner un rôle oriente le ton et l'expertise des réponses du modèle."
+    },
+    {
+      "id": 39,
+      "theme": "Prompt Engineering",
+      "question": "Préciser le format de sortie attendu dans un prompt permet surtout de...",
+      "options": [
+        "ralentir le modèle",
+        "obtenir une réponse mieux structurée et exploitable",
+        "supprimer la réponse",
+        "changer de modèle"
+      ],
+      "correct_index": 1,
+      "explanation": "Indiquer le format souhaité (liste, JSON, tableau...) rend la réponse plus utilisable."
+    },
+    {
+      "id": 40,
+      "theme": "RAG",
+      "question": "Que signifie « RAG » ?",
+      "options": [
+        "Random Access Generation",
+        "Retrieval-Augmented Generation (génération augmentée par récupération)",
+        "Rapid AI Growth",
+        "Recursive Automatic Grouping"
+      ],
+      "correct_index": 1,
+      "explanation": "RAG = Retrieval-Augmented Generation : on récupère des informations puis on génère la réponse."
+    },
+    {
+      "id": 41,
+      "theme": "RAG",
+      "question": "Quel est le principe de fonctionnement du RAG ?",
+      "options": [
+        "Générer une réponse au hasard",
+        "Récupérer des informations externes pertinentes, puis générer la réponse à partir d'elles",
+        "Traduire un texte",
+        "Compresser des fichiers"
+      ],
+      "correct_index": 1,
+      "explanation": "Le RAG cherche d'abord des documents pertinents, puis s'appuie dessus pour répondre."
+    },
+    {
+      "id": 42,
+      "theme": "RAG",
+      "question": "Quel problème le RAG aide-t-il principalement à réduire ?",
+      "options": [
+        "La vitesse d'affichage",
+        "Les hallucinations et les informations obsolètes",
+        "La taille de l'écran",
+        "Le nombre d'utilisateurs"
+      ],
+      "correct_index": 1,
+      "explanation": "En s'appuyant sur des sources fiables, le RAG limite les réponses inventées ou périmées."
+    },
+    {
+      "id": 43,
+      "theme": "RAG",
+      "question": "Dans un pipeline RAG, que sont les « embeddings » ?",
+      "options": [
+        "Des images",
+        "Des représentations vectorielles du texte",
+        "Des mots de passe",
+        "Des fichiers audio"
+      ],
+      "correct_index": 1,
+      "explanation": "Les embeddings transforment le texte en vecteurs numériques pour comparer le sens des contenus."
+    },
+    {
+      "id": 44,
+      "theme": "RAG",
+      "question": "Où stocke-t-on généralement les embeddings pour la recherche en RAG ?",
+      "options": [
+        "Dans une base de données vectorielle",
+        "Dans un fichier image",
+        "Dans la mémoire vive uniquement",
+        "Dans un tableur"
+      ],
+      "correct_index": 0,
+      "explanation": "Une base vectorielle permet de retrouver rapidement les passages les plus proches du sens recherché."
+    },
+    {
+      "id": 45,
+      "theme": "RAG",
+      "question": "Pourquoi découpe-t-on (chunking) les documents en RAG ?",
+      "options": [
+        "Pour les supprimer",
+        "Pour récupérer des passages pertinents de taille gérable",
+        "Pour les traduire",
+        "Pour les imprimer"
+      ],
+      "correct_index": 1,
+      "explanation": "Le découpage en morceaux facilite la récupération de passages précis et pertinents."
+    },
+    {
+      "id": 46,
+      "theme": "RAG",
+      "question": "Le RAG permet à un LLM de répondre à partir de...",
+      "options": [
+        "sa seule mémoire interne",
+        "une base de connaissances externe et à jour",
+        "un générateur aléatoire",
+        "aucune source"
+      ],
+      "correct_index": 1,
+      "explanation": "Le RAG connecte le modèle à des sources externes, souvent plus fiables et actualisées."
+    },
+    {
+      "id": 47,
+      "theme": "Chatbots IA",
+      "question": "Qu'est-ce qu'un chatbot ?",
+      "options": [
+        "Un programme qui dialogue avec l'utilisateur en langage naturel",
+        "Un type de clavier",
+        "Un antivirus",
+        "Un câble réseau"
+      ],
+      "correct_index": 0,
+      "explanation": "Un chatbot est un agent conversationnel qui échange avec l'utilisateur par messages."
+    },
+    {
+      "id": 48,
+      "theme": "Chatbots IA",
+      "question": "Quelle est la différence entre un chatbot à règles et un chatbot basé sur l'IA ?",
+      "options": [
+        "Aucune différence",
+        "Le chatbot à règles suit des réponses prédéfinies ; celui basé IA comprend et génère dynamiquement",
+        "Le chatbot IA est toujours moins performant",
+        "Le chatbot à règles parle plusieurs langues"
+      ],
+      "correct_index": 1,
+      "explanation": "Les chatbots à règles suivent des scripts ; les chatbots IA interprètent et génèrent des réponses."
+    },
+    {
+      "id": 49,
+      "theme": "Chatbots IA",
+      "question": "Quel domaine de l'IA permet à un chatbot de comprendre le langage humain ?",
+      "options": [
+        "Le NLP (traitement du langage naturel)",
+        "La robotique",
+        "La vision par ordinateur",
+        "La cryptographie"
+      ],
+      "correct_index": 0,
+      "explanation": "Le NLP (traitement du langage naturel) permet aux machines de comprendre et produire du texte."
+    },
+    {
+      "id": 50,
+      "theme": "Chatbots IA",
+      "question": "Que signifie « NLP » ?",
+      "options": [
+        "New Learning Process",
+        "Natural Language Processing (traitement du langage naturel)",
+        "Network Layer Protocol",
+        "Non-Linear Programming"
+      ],
+      "correct_index": 1,
+      "explanation": "NLP = Natural Language Processing, le traitement automatique du langage naturel."
+    },
+    {
+      "id": 51,
+      "theme": "Chatbots IA",
+      "question": "Que peut faire un chatbot moderne basé sur un LLM ?",
+      "options": [
+        "Uniquement répéter des phrases fixes",
+        "Comprendre le contexte et générer des réponses variées",
+        "Seulement afficher des images",
+        "Rien du tout"
+      ],
+      "correct_index": 1,
+      "explanation": "Un chatbot basé sur un LLM comprend le contexte et formule des réponses adaptées et variées."
+    },
+    {
+      "id": 52,
+      "theme": "Chatbots IA",
+      "question": "Quel est un avantage majeur des chatbots pour le service client ?",
+      "options": [
+        "Ils coûtent très cher",
+        "Ils sont disponibles 24h/24 et répondent instantanément",
+        "Ils remplacent Internet",
+        "Ils suppriment les données"
+      ],
+      "correct_index": 1,
+      "explanation": "Les chatbots offrent une disponibilité permanente et des réponses immédiates."
+    },
+    {
+      "id": 53,
+      "theme": "Chatbots IA",
+      "question": "Quelle est une limite importante des chatbots basés sur l'IA ?",
+      "options": [
+        "Ils ne fonctionnent jamais",
+        "Ils peuvent produire des réponses incorrectes (hallucinations)",
+        "Ils n'utilisent pas d'électricité",
+        "Ils parlent une seule langue"
+      ],
+      "correct_index": 1,
+      "explanation": "Comme les LLM, les chatbots IA peuvent générer des informations fausses : il faut vérifier."
+    },
+    {
+      "id": 54,
+      "theme": "IA responsable",
+      "question": "Qu'est-ce qu'un « biais » en intelligence artificielle ?",
+      "options": [
+        "Une panne matérielle",
+        "Un préjugé systématique dans les résultats du modèle",
+        "Une amélioration des performances",
+        "Un type de serveur"
+      ],
+      "correct_index": 1,
+      "explanation": "Un biais est une distorsion systématique des résultats, souvent défavorable à certains groupes."
+    },
+    {
+      "id": 55,
+      "theme": "IA responsable",
+      "question": "D'où proviennent le plus souvent les biais d'un modèle d'IA ?",
+      "options": [
+        "De la couleur de l'écran",
+        "Des données d'entraînement",
+        "De la vitesse du processeur",
+        "Du nom du fichier"
+      ],
+      "correct_index": 1,
+      "explanation": "Des données d'entraînement biaisées ou non représentatives se retrouvent dans les décisions du modèle."
+    },
+    {
+      "id": 56,
+      "theme": "IA responsable",
+      "question": "Pourquoi la transparence est-elle importante en IA ?",
+      "options": [
+        "Pour rendre l'écran plus lumineux",
+        "Pour comprendre et expliquer les décisions du modèle",
+        "Pour accélérer Internet",
+        "Pour réduire la taille des fichiers"
+      ],
+      "correct_index": 1,
+      "explanation": "La transparence aide à comprendre, expliquer et faire confiance aux décisions d'un système d'IA."
+    },
+    {
+      "id": 57,
+      "theme": "IA responsable",
+      "question": "Que désigne la « confidentialité des données » (privacy) en IA ?",
+      "options": [
+        "Rendre les données publiques",
+        "Protéger les données personnelles des utilisateurs",
+        "Supprimer toutes les données",
+        "Vendre les données"
+      ],
+      "correct_index": 1,
+      "explanation": "La confidentialité consiste à protéger les données personnelles et à respecter la vie privée."
+    },
+    {
+      "id": 58,
+      "theme": "IA responsable",
+      "question": "Quel est un enjeu éthique majeur de l'IA générative ?",
+      "options": [
+        "La désinformation et les deepfakes",
+        "L'économie d'électricité",
+        "La couleur des interfaces",
+        "La vitesse de frappe"
+      ],
+      "correct_index": 0,
+      "explanation": "L'IA générative peut produire de fausses informations ou de faux contenus (deepfakes) très crédibles."
+    },
+    {
+      "id": 59,
+      "theme": "IA responsable",
+      "question": "Que signifie « IA explicable » (XAI) ?",
+      "options": [
+        "Une IA plus rapide",
+        "Rendre compréhensibles les décisions prises par un modèle",
+        "Une IA sans données",
+        "Une IA gratuite"
+      ],
+      "correct_index": 1,
+      "explanation": "L'IA explicable vise à rendre les décisions d'un modèle compréhensibles pour les humains."
+    },
+    {
+      "id": 60,
+      "theme": "IA responsable",
+      "question": "Quelle est une bonne pratique d'IA responsable ?",
+      "options": [
+        "Faire confiance aveuglément au modèle",
+        "Garder un humain dans la boucle et vérifier les résultats",
+        "Cacher le fonctionnement du système",
+        "Ignorer les biais"
+      ],
+      "correct_index": 1,
+      "explanation": "Superviser l'IA par un humain et vérifier ses sorties limite les erreurs et les dérives."
+    }
+  ]
+}
