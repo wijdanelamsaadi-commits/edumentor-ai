@@ -1,9 +1,16 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useLocalStorageState } from '../hooks/useLocalStorageState.js'
-import { API_BASE_URL, courses, diagnosticQuestions, learner, quizQuestions, recommendations } from '../services/mockData.js'
+import {
+  fetchCourses,
+  saveQuizResult as saveBackendQuizResult,
+  sendChatMessage,
+} from '../services/api.js'
+import { courses as fallbackCourses, diagnosticQuestions, learner, quizQuestions, recommendations } from '../services/mockData.js'
+import { addNotification } from '../services/notifications.js'
 import { LearningContext } from './learningContext.js'
 
 export function LearningProvider({ children }) {
+  const [courses, setCourses] = useState(fallbackCourses)
   const [diagnosticAnswers, setDiagnosticAnswers] = useLocalStorageState('edumentor:diagnosticAnswers', {})
   const [diagnosticLevel, setDiagnosticLevel] = useLocalStorageState('edumentor:diagnosticLevel', 'Intermediaire')
   const [quizAnswers, setQuizAnswers] = useLocalStorageState('edumentor:quizAnswers', {})
@@ -21,6 +28,26 @@ export function LearningProvider({ children }) {
     setMessages((current) => current.filter((message) => !isLegacySimulatedMessage(message)))
   }, [setMessages])
 
+  useEffect(() => {
+    let isMounted = true
+
+    fetchCourses()
+      .then((data) => {
+        if (isMounted && Array.isArray(data) && data.length > 0) {
+          setCourses(data)
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setCourses(fallbackCourses)
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
   const quizScore = useMemo(() => {
     const correct = quizQuestions.filter((item, index) => quizAnswers[index] === item.answer).length
     return Math.round((correct / quizQuestions.length) * 100)
@@ -31,7 +58,7 @@ export function LearningProvider({ children }) {
       ...course,
       progress: courseProgress[course.id] ?? course.progress,
     })),
-    [courseProgress],
+    [courseProgress, courses],
   )
 
   const averageProgress = useMemo(
@@ -55,6 +82,7 @@ export function LearningProvider({ children }) {
   async function sendMessage(message, learnerLevel = diagnosticLevel) {
     if (!message.trim()) return
 
+    const isFirstChatUse = !messages.some((item) => item.role === 'user')
     const userMessage = {
       role: 'user',
       text: message.trim(),
@@ -64,17 +92,7 @@ export function LearningProvider({ children }) {
     setMessages((current) => [...current, userMessage])
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: message.trim(), level: learnerLevel }),
-      })
-
-      if (!response.ok) {
-        throw new Error('Chat request failed')
-      }
-
-      const data = await response.json()
+      const data = await sendChatMessage(message.trim(), learnerLevel)
       const assistantMessage = {
         role: 'assistant',
         text: data.answer,
@@ -84,6 +102,18 @@ export function LearningProvider({ children }) {
       }
 
       setMessages((current) => [...current, assistantMessage])
+      if (isFirstChatUse) {
+        addNotification({
+          type: 'chatbot',
+          title: 'Première utilisation du chatbot',
+          message: 'Votre assistant IA est maintenant prêt à vous accompagner.',
+        })
+      }
+      addNotification({
+        type: 'chatbot',
+        title: 'Nouvelle réponse pédagogique générée',
+        message: 'Le chatbot a généré une réponse adaptée à votre niveau.',
+      })
     } catch {
       setMessages((current) => [
         ...current,
@@ -101,19 +131,49 @@ export function LearningProvider({ children }) {
   function saveQuizResult(courseId, result) {
     const numericCourseId = Number(courseId)
     const nextProgress = Math.max(courseProgress[numericCourseId] ?? 0, result.score >= 60 ? 100 : 75)
+    const course = courses.find((item) => item.id === numericCourseId)
+    const courseTitle = course?.title || `cours ${numericCourseId}`
+    const savedResult = {
+      ...result,
+      date: new Date().toISOString(),
+    }
 
     setQuizResults((current) => ({
       ...current,
-      [numericCourseId]: {
-        ...result,
-        date: new Date().toISOString(),
-      },
+      [numericCourseId]: savedResult,
     }))
+    saveBackendQuizResult({
+      course_id: numericCourseId,
+      score: result.score,
+      correct: result.correct,
+      total: result.total,
+      answers: result.answers,
+      corrections: result.corrections,
+      recommendation: result.recommendation,
+    }).catch(() => {})
 
     setCourseProgress((current) => ({
       ...current,
       [numericCourseId]: nextProgress,
     }))
+
+    addNotification({
+      type: 'quiz',
+      title: 'Quiz terminé',
+      message: `Vous avez terminé le quiz du cours ${courseTitle}.`,
+    })
+    addNotification({
+      type: 'quiz',
+      title: 'Nouveau score obtenu',
+      message: `Votre score est de ${result.score}% pour ${courseTitle}.`,
+    })
+    if (result.score >= 60) {
+      addNotification({
+        type: 'quiz',
+        title: 'Quiz réussi',
+        message: `Bravo, vous avez validé le quiz du cours ${courseTitle}.`,
+      })
+    }
   }
 
   const value = {

@@ -5,6 +5,6 @@ export const navItems = [
   { icon: 'BarChart3', path: '/profile', label: 'Progression' },
   { icon: 'Target', path: '/diagnostic', label: 'Test diagnostique' },
   { icon: 'MessageCircle', path: '/chatbot', label: 'Chatbot IA' },
-  { icon: 'Folder', path: '/courses/1', label: 'Ressources' },
-  { icon: 'Settings', path: '/profile', label: 'Paramètres' },
+  { icon: 'Folder', path: '/resources', label: 'Ressources' },
+  { icon: 'Settings', path: '/settings', label: 'Parametres' },
 ]

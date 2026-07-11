@@ -1,13 +1,60 @@
-import { Brain, EyeOff, GraduationCap, Lock, Mail, MessageCircle, TrendingUp } from 'lucide-react'
+import { Brain, Eye, EyeOff, GraduationCap, Lock, Mail, MessageCircle, TrendingUp } from 'lucide-react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import studentIllustration from '../assets/student-illustration.jpg'
+import { useAuth } from '../hooks/useAuth.js'
 
 function LoginPage() {
   const navigate = useNavigate()
+  const { login, loginWithGoogle, resetPassword } = useAuth()
+  const [authMessage, setAuthMessage] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
 
-  function handleLogin(event) {
+  async function handleLogin(event) {
     event.preventDefault()
-    navigate('/dashboard')
+    setAuthMessage('')
+
+    const formData = new FormData(event.currentTarget)
+    const email = formData.get('email')
+    const password = formData.get('password')
+
+    try {
+      await login(email, password)
+      navigate('/dashboard')
+    } catch {
+      setAuthMessage("Impossible de se connecter avec ces identifiants Firebase.")
+    }
+  }
+
+  async function handleGoogleLogin() {
+    setAuthMessage('')
+
+    try {
+      await loginWithGoogle()
+      navigate('/dashboard')
+    } catch {
+      setAuthMessage('Connexion Google indisponible pour le moment.')
+    }
+  }
+
+  async function handleResetPassword(event) {
+    event.preventDefault()
+    setAuthMessage('')
+
+    const form = event.currentTarget.closest('form')
+    const email = new FormData(form).get('email')
+
+    if (!email) {
+      setAuthMessage('Entrez votre adresse e-mail pour réinitialiser le mot de passe.')
+      return
+    }
+
+    try {
+      await resetPassword(email)
+      setAuthMessage('Un e-mail de réinitialisation a été envoyé.')
+    } catch {
+      setAuthMessage("Impossible d'envoyer l'e-mail de réinitialisation.")
+    }
   }
 
   return (
@@ -22,21 +69,34 @@ function LoginPage() {
             Adresse e-mail
             <span className="input-shell">
               <Mail size={22} />
-              <input defaultValue="wijdane@exemple.com" type="email" placeholder="Entrez votre e-mail" />
+              <input defaultValue="wijdane@exemple.com" name="email" type="email" placeholder="Entrez votre e-mail" />
             </span>
           </label>
           <label>
             Mot de passe
             <span className="input-shell">
               <Lock size={22} />
-              <input defaultValue="demo2026" type="password" placeholder="Entrez votre mot de passe" />
-              <EyeOff size={20} />
+              <input
+                defaultValue="demo2026"
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Entrez votre mot de passe"
+              />
+              <button
+                type="button"
+                className="icon-toggle-button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+              >
+                {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+              </button>
             </span>
           </label>
-          <a className="form-link" href="#forgot">Mot de passe oublié ?</a>
+          <a className="form-link" href="#forgot" onClick={handleResetPassword}>Mot de passe oublié ?</a>
+          {authMessage && <p className="form-link">{authMessage}</p>}
           <button className="primary-button auth-submit" type="submit">Se connecter</button>
           <div className="divider"><span>ou continuer avec</span></div>
-          <button className="google-button" type="button">G Continuer avec Google</button>
+          <button className="google-button" onClick={handleGoogleLogin} type="button">G Continuer avec Google</button>
           <p className="auth-switch">
             Vous n'avez pas de compte ? <Link to="/register">S'inscrire</Link>
           </p>
@@ -87,7 +147,7 @@ export function AuthFooter() {
           <strong>EduMentor <em>AI</em></strong>
         </div>
         <p>Votre mentor intelligent pour un apprentissage plus efficace grâce à l'intelligence artificielle.</p>
-        <small>© 2025 EduMentor AI. Tous droits réservés.</small>
+        <small>© 2026 EduMentor AI. Tous droits réservés.</small>
       </div>
       <div>
         <strong>Produit</strong>

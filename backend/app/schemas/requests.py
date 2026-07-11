@@ -12,3 +12,4 @@ class QuizSubmission(BaseModel):
 class ChatRequest(BaseModel):
     message: str
     level: str = "Intermediaire"
+    context: list[dict] = Field(default_factory=list)

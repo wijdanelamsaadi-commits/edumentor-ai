@@ -2,12 +2,15 @@ from pathlib import Path
 import json
 import random
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
 
+from app.core.database import get_db
 from app.schemas.requests import ChatRequest, DiagnosticSubmission, QuizSubmission
 from app.rag.document_store import get_chunks_summary, get_documents_summary, get_search_summary
 from app.rag.vector_store import get_semantic_search_summary, get_vector_store_status
 from app.services import learning_service
+from app.services import course_service
 
 router = APIRouter(tags=["EduMentor"])
 
@@ -32,13 +35,13 @@ def dashboard() -> dict:
 
 
 @router.get("/courses")
-def courses() -> list[dict]:
-    return learning_service.get_courses()
+def courses(db: Session = Depends(get_db)) -> list[dict]:
+    return course_service.get_courses(db)
 
 
 @router.get("/courses/{course_id}")
-def course_detail(course_id: int) -> dict:
-    return learning_service.get_course_detail(course_id)
+def course_detail(course_id: int, db: Session = Depends(get_db)) -> dict:
+    return course_service.get_course_detail(db, course_id)
 
 
 @router.post("/diagnostic")
@@ -113,23 +116,18 @@ def submit_diagnostic_test(payload: dict) -> dict:
 
 
 @router.get("/quiz/{course_id}")
-def get_quiz(course_id: int) -> dict:
-    return learning_service.get_quiz(course_id)
+def get_quiz(course_id: int, db: Session = Depends(get_db)) -> dict:
+    return course_service.get_quiz(db, course_id)
 
 
 @router.post("/quiz/{course_id}/submit")
-def submit_quiz(course_id: int, payload: QuizSubmission) -> dict:
-    return learning_service.grade_quiz(course_id, payload.answers)
+def submit_quiz(course_id: int, payload: QuizSubmission, db: Session = Depends(get_db)) -> dict:
+    return course_service.grade_quiz(db, course_id, payload.answers)
 
 
 @router.post("/chat")
 def chat(payload: ChatRequest) -> dict:
-    return learning_service.rag_chat(payload.message, payload.level)
-
-
-@router.get("/profile")
-def profile() -> dict:
-    return learning_service.get_profile()
+    return learning_service.rag_chat(payload.message, payload.level, payload.context)
 
 
 @router.get("/rag/status")

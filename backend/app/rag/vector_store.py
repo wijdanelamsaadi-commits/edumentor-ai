@@ -3,13 +3,10 @@ from __future__ import annotations
 import os
 from pathlib import Path
 from threading import Lock
+from time import time
 from typing import Any
 
 os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
-
-import chromadb
-from chromadb.api.models.Collection import Collection
-from sentence_transformers import SentenceTransformer
 
 from app.rag.document_store import RagChunk, get_chunks, load_course_documents
 
@@ -18,9 +15,9 @@ COLLECTION_NAME = "edumentor_course_chunks"
 EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
 
 _lock = Lock()
-_client: chromadb.PersistentClient | None = None
-_collection: Collection | None = None
-_embedding_model: SentenceTransformer | None = None
+_client: Any = None
+_collection: Any = None
+_embedding_model: Any = None
 _index_status: dict[str, Any] = {
     "ready": False,
     "mode": "rag_semantic",
@@ -33,21 +30,44 @@ _index_status: dict[str, Any] = {
 
 
 def initialize_vector_store() -> dict[str, Any]:
-    """Rebuild the ChromaDB index from the current PDF chunks."""
+    """Rebuild the ChromaDB index from the current PDF chunks.
+
+    A temporary collection is built first so semantic_search can keep using the
+    previous collection until the new one is ready.
+    """
     global _client, _collection
 
-    with _lock:
+    try:
+        load_course_documents()
+        chunks = get_chunks()
+        CHROMA_DIR.mkdir(parents=True, exist_ok=True)
+
+        client = _get_chromadb().PersistentClient(path=str(CHROMA_DIR))
+        temp_name = f"{COLLECTION_NAME}_building_{int(time())}"
         try:
-            load_course_documents()
-            chunks = get_chunks()
-            CHROMA_DIR.mkdir(parents=True, exist_ok=True)
+            client.delete_collection(temp_name)
+        except Exception:
+            pass
 
-            _client = chromadb.PersistentClient(path=str(CHROMA_DIR))
-            _reset_collection()
+        temp_collection = client.get_or_create_collection(
+            name=temp_name,
+            metadata={
+                "description": "EduMentor AI course PDF chunks",
+                "embedding_model": EMBEDDING_MODEL_NAME,
+            },
+        )
 
-            if chunks:
-                _add_chunks_to_collection(_collection, chunks)
+        if chunks:
+            _add_chunks_to_collection(temp_collection, chunks)
 
+        with _lock:
+            _client = client
+            try:
+                _client.delete_collection(COLLECTION_NAME)
+            except Exception:
+                pass
+            temp_collection.modify(name=COLLECTION_NAME)
+            _collection = _client.get_collection(COLLECTION_NAME)
             _index_status.update(
                 {
                     "ready": True,
@@ -55,16 +75,11 @@ def initialize_vector_store() -> dict[str, Any]:
                     "error": None,
                 }
             )
-        except Exception as exc:  # pragma: no cover - visible through status endpoint
-            _index_status.update(
-                {
-                    "ready": False,
-                    "chunk_count": 0,
-                    "error": str(exc),
-                }
-            )
+    except Exception as exc:  # pragma: no cover - visible through status endpoint
+        with _lock:
+            _index_status.update({"error": str(exc)})
 
-        return get_vector_store_status()
+    return get_vector_store_status()
 
 
 def semantic_search(query: str, limit: int = 3) -> list[dict]:
@@ -75,11 +90,12 @@ def semantic_search(query: str, limit: int = 3) -> list[dict]:
 
     collection = _get_collection()
     query_embedding = _embed_texts([clean_query])[0]
+    search_limit = max(limit * 8, limit, 12)
 
     try:
         result = collection.query(
             query_embeddings=[query_embedding],
-            n_results=max(1, limit),
+            n_results=max(1, search_limit),
             include=["documents", "metadatas", "distances"],
         )
     except Exception:
@@ -87,11 +103,11 @@ def semantic_search(query: str, limit: int = 3) -> list[dict]:
         collection = _get_collection()
         result = collection.query(
             query_embeddings=[query_embedding],
-            n_results=max(1, limit),
+            n_results=max(1, search_limit),
             include=["documents", "metadatas", "distances"],
         )
 
-    return _format_query_results(result)
+    return _rerank_results(clean_query, _format_query_results(result))[:limit]
 
 
 def get_semantic_search_summary(query: str, limit: int = 3) -> dict:
@@ -144,7 +160,7 @@ def _load_existing_collection() -> None:
 
     try:
         CHROMA_DIR.mkdir(parents=True, exist_ok=True)
-        _client = chromadb.PersistentClient(path=str(CHROMA_DIR))
+        _client = _get_chromadb().PersistentClient(path=str(CHROMA_DIR))
         _collection = _client.get_collection(COLLECTION_NAME)
         _index_status.update(
             {
@@ -157,7 +173,7 @@ def _load_existing_collection() -> None:
         initialize_vector_store()
 
 
-def _add_chunks_to_collection(collection: Collection | None, chunks: list[RagChunk]) -> None:
+def _add_chunks_to_collection(collection: Any, chunks: list[RagChunk]) -> None:
     if collection is None:
         raise RuntimeError("ChromaDB collection is not initialized")
 
@@ -188,13 +204,21 @@ def _embed_texts(texts: list[str]) -> list[list[float]]:
     return [embedding.tolist() for embedding in embeddings]
 
 
-def _get_embedding_model() -> SentenceTransformer:
+def _get_embedding_model() -> Any:
     global _embedding_model
 
     if _embedding_model is None:
+        from sentence_transformers import SentenceTransformer
+
         _embedding_model = SentenceTransformer(EMBEDDING_MODEL_NAME)
 
     return _embedding_model
+
+
+def _get_chromadb() -> Any:
+    import chromadb
+
+    return chromadb
 
 
 def _format_query_results(result: dict) -> list[dict]:
@@ -221,6 +245,68 @@ def _format_query_results(result: dict) -> list[dict]:
         )
 
     return formatted_results
+
+
+def _rerank_results(query: str, results: list[dict]) -> list[dict]:
+    normalized_query = _normalize_text(query)
+    topic_files = {
+        ("introduction ia", "intelligence artificielle"): "01_Introduction_IA.pdf",
+        ("machine learning",): "02_Machine_Learning.pdf",
+        ("deep learning", "reseau de neurones", "reseaux de neurones"): "03_Deep_Learning.pdf",
+        ("llm", "large language model", "modele de langage"): "04_LLM.pdf",
+        ("prompt engineering", "prompt"): "05_Prompt_Engineering.pdf",
+        ("rag", "retrieval augmented generation"): "06_RAG.pdf",
+        ("chatbot", "chatbots"): "07_Chatbots_IA.pdf",
+        ("ia responsable", "biais", "ethique", "responsable"): "08_IA_Responsable.pdf",
+    }
+
+    expected_files = {
+        file_name
+        for keywords, file_name in topic_files.items()
+        if any(keyword in normalized_query for keyword in keywords)
+    }
+
+    for result in results:
+        adjusted_score = float(result.get("score", 0))
+        text = _normalize_text(result.get("text_preview", ""))
+        file_name = result.get("file_name", "")
+
+        if file_name in expected_files:
+            adjusted_score += 0.35
+
+        for keywords, file_for_keywords in topic_files.items():
+            if any(keyword in normalized_query and keyword in text for keyword in keywords):
+                adjusted_score += 0.08
+                if file_name == file_for_keywords:
+                    adjusted_score += 0.08
+
+        result["score"] = round(adjusted_score, 4)
+
+    return sorted(results, key=lambda item: item.get("score", 0), reverse=True)
+
+
+def _normalize_text(value: str) -> str:
+    replacements = {
+        "à": "a",
+        "â": "a",
+        "ä": "a",
+        "ç": "c",
+        "é": "e",
+        "è": "e",
+        "ê": "e",
+        "ë": "e",
+        "î": "i",
+        "ï": "i",
+        "ô": "o",
+        "ö": "o",
+        "ù": "u",
+        "û": "u",
+        "ü": "u",
+    }
+    normalized = value.lower()
+    for source, target in replacements.items():
+        normalized = normalized.replace(source, target)
+    return normalized
 
 
 def _normalize_page_number(value: Any) -> int | None:

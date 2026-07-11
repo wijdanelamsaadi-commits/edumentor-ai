@@ -1,13 +1,38 @@
+# Python
 __pycache__/
+*.pyc
+*.pyo
 *.py[cod]
 .venv/
 venv/
-backend/edumentor.db
-backend/data/chroma/
+backend/.venv/
+
+# Node / Vite
 frontend/node_modules/
+node_modules/
 frontend/dist/
+dist/
+build/
+
+# Local data and generated artifacts
+backend/data/chroma/
+backend/edumentor.db
+*.db
+*.sqlite
+*.sqlite3
+outputs/
+mobile.zip
+
+# Logs and temporary files
 *.log
 *.err.log
+*.tmp
+
+# Environment and credentials
 .env
 .env.*
 !.env.example
+!backend/.env.example
+!frontend/.env.example
+firebase-service-account.json
+*service-account*.json

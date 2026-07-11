@@ -1,12 +1,47 @@
-import { Brain, Paperclip, Plus, Send, Sparkles } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { useLearning } from '../hooks/useLearning.js'
+import {
+  Brain,
+  Clipboard,
+  Download,
+  FileText,
+  Plus,
+  RefreshCcw,
+  Search,
+  Send,
+  Sparkles,
+  Square,
+  ThumbsDown,
+  ThumbsUp,
+  Trash2,
+} from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { API_BASE_URL, sendChatMessage } from '../services/api.js'
+import { addNotification } from '../services/notifications.js'
+
+const CHAT_SESSIONS_KEY = 'edumentor:chatSessions'
+const CHAT_XP_KEY = 'edumentor:chatXP'
+const CHAT_FEEDBACK_KEY = 'edumentor:chatFeedback'
+const PREFERENCES_STORAGE_KEY = 'edumentor:preferences'
+const STREAM_CHUNK_SIZE = 12
+const STREAM_DELAY_MS = 20
+const DEFAULT_CHAT_PREFERENCES = {
+  chatbotMiniQuiz: true,
+  questionSuggestions: true,
+  simulatedStreaming: true,
+}
 
 function ChatbotPage() {
+  const streamTimerRef = useRef(null)
+  const stopStreamingRef = useRef(false)
   const [input, setInput] = useState('')
   const [isSending, setIsSending] = useState(false)
   const [diagnosticResult, setDiagnosticResult] = useState(null)
-  const { messages, sendMessage } = useLearning()
+  const [sessions, setSessions] = useState(() => readSessions())
+  const [activeSessionId, setActiveSessionId] = useState(() => readSessions()[0]?.id || createSession().id)
+  const [historySearch, setHistorySearch] = useState('')
+  const [quizAnswers, setQuizAnswers] = useState({})
+  const [feedback, setFeedback] = useState(() => readLocalStorage(CHAT_FEEDBACK_KEY, {}))
+  const [xp, setXp] = useState(() => Number(readLocalStorage(CHAT_XP_KEY, 0)))
+  const [chatPreferences, setChatPreferences] = useState(() => readLocalStorage(PREFERENCES_STORAGE_KEY, DEFAULT_CHAT_PREFERENCES))
   const learnerLevel = diagnosticResult?.level ? getDisplayLevel(diagnosticResult.level) : ''
 
   useEffect(() => {
@@ -16,105 +51,405 @@ function ChatbotPage() {
     } catch {
       setDiagnosticResult(null)
     }
+    setChatPreferences(readLocalStorage(PREFERENCES_STORAGE_KEY, DEFAULT_CHAT_PREFERENCES))
   }, [])
 
-  async function handleSend(event) {
-    event.preventDefault()
-
-    if (!diagnosticResult || !input.trim() || isSending) {
+  useEffect(() => {
+    if (sessions.length === 0) {
+      const firstSession = createSession()
+      setSessions([firstSession])
+      setActiveSessionId(firstSession.id)
+      saveSessions([firstSession])
       return
     }
 
+    saveSessions(sessions)
+  }, [sessions])
+
+  useEffect(() => () => clearStreamTimer(), [])
+
+  const activeSession = sessions.find((session) => session.id === activeSessionId) || sessions[0] || createSession()
+  const filteredSessions = useMemo(
+    () => sessions.filter((session) => {
+      const query = historySearch.trim().toLowerCase()
+      if (!query) return true
+      return `${displaySessionTitle(session)} ${displaySessionPreview(session)}`.toLowerCase().includes(query)
+    }),
+    [historySearch, sessions],
+  )
+
+  async function handleSend(event) {
+    event?.preventDefault()
+    await sendUserMessage(input)
+  }
+
+  function clearStreamTimer() {
+    if (streamTimerRef.current) {
+      window.clearTimeout(streamTimerRef.current)
+      streamTimerRef.current = null
+    }
+  }
+
+  async function sendUserMessage(rawMessage, options = {}) {
+    const cleanMessage = rawMessage.trim()
+    if (!diagnosticResult || !cleanMessage || isSending) {
+      return
+    }
+
+    clearStreamTimer()
+    stopStreamingRef.current = false
+    setInput('')
     setIsSending(true)
-    await sendMessage(input, learnerLevel)
+
+    const userMessage = buildMessage('user', cleanMessage)
+    const context = buildRecentContext(activeSession.messages)
+    const nextSession = appendMessagesToSession(activeSession, [userMessage])
+    updateSession(nextSession)
+
+    try {
+      const data = await sendChatMessage(cleanMessage, learnerLevel, context)
+      const assistantMessage = buildMessage('assistant', '', {
+        fullText: data.answer,
+        mode: data.mode,
+        sources: data.mode === 'rag_semantic' ? data.sources || [] : [],
+      })
+      const sessionWithAssistant = appendMessagesToSession(nextSession, [assistantMessage])
+      updateSession(sessionWithAssistant)
+      if (chatPreferences.simulatedStreaming === false) {
+        patchMessage(sessionWithAssistant.id, assistantMessage.id, { text: assistantMessage.fullText || assistantMessage.text || '' })
+        setIsSending(false)
+      } else {
+        animateAssistantMessage(sessionWithAssistant.id, assistantMessage)
+      }
+      notifyChatUsage(options.regenerated)
+    } catch {
+      const errorMessage = buildMessage('assistant', "Impossible de contacter le service IA pour le moment.", {
+        mode: 'error',
+        sources: [],
+      })
+      updateSession(appendMessagesToSession(nextSession, [errorMessage]))
+      setIsSending(false)
+    }
+  }
+
+  function animateAssistantMessage(sessionId, assistantMessage) {
+    const fullText = assistantMessage.fullText || assistantMessage.text || ''
+    let cursor = 0
+
+    function tick() {
+      if (stopStreamingRef.current) {
+        setIsSending(false)
+        return
+      }
+
+      cursor = Math.min(fullText.length, cursor + STREAM_CHUNK_SIZE)
+      patchMessage(sessionId, assistantMessage.id, { text: fullText.slice(0, cursor) })
+
+      if (cursor >= fullText.length) {
+        setIsSending(false)
+        return
+      }
+
+      streamTimerRef.current = window.setTimeout(tick, STREAM_DELAY_MS)
+    }
+
+    tick()
+  }
+
+  function stopGenerating() {
+    stopStreamingRef.current = true
+    clearStreamTimer()
+    setIsSending(false)
+  }
+
+  function regenerateLastAnswer() {
+    const lastUserMessage = [...activeSession.messages].reverse().find((message) => message.role === 'user')
+    if (!lastUserMessage) return
+
+    const trimmedMessages = removeLastAssistantMessage(activeSession.messages)
+    updateSession({
+      ...activeSession,
+      messages: trimmedMessages,
+      lastMessage: trimmedMessages.at(-1)?.text || '',
+      updatedAt: new Date().toISOString(),
+    })
+    sendUserMessage(lastUserMessage.text, { regenerated: true })
+  }
+
+  function startNewConversation() {
+    clearStreamTimer()
+    const newSession = createSession()
+    setSessions((current) => [newSession, ...current])
+    setActiveSessionId(newSession.id)
     setInput('')
     setIsSending(false)
   }
 
-  async function handleSuggestion(text) {
-    if (!diagnosticResult || isSending) {
+  function deleteSession(sessionId) {
+    const nextSessions = sessions.filter((session) => session.id !== sessionId)
+    if (nextSessions.length === 0) {
+      const replacement = createSession()
+      setSessions([replacement])
+      setActiveSessionId(replacement.id)
       return
     }
 
-    setIsSending(true)
-    await sendMessage(text, learnerLevel)
-    setIsSending(false)
+    setSessions(nextSessions)
+    if (activeSessionId === sessionId) {
+      setActiveSessionId(nextSessions[0].id)
+    }
+  }
+
+  function updateSession(nextSession) {
+    setSessions((current) => {
+      const exists = current.some((session) => session.id === nextSession.id)
+      const nextSessions = exists
+        ? current.map((session) => (session.id === nextSession.id ? nextSession : session))
+        : [nextSession, ...current]
+      return sortSessions(nextSessions)
+    })
+  }
+
+  function patchMessage(sessionId, messageId, patch) {
+    setSessions((current) => current.map((session) => {
+      if (session.id !== sessionId) return session
+      return {
+        ...session,
+        messages: session.messages.map((message) => (message.id === messageId ? { ...message, ...patch } : message)),
+        updatedAt: new Date().toISOString(),
+      }
+    }))
+  }
+
+  function setAssistantFeedback(messageId, value) {
+    const nextFeedback = { ...feedback, [messageId]: value }
+    setFeedback(nextFeedback)
+    localStorage.setItem(CHAT_FEEDBACK_KEY, JSON.stringify(nextFeedback))
+  }
+
+  function answerMiniQuiz(messageId, option, quiz) {
+    if (quizAnswers[messageId]) return
+
+    const isCorrect = option === quiz.answer
+    setQuizAnswers((current) => ({ ...current, [messageId]: { option, isCorrect } }))
+    if (isCorrect) {
+      const nextXp = xp + 10
+      setXp(nextXp)
+      localStorage.setItem(CHAT_XP_KEY, JSON.stringify(nextXp))
+    }
+  }
+
+  function exportConversation(format) {
+    const content = format === 'markdown'
+      ? buildMarkdownExport(activeSession)
+      : buildTextExport(activeSession)
+    const extension = format === 'markdown' ? 'md' : 'txt'
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${slugify(activeSession.title)}.${extension}`
+    link.click()
+    URL.revokeObjectURL(url)
   }
 
   return (
     <section className="page-section chatbot-page">
-      <div className="page-heading">
-        <h1>Chatbot IA</h1>
-        <p>Posez toutes vos questions sur l'intelligence artificielle.</p>
+      <div className="page-heading page-heading-row">
+        <div>
+          <h1>Chatbot IA</h1>
+          <p>Posez toutes vos questions sur l'intelligence artificielle.</p>
+        </div>
+        <div className="chat-xp-pill">XP {xp}</div>
       </div>
-      <div className="chat-layout">
+
+      <div className="chat-layout chat-layout-enhanced">
+        <aside className="chat-history-sidebar panel-card">
+          <button className="primary-button" onClick={startNewConversation} type="button">
+            <Plus size={18} />
+            Nouvelle conversation
+          </button>
+          <label className="chat-search">
+            <Search size={18} />
+            <input
+              onChange={(event) => setHistorySearch(event.target.value)}
+              placeholder="Rechercher..."
+              value={historySearch}
+            />
+          </label>
+          <div className="chat-session-list">
+            {filteredSessions.map((session) => (
+              <article
+                className={session.id === activeSessionId ? 'chat-session-item active' : 'chat-session-item'}
+                key={session.id}
+              >
+                <button onClick={() => setActiveSessionId(session.id)} type="button">
+                  <strong>{displaySessionTitle(session)}</strong>
+                  <time>{formatDateTime(session.updatedAt)}</time>
+                  <p>{displaySessionPreview(session)}</p>
+                </button>
+                <button aria-label="Supprimer la conversation" onClick={() => deleteSession(session.id)} type="button">
+                  <Trash2 size={16} />
+                </button>
+              </article>
+            ))}
+          </div>
+        </aside>
+
         <div className="chat-main">
-          <div className="chat-window">
+          <div className="chat-toolbar panel-card">
+            <div>
+              <strong>{activeSession.title}</strong>
+              <p>{activeSession.messages.length} message(s)</p>
+            </div>
+            <div>
+              <button className="outline-button" onClick={() => exportConversation('markdown')} type="button">
+                <Download size={18} />
+                Export Markdown
+              </button>
+              <button className="outline-button" onClick={() => exportConversation('text')} type="button">
+                <FileText size={18} />
+                Export texte
+              </button>
+            </div>
+          </div>
+
+          <div className="chat-window panel-card">
             {!diagnosticResult && (
               <MessageBubble role="assistant" text="Passez d'abord le test diagnostique pour que je puisse adapter mes réponses à votre niveau." time="Maintenant" />
             )}
-            {diagnosticResult && messages.map((message, index) => (
+            {diagnosticResult && activeSession.messages.length === 0 && (
+              <MessageBubble role="assistant" text="Bonjour ! Je suis EduMentor AI. Posez-moi une question sur vos cours d'IA." time="Maintenant" />
+            )}
+            {diagnosticResult && activeSession.messages.map((message) => (
               <MessageBubble
-                key={`${message.role}-${index}`}
+                feedback={feedback[message.id]}
+                key={message.id}
+                message={message}
+                onCopy={() => copyText(message.text)}
+                onFeedback={setAssistantFeedback}
+                onMiniQuizAnswer={answerMiniQuiz}
+                onRegenerate={regenerateLastAnswer}
+                onSuggestion={sendUserMessage}
+                quizAnswer={quizAnswers[message.id]}
                 role={message.role}
+                showMiniQuiz={chatPreferences.chatbotMiniQuiz !== false}
+                showSuggestions={chatPreferences.questionSuggestions !== false}
                 sources={message.sources}
                 text={message.text}
                 time={formatMessageTime(message.time)}
               />
             ))}
           </div>
-          <div className="suggestion-row">
-            {['Explique le deep learning', 'Différence IA, ML, DL', "Exemples d'utilisation", 'Autres suggestions'].map((item) => (
-              <button disabled={!diagnosticResult || isSending} key={item} onClick={() => handleSuggestion(item)} type="button">{item}</button>
+
+          {isSending && (
+            <button className="outline-button stop-button" onClick={stopGenerating} type="button">
+              <Square size={16} />
+              Stop generating
+            </button>
+          )}
+
+          {chatPreferences.questionSuggestions !== false && <div className="suggestion-row">
+            {['Explique le Deep Learning', 'Différence IA, ML, DL', "Exemples d'utilisation du RAG", 'What is overfitting?'].map((item) => (
+              <button disabled={!diagnosticResult || isSending} key={item} onClick={() => sendUserMessage(item)} type="button">{item}</button>
             ))}
-          </div>
+          </div>}
+
           <form className="chat-form" onSubmit={handleSend}>
             <input
-              disabled={!diagnosticResult}
+              disabled={!diagnosticResult || isSending}
               onChange={(event) => setInput(event.target.value)}
               placeholder={diagnosticResult ? 'Écrivez votre message...' : 'Passez le test diagnostique pour activer le chatbot'}
               value={input}
             />
-            <div className="chat-tools"><Plus size={24} /><Paperclip size={24} /><Sparkles size={24} /></div>
             <button className="send-button" disabled={!diagnosticResult || !input.trim() || isSending} type="submit" aria-label="Envoyer"><Send size={24} /></button>
           </form>
           <p className="chat-disclaimer">EduMentor IA peut faire des erreurs. Vérifiez les informations importantes.</p>
         </div>
+
         <aside className="chat-side panel-card">
           <h2>À propos de l'assistant</h2>
           <p>Je suis votre assistant IA personnel. Je peux vous aider à comprendre les concepts, résoudre des problèmes et vous accompagner dans votre apprentissage.</p>
           <h3>Niveau utilisé</h3>
           <p>{diagnosticResult ? learnerLevel : 'Test diagnostique non encore passé'}</p>
-          <h3>Exemples de questions</h3>
-          {["Qu'est-ce que l'IA générative ?", 'Comment fonctionne un réseau de neurones ?', 'Donne-moi un exemple de prompt efficace.', "Quelles sont les applications de l'IA dans la santé ?"].map((item) => (
+          <h3>Modes de réponse</h3>
+          <p>RAG <span>Supports PDF</span></p>
+          <p>Général <span>Groq</span></p>
+          <p>Hors sujet <span>Filtré</span></p>
+          <h3>Exemples</h3>
+          {["Qu'est-ce que l'IA générative ?", 'Comment fonctionne un réseau de neurones ?', 'Donne-moi un exemple de prompt efficace.'].map((item) => (
             <p className="sample-question" key={item}><Sparkles size={18} />{item}</p>
           ))}
-          <h3>Vos conversations récentes</h3>
-          {diagnosticResult && messages.filter((message) => message.role === 'user').slice(-2).map((message, index) => (
-            <p key={`${message.text}-${index}`}>{message.text} <span>Maintenant</span></p>
-          ))}
-          {!diagnosticResult && <p>Passez le test diagnostique <span>À faire</span></p>}
-          <button type="button">Voir tout l'historique →</button>
         </aside>
       </div>
     </section>
   )
 }
 
-function MessageBubble({ role, sources = [], text, time }) {
+function MessageBubble({
+  feedback,
+  message = {},
+  onCopy,
+  onFeedback,
+  onMiniQuizAnswer,
+  onRegenerate,
+  onSuggestion,
+  quizAnswer,
+  role,
+  showMiniQuiz = true,
+  showSuggestions = true,
+  sources = [],
+  text,
+  time,
+}) {
+  const isAssistant = role === 'assistant'
+  const mode = message.mode
+  const suggestions = isAssistant && showSuggestions ? buildSuggestions(text) : []
+  const quiz = isAssistant && showMiniQuiz && ['rag_semantic', 'general'].includes(mode) ? buildMiniQuiz(text) : null
+
   return (
     <div className={`chat-message ${role}`}>
-      {role === 'assistant' && <span className="bot-icon"><Brain size={22} /></span>}
+      {isAssistant && <span className="bot-icon"><Brain size={22} /></span>}
       <div>
-        <p>{text}</p>
-        {role === 'assistant' && sources.length > 0 && (
+        {isAssistant && (
+          <div className="message-topline">
+            <span className={`mode-badge ${mode || 'general'}`}>{modeLabel(mode)}</span>
+            <div className="message-actions">
+              <button onClick={onCopy} type="button"><Clipboard size={15} />Copier</button>
+              <button onClick={onRegenerate} type="button"><RefreshCcw size={15} />Régénérer</button>
+            </div>
+          </div>
+        )}
+        <MarkdownContent text={text} />
+        {isAssistant && mode === 'rag_semantic' && sources.length > 0 && (
           <div className="chat-sources">
             <strong>Sources utilisées</strong>
             {sources.map((source, index) => (
-              <p key={`${source.file_name}-${source.page_number}-${index}`}>
-                {source.file_name} · {source.course_name} · page {source.page_number}
-              </p>
+              <a href={sourceUrl(source)} key={`${source.file_name}-${source.page_number}-${index}`} rel="noreferrer" target="_blank">
+                {source.file_name} · {source.course_name} · page {source.page_number || '-'}
+              </a>
             ))}
+          </div>
+        )}
+        {isAssistant && suggestions.length > 0 && (
+          <div className="assistant-suggestions">
+            {suggestions.map((suggestion) => (
+              <button key={suggestion} onClick={() => onSuggestion(suggestion)} type="button">{suggestion}</button>
+            ))}
+          </div>
+        )}
+        {quiz && (
+          <MiniQuiz
+            answer={quizAnswer}
+            messageId={message.id}
+            onAnswer={onMiniQuizAnswer}
+            quiz={quiz}
+          />
+        )}
+        {isAssistant && (
+          <div className="feedback-row">
+            <button className={feedback === 'like' ? 'active' : ''} onClick={() => onFeedback(message.id, 'like')} type="button"><ThumbsUp size={16} /></button>
+            <button className={feedback === 'dislike' ? 'active' : ''} onClick={() => onFeedback(message.id, 'dislike')} type="button"><ThumbsDown size={16} /></button>
           </div>
         )}
         <time>{time}</time>
@@ -123,19 +458,323 @@ function MessageBubble({ role, sources = [], text, time }) {
   )
 }
 
-function formatMessageTime(time) {
-  if (!time) return 'Maintenant'
+function MiniQuiz({ answer, messageId, onAnswer, quiz }) {
+  return (
+    <div className="mini-quiz">
+      <strong>🎯 Testez votre compréhension</strong>
+      <p>{quiz.question}</p>
+      <div>
+        {quiz.options.map((option) => (
+          <button
+            className={answer?.option === option ? 'selected' : ''}
+            disabled={Boolean(answer)}
+            key={option}
+            onClick={() => onAnswer(messageId, option, quiz)}
+            type="button"
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+      {answer && (
+        <p className={answer.isCorrect ? 'quiz-correct' : 'quiz-wrong'}>
+          {answer.isCorrect ? '+10 XP · Bonne réponse.' : `Correction : ${quiz.answer}.`} {quiz.explanation}
+        </p>
+      )}
+    </div>
+  )
+}
 
-  const date = new Date(time)
+function MarkdownContent({ text }) {
+  const blocks = parseMarkdown(text || '')
+  return (
+    <div className="markdown-content">
+      {blocks.map((block, index) => {
+        if (block.type === 'heading') return <h3 key={index}>{block.text}</h3>
+        if (block.type === 'list') return <ul key={index}>{block.items.map((item) => <li key={item}>{renderInlineMarkdown(item)}</li>)}</ul>
+        if (block.type === 'code') return <pre key={index}><code>{block.text}</code></pre>
+        return <p key={index}>{renderInlineMarkdown(block.text)}</p>
+      })}
+    </div>
+  )
+}
 
-  if (Number.isNaN(date.getTime())) {
-    return time
+function parseMarkdown(text) {
+  const lines = text.split('\n')
+  const blocks = []
+  let paragraph = []
+  let list = []
+  let code = []
+  let inCode = false
+
+  function flushParagraph() {
+    if (paragraph.length) {
+      blocks.push({ type: 'paragraph', text: paragraph.join(' ') })
+      paragraph = []
+    }
   }
 
-  return new Intl.DateTimeFormat('fr-FR', {
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(date)
+  function flushList() {
+    if (list.length) {
+      blocks.push({ type: 'list', items: list })
+      list = []
+    }
+  }
+
+  lines.forEach((line) => {
+    if (line.trim().startsWith('```')) {
+      if (inCode) {
+        blocks.push({ type: 'code', text: code.join('\n') })
+        code = []
+        inCode = false
+      } else {
+        flushParagraph()
+        flushList()
+        inCode = true
+      }
+      return
+    }
+
+    if (inCode) {
+      code.push(line)
+      return
+    }
+
+    if (line.startsWith('#')) {
+      flushParagraph()
+      flushList()
+      blocks.push({ type: 'heading', text: line.replace(/^#+\s*/, '') })
+      return
+    }
+
+    if (/^\s*[-*]\s+/.test(line)) {
+      flushParagraph()
+      list.push(line.replace(/^\s*[-*]\s+/, ''))
+      return
+    }
+
+    if (!line.trim()) {
+      flushParagraph()
+      flushList()
+      return
+    }
+
+    paragraph.push(line.trim())
+  })
+
+  flushParagraph()
+  flushList()
+  if (code.length) blocks.push({ type: 'code', text: code.join('\n') })
+  return blocks
+}
+
+function renderInlineMarkdown(text) {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g)
+  return parts.map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={`${part}-${index}`}>{part.slice(2, -2)}</strong>
+    }
+    return part
+  })
+}
+
+function createSession() {
+  const now = new Date().toISOString()
+  return {
+    id: createId(),
+    title: 'Nouvelle conversation',
+    createdAt: now,
+    updatedAt: now,
+    lastMessage: '',
+    messages: [],
+  }
+}
+
+function buildMessage(role, text, extra = {}) {
+  return {
+    id: createId(),
+    role,
+    text,
+    time: new Date().toISOString(),
+    sources: [],
+    ...extra,
+  }
+}
+
+function appendMessagesToSession(session, messages) {
+  const nextMessages = [...session.messages, ...messages]
+  const firstUserMessage = nextMessages.find((message) => message.role === 'user')
+  const lastUserMessage = [...nextMessages].reverse().find((message) => message.role === 'user')
+  const lastMessage = shortPreview(lastUserMessage?.text || session.lastMessage || '')
+  return {
+    ...session,
+    title: firstUserMessage ? titleFromMessage(firstUserMessage.text) : session.title,
+    updatedAt: new Date().toISOString(),
+    lastMessage,
+    messages: nextMessages,
+  }
+}
+
+function removeLastAssistantMessage(messages) {
+  const nextMessages = [...messages]
+  const index = nextMessages.map((message) => message.role).lastIndexOf('assistant')
+  if (index >= 0) nextMessages.splice(index, 1)
+  return nextMessages
+}
+
+function buildRecentContext(messages) {
+  return messages.slice(-6).map((message) => ({
+    role: message.role,
+    content: message.text,
+  }))
+}
+
+function buildSuggestions(text) {
+  const normalized = normalizeText(text)
+  if (normalized.includes('rag')) {
+    return ['Donne un exemple RAG', 'Explique le chunking', 'Pourquoi citer les sources ?']
+  }
+  if (normalized.includes('deep learning') || normalized.includes('neurone')) {
+    return ['Explique les couches', 'Donne un exemple simple', 'Quels sont les risques ?']
+  }
+  if (normalized.includes('prompt')) {
+    return ['Donne un bon prompt', 'Quels sont les pièges ?', 'Améliore ce prompt']
+  }
+  return ['Donne un exemple', 'Résume en 3 points', 'Propose un mini exercice']
+}
+
+function buildMiniQuiz(text) {
+  const normalized = normalizeText(text)
+  if (normalized.includes('rag')) {
+    return {
+      question: 'Quel est le rôle principal du RAG ?',
+      options: ['Citer des sources et rechercher dans les documents', 'Remplacer tous les PDF', 'Créer une base SQL', 'Supprimer les chunks'],
+      answer: 'Citer des sources et rechercher dans les documents',
+      explanation: 'Le RAG récupère des passages pertinents puis aide à formuler une réponse sourcée.',
+    }
+  }
+  if (normalized.includes('overfitting')) {
+    return {
+      question: "Que signifie l'overfitting ?",
+      options: ['Le modèle mémorise trop les données', 'Le modèle ne reçoit aucune donnée', 'Le modèle refuse de prédire', 'Le modèle supprime les features'],
+      answer: 'Le modèle mémorise trop les données',
+      explanation: "Un modèle surappris fonctionne bien sur l'entraînement mais généralise mal.",
+    }
+  }
+  return {
+    question: 'Quelle bonne pratique aide à apprendre ce concept ?',
+    options: ['Relier la définition à un exemple', 'Ignorer les sources', 'Tout mémoriser sans exercice', 'Supprimer les questions'],
+    answer: 'Relier la définition à un exemple',
+    explanation: 'Un exemple concret facilite la compréhension et la mémorisation.',
+  }
+}
+
+function notifyChatUsage(regenerated) {
+  if (!regenerated) {
+    addNotification({
+      type: 'chatbot',
+      title: 'Nouvelle réponse pédagogique générée',
+      message: 'Le chatbot a généré une réponse adaptée à votre question.',
+    })
+  }
+}
+
+function sourceUrl(source) {
+  const page = source.page_number ? `#page=${source.page_number}` : ''
+  return `${API_BASE_URL}/docs/courses/${encodeURIComponent(source.file_name)}${page}`
+}
+
+function modeLabel(mode) {
+  if (mode === 'rag_semantic') return 'Réponse basée sur les supports'
+  if (mode === 'out_of_scope') return 'Assistant EduMentor'
+  if (mode === 'social') return 'Assistant EduMentor'
+  if (mode === 'error') return 'Service indisponible'
+  return 'Réponse générale'
+}
+
+function readSessions() {
+  const sessions = readLocalStorage(CHAT_SESSIONS_KEY, [])
+  return Array.isArray(sessions) ? sortSessions(sessions) : []
+}
+
+function saveSessions(sessions) {
+  localStorage.setItem(CHAT_SESSIONS_KEY, JSON.stringify(sortSessions(sessions)))
+}
+
+function sortSessions(sessions) {
+  return [...sessions].sort((first, second) => new Date(second.updatedAt) - new Date(first.updatedAt))
+}
+
+function readLocalStorage(key, fallback) {
+  try {
+    const storedValue = localStorage.getItem(key)
+    return storedValue ? JSON.parse(storedValue) : fallback
+  } catch {
+    return fallback
+  }
+}
+
+function copyText(text) {
+  navigator.clipboard?.writeText(text)
+}
+
+function buildMarkdownExport(session) {
+  return [`# ${session.title}`, '', ...session.messages.map((message) => `## ${message.role}\n\n${message.text}`)].join('\n\n')
+}
+
+function buildTextExport(session) {
+  return session.messages.map((message) => `${message.role.toUpperCase()}: ${message.text}`).join('\n\n')
+}
+
+function titleFromMessage(message) {
+  const normalized = normalizeText(message)
+  if (normalized.includes('deep learning')) return 'Deep Learning'
+  if (normalized.includes('rag')) return 'Question RAG'
+  if (normalized.includes('overfitting')) return 'Overfitting'
+  if (normalized.includes('bonjour') || normalized.includes('salut') || normalized.includes('hello') || normalized.includes('hi')) return 'Bonjour'
+
+  const words = String(message || '')
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 3)
+
+  return words.join(' ') || 'Nouvelle discussion'
+}
+
+function displaySessionTitle(session) {
+  return titleFromMessage(session.messages?.find((message) => message.role === 'user')?.text || session.title)
+}
+
+function displaySessionPreview(session) {
+  return shortPreview(session.lastMessage || session.messages?.find((message) => message.role === 'user')?.text || 'Conversation vide')
+}
+
+function shortPreview(value) {
+  const text = String(value || '').replace(/\s+/g, ' ').trim()
+  if (!text) return 'Conversation vide'
+  return text.length > 20 ? `${text.slice(0, 20)}...` : text
+}
+
+function slugify(value) {
+  return normalizeText(value).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'conversation'
+}
+
+function createId() {
+  return window.crypto?.randomUUID ? window.crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`
+}
+
+function formatMessageTime(time) {
+  if (!time) return 'Maintenant'
+  const date = new Date(time)
+  if (Number.isNaN(date.getTime())) return time
+  return new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit' }).format(date)
+}
+
+function formatDateTime(time) {
+  const date = new Date(time)
+  if (Number.isNaN(date.getTime())) return 'Maintenant'
+  return new Intl.DateTimeFormat('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }).format(date)
 }
 
 function getDisplayLevel(level) {
@@ -146,17 +785,14 @@ function getDisplayLevel(level) {
 }
 
 function normalizeLevel(level) {
-  const normalized = String(level || '')
-    .replace(/\u00c3\u00a9/g, 'e')
-    .replace(/\u00c3\u00a8/g, 'e')
-    .replace(/\u00c3\u00a0/g, 'a')
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-
+  const normalized = normalizeText(level)
   if (normalized.includes('debut')) return 'debutant'
   if (normalized.includes('avance') || normalized.includes('avanc')) return 'avance'
   return normalized.includes('inter') ? 'intermediaire' : ''
+}
+
+function normalizeText(value) {
+  return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 }
 
 export default ChatbotPage

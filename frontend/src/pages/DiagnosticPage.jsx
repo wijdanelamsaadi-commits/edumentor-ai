@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 import { ArrowLeft, ArrowRight, BarChart3, CheckCircle2, ClipboardList, Home, Trophy, XCircle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8001'
-const API_URL = `${API_BASE_URL}/api`
+import { fetchDiagnosticQuestions, saveDiagnosticResult, submitDiagnosticAnswers } from '../services/api.js'
+import { addNotification } from '../services/notifications.js'
 
 function DiagnosticPage() {
   const navigate = useNavigate()
@@ -15,8 +14,7 @@ function DiagnosticPage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    fetch(`${API_URL}/diagnostic/questions`)
-      .then((res) => res.json())
+    fetchDiagnosticQuestions()
       .then((data) => {
         setQuestions(data.questions || [])
         setLoading(false)
@@ -56,24 +54,40 @@ function DiagnosticPage() {
 
   const submitTest = async () => {
     try {
-      const response = await fetch(`${API_URL}/diagnostic/submit`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers }),
-      })
-
-      const data = await response.json()
+      const data = await submitDiagnosticAnswers(answers)
       setResult(data)
+      const diagnosticResult = {
+        score: data.score,
+        level: data.level,
+        total: data.total,
+        correct_count: data.correct_count,
+        date: new Date().toISOString(),
+        corrections: data.corrections,
+      }
 
-      localStorage.setItem(
-        'diagnosticResult',
-        JSON.stringify({
-          score: data.score,
-          level: data.level,
-          date: new Date().toISOString(),
-          corrections: data.corrections,
-        }),
-      )
+      localStorage.setItem('diagnosticResult', JSON.stringify(diagnosticResult))
+      saveDiagnosticResult({
+        score: diagnosticResult.score,
+        level: diagnosticResult.level,
+        total: diagnosticResult.total || questions.length,
+        correct_count: diagnosticResult.correct_count || 0,
+        corrections: diagnosticResult.corrections,
+      }).catch(() => {})
+      addNotification({
+        type: 'diagnostic',
+        title: 'Diagnostic terminé',
+        message: `Votre test diagnostique est terminé avec un score de ${data.score}%.`,
+      })
+      addNotification({
+        type: 'diagnostic',
+        title: 'Nouveau niveau obtenu',
+        message: `Votre niveau actuel est ${data.level}.`,
+      })
+      addNotification({
+        type: 'diagnostic',
+        title: 'Nouveaux cours recommandés',
+        message: 'Votre parcours peut maintenant être adapté à votre niveau.',
+      })
     } catch {
       setError("Impossible d'envoyer vos réponses.")
     }

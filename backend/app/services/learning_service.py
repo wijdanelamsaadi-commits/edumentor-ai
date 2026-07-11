@@ -1,8 +1,10 @@
 from fastapi import HTTPException
 import unicodedata
 
+from app.core.config import get_settings
 from app.rag.engine import rag_status
 from app.rag.vector_store import semantic_search
+from app.services.groq_service import generate_general_answer
 from app.services.mock_data import COURSES, LEARNER, QUIZZES, RECOMMENDATIONS
 
 
@@ -27,12 +29,16 @@ def get_courses() -> list[dict]:
 
 def get_course_detail(course_id: int) -> dict:
     course = _find_course(course_id)
+    information = course.get("information", {})
     return {
         **course,
-        "generated_lesson": (
-            f"Ce cours est adapte au niveau {course['level'].lower()} avec resume, exemples "
-            "et exercices, avec recherche documentaire disponible via le module RAG."
-        ),
+        "information": {
+            "level": information.get("level", course["level"]),
+            "duration": information.get("duration", course["duration"]),
+            "language": information.get("language", "Francais"),
+            "last_update": information.get("last_update", "12/05/2024"),
+            "chapter_count": information.get("chapter_count", len(course.get("chapters", []))),
+        },
     }
 
 
@@ -58,8 +64,10 @@ def get_quiz(course_id: int) -> dict:
     if course_id not in QUIZZES:
         raise HTTPException(status_code=404, detail="Quiz introuvable")
     quiz = QUIZZES[course_id]
+    course = _find_course(course_id)
     return {
         "course_id": quiz["course_id"],
+        "course_title": course["title"],
         "questions": [
             {"question": item["question"], "choices": item["choices"]} for item in quiz["questions"]
         ],
@@ -71,19 +79,35 @@ def grade_quiz(course_id: int, answers: list[str]) -> dict:
         raise HTTPException(status_code=404, detail="Quiz introuvable")
 
     questions = QUIZZES[course_id]["questions"]
-    correct = sum(
-        1 for index, question in enumerate(questions) if index < len(answers) and answers[index] == question["answer"]
-    )
+    corrections = []
+    correct = 0
+
+    for index, question in enumerate(questions):
+        user_answer = answers[index] if index < len(answers) else ""
+        is_correct = user_answer == question["answer"]
+        if is_correct:
+            correct += 1
+        corrections.append(
+            {
+                "question": question["question"],
+                "user_answer": user_answer,
+                "correct_answer": question["answer"],
+                "is_correct": is_correct,
+                "explanation": question.get("explanation", ""),
+            }
+        )
+
     score = round((correct / len(questions)) * 100)
     return {
         "score": score,
         "correct_answers": correct,
         "total_questions": len(questions),
+        "corrections": corrections,
         "recommendation": "Continuer le module suivant" if score >= 70 else "Revoir le resume et refaire les exercices",
     }
 
 
-def rag_chat(message: str, level: str) -> dict:
+def _legacy_rag_chat(message: str, level: str) -> dict:
     results = semantic_search(message, limit=3)
 
     if not results:
@@ -159,9 +183,9 @@ def _find_course(course_id: int) -> dict:
 
 def _recommendations_for_level(level: str) -> list[str]:
     if level == "Debutant":
-        return ["Commencer par Python pour l IA", "Faire les exercices guides avant le quiz"]
+        return ["Commencer par Introduction IA", "Faire les exercices guides avant le quiz"]
     if level == "Avance":
-        return ["Explorer le module RAG pedagogique", "Construire un mini-projet avec sources"]
+        return ["Explorer le module RAG", "Construire un mini-projet avec sources"]
     return ["Approfondir Machine Learning", "Reviser les points faibles avec le chatbot"]
 
 
@@ -346,13 +370,7 @@ def _format_source_lines(results: list[dict]) -> list[str]:
 
 
 def _normalize_level(level: str) -> str:
-    normalized = (
-        level.lower()
-        .replace("é", "e")
-        .replace("è", "e")
-        .replace("à", "a")
-        .replace("?", "e")
-    )
+    normalized = _normalize_text(level)
 
     if "debut" in normalized or (normalized.startswith("d") and "butant" in normalized):
         return "debutant"
@@ -364,3 +382,290 @@ def _normalize_level(level: str) -> str:
 def _normalize_text(text: str) -> str:
     normalized = unicodedata.normalize("NFD", text.lower())
     return "".join(character for character in normalized if unicodedata.category(character) != "Mn")
+
+
+def rag_chat(message: str, level: str, context: list[dict] | None = None) -> dict:
+    social_answer = _social_answer(message)
+    if social_answer:
+        return {
+            "answer": social_answer,
+            "sources": [],
+            "mode": "social",
+        }
+
+    contextual_message = _contextual_message(message, context or [])
+    results = semantic_search(contextual_message, limit=3)
+    threshold = get_settings()["rag_score_threshold"]
+    relevant_results = [result for result in results if float(result.get("score", 0)) >= threshold]
+
+    if relevant_results:
+        return {
+            "answer": _build_pedagogical_rag_answer(contextual_message, level, relevant_results),
+            "sources": [
+                {
+                    "file_name": result["file_name"],
+                    "course_name": result["course_name"],
+                    "page_number": result["page_number"],
+                }
+                for result in relevant_results
+            ],
+            "mode": "rag_semantic",
+        }
+
+    detected_language = _detect_language(message)
+    if _is_ai_related_question(contextual_message):
+        return {
+            "answer": generate_general_answer(contextual_message, detected_language, level),
+            "sources": [],
+            "mode": "general",
+            "label": _general_label(detected_language),
+        }
+
+    return {
+        "answer": _out_of_scope_answer(detected_language),
+        "sources": [],
+        "mode": "out_of_scope",
+    }
+
+
+def _detect_language(message: str) -> str:
+    normalized = _normalize_text(message)
+    arabic_count = sum(1 for character in message if "\u0600" <= character <= "\u06ff")
+
+    if arabic_count >= 2:
+        darija_terms = {
+            "شنو",
+            "اش",
+            "واش",
+            "علاش",
+            "كيفاش",
+            "بزاف",
+            "دابا",
+            "هاد",
+            "ديال",
+            "فاش",
+        }
+        return "darija" if any(term in message for term in darija_terms) else "arabic"
+
+    english_terms = {
+        "what",
+        "how",
+        "why",
+        "explain",
+        "difference",
+        "between",
+        "example",
+        "best",
+        "model",
+        "training",
+    }
+    french_terms = {
+        "c'est",
+        "quoi",
+        "explique",
+        "difference",
+        "différence",
+        "comment",
+        "pourquoi",
+        "donne",
+        "exemple",
+    }
+
+    english_score = sum(1 for term in english_terms if term in normalized)
+    french_score = sum(1 for term in french_terms if term in normalized)
+    return "english" if english_score > french_score else "french"
+
+
+def _is_ai_related_question(message: str) -> bool:
+    normalized = _normalize_text(message)
+    ai_keywords = {
+        "ai",
+        "ia",
+        "backpropagation",
+        "back propagation",
+        "backprop",
+        "bias variance",
+        "cross entropy",
+        "gradient descent",
+        "intelligence artificielle",
+        "artificial intelligence",
+        "machine learning",
+        "deep learning",
+        "overfit",
+        "overfitting",
+        "underfit",
+        "underfitting",
+        "llm",
+        "large language model",
+        "modele de langage",
+        "model de langage",
+        "prompt",
+        "rag",
+        "retrieval",
+        "chatbot",
+        "embedding",
+        "embeddings",
+        "vector",
+        "vecteur",
+        "neural",
+        "neurone",
+        "neurones",
+        "dataset",
+        "donnees",
+        "données",
+        "classification",
+        "regression",
+        "transformer",
+        "generative",
+        "generative ai",
+        "ia generative",
+        "diffusion",
+        "computer vision",
+        "nlp",
+        "traitement du langage",
+        "reinforcement learning",
+        "supervised learning",
+        "unsupervised learning",
+        "apprentissage par renforcement",
+        "apprentissage supervise",
+        "apprentissage non supervise",
+        "ذكاء اصطناعي",
+        "الذكاء الاصطناعي",
+        "تعلم الالة",
+        "تعلم الآلة",
+        "تعلم عميق",
+        "نماذج اللغة",
+        "شات بوت",
+        "شاتبوٹ",
+    }
+
+    return any(_contains_ai_keyword(normalized, message, keyword) for keyword in ai_keywords)
+
+
+def _contains_ai_keyword(normalized_message: str, original_message: str, keyword: str) -> bool:
+    normalized_keyword = _normalize_text(keyword)
+
+    if normalized_keyword in {"ai", "ia", "rag", "llm", "nlp"}:
+        tokens = {
+            token.strip(".,;:!?()[]{}\"'")
+            for token in normalized_message.replace("/", " ").replace("-", " ").split()
+        }
+        return normalized_keyword in tokens
+
+    return normalized_keyword in normalized_message or keyword in original_message
+
+
+def _contextual_message(message: str, context: list[dict]) -> str:
+    if not _needs_context(message):
+        return message
+
+    recent_context = [
+        str(item.get("content") or item.get("text") or "").strip()
+        for item in context[-6:]
+        if str(item.get("content") or item.get("text") or "").strip()
+    ]
+    if not recent_context:
+        return message
+
+    context_text = " ".join(recent_context[-3:])
+    return f"Contexte récent: {context_text}\nQuestion actuelle: {message}"
+
+
+def _needs_context(message: str) -> bool:
+    normalized = _normalize_social_text(message)
+    context_markers = {
+        "it",
+        "this",
+        "that",
+        "ça",
+        "ca",
+        "cela",
+        "ce concept",
+        "cette notion",
+        "hadak",
+        "hadi",
+        "hada",
+        "dakchi",
+        "explain it",
+        "explique ca",
+        "explique ça",
+        "donne un exemple",
+        "give an example",
+    }
+    return any(marker in normalized for marker in context_markers)
+
+
+def _general_label(language: str) -> str:
+    if language == "english":
+        return "General answer"
+    if language == "arabic":
+        return "إجابة عامة"
+    return "Réponse générale"
+
+
+def _social_answer(message: str) -> str | None:
+    normalized = _normalize_social_text(message)
+    compact = normalized.replace(" ", "")
+
+    social_answers = {
+        "bonjour": "Bonjour 👋 Comment puis-je vous aider aujourd'hui ?",
+        "bonsoir": "Bonsoir 👋 Comment puis-je vous aider aujourd'hui ?",
+        "salut": "Salut 👋 Comment puis-je t'aider aujourd'hui ?",
+        "hello": "Hello 👋 How can I help you today?",
+        "hi": "Hello 👋 How can I help you today?",
+        "hey": "Hello 👋 How can I help you today?",
+        "merci": "Avec plaisir 😊",
+        "thanks": "You're welcome 😊",
+        "thank you": "You're welcome 😊",
+        "m7tajk": "😊 Je suis là pour t'aider. Pose-moi ta question.",
+        "mhtajk": "😊 Je suis là pour t'aider. Pose-moi ta question.",
+        "besoin d aide": "😊 Je suis là pour vous aider. Posez-moi votre question.",
+        "besoin daide": "😊 Je suis là pour vous aider. Posez-moi votre question.",
+        "need help": "😊 I'm here to help. Ask me your question.",
+        "help": "😊 I'm here to help. Ask me your question.",
+        "comment vas tu": "Je vais très bien, merci ! Comment puis-je vous aider ?",
+        "comment ca va": "Je vais très bien, merci ! Comment puis-je vous aider ?",
+        "ca va": "Je vais très bien, merci ! Comment puis-je vous aider ?",
+        "how are you": "I'm doing very well, thank you! How can I help you?",
+    }
+
+    if normalized in social_answers:
+        return social_answers[normalized]
+
+    if compact in {"besoindaide", "commentvastu", "commentcava", "howareyou"}:
+        if compact == "howareyou":
+            return social_answers["how are you"]
+        if compact.startswith("comment") or compact == "cava":
+            return "Je vais très bien, merci ! Comment puis-je vous aider ?"
+        return "😊 Je suis là pour vous aider. Posez-moi votre question."
+
+    return None
+
+
+def _normalize_social_text(message: str) -> str:
+    normalized = _normalize_text(message)
+    for source in ("?", "!", ".", ",", ";", ":", "'", "'", "-", "_"):
+        normalized = normalized.replace(source, " ")
+    return " ".join(normalized.split())
+
+
+def _out_of_scope_answer(language: str) -> str:
+    if language == "english":
+        return (
+            "I am specialized in EduMentor AI courses about Artificial Intelligence. "
+            "Please ask me a question about AI, Machine Learning, Deep Learning, LLMs, Prompt Engineering, RAG, chatbots, or responsible AI."
+        )
+    if language == "arabic":
+        return (
+            "أنا مساعد متخصص في دروس EduMentor AI حول الذكاء الاصطناعي. "
+            "من فضلك اطرح سؤالا مرتبطا بالذكاء الاصطناعي أو تعلم الآلة أو RAG أو الشات بوت."
+        )
+    if language == "darija":
+        return (
+            "أنا مساعد متخصص فدروس EduMentor AI ديال الذكاء الاصطناعي. "
+            "سولني على IA، Machine Learning، Deep Learning، RAG، Prompt Engineering ولا Chatbots."
+        )
+    return (
+        "Je suis spécialisé dans les cours d'IA EduMentor AI. "
+        "Posez-moi une question sur l'IA, le Machine Learning, le Deep Learning, les LLM, le Prompt Engineering, le RAG, les chatbots ou l'IA responsable."
+    )
