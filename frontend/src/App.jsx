@@ -38,7 +38,6 @@ import ProfessorCoursesPage from './pages/ProfessorCoursesPage.jsx'
 import ProfessorCourseStudentsPage from './pages/ProfessorCourseStudentsPage.jsx'
 import ProfessorCourseViewPage from './pages/ProfessorCourseViewPage.jsx'
 import ProfessorDashboardPage from './pages/ProfessorDashboardPage.jsx'
-import ProfessorNlpAssistantPage from './pages/ProfessorNlpAssistantPage.jsx'
 import ProfessorRemediationPage from './pages/ProfessorRemediationPage.jsx'
 import ProfessorStudyPathPage from './pages/ProfessorStudyPathPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
@@ -87,7 +86,6 @@ function App() {
               <Route path="/professor/classrooms" element={<ProfessorClassroomsPage />} />
               <Route path="/professor/classrooms/new" element={<ProfessorClassroomFormPage />} />
               <Route path="/professor/classrooms/:id" element={<ProfessorClassroomDetailPage />} />
-              <Route path="/professor/pedagogical-assistant" element={<ProfessorNlpAssistantPage />} />
               <Route path="/professor/assessments" element={<ProfessorAssessmentsPage />} />
               <Route path="/professor/assessments/new" element={<ProfessorAssessmentEditorPage />} />
               <Route path="/professor/assessments/:id/edit" element={<ProfessorAssessmentEditorPage />} />
