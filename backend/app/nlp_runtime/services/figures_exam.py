@@ -40,7 +40,13 @@ def _repetition(value: str) -> bool:
 
 
 def _accumulation(value: str) -> bool:
-    return value.count(",") >= 3
+    if value.count(",") >= 3:
+        return True
+    item = r"(?:\b\w+\b(?:\s+\b\w+\b){0,2})"
+    return bool(re.search(
+        rf"{item}\s*,\s*{item}\s*,\s*{item}\s+(?:et|ou)\s+{item}",
+        value,
+    ))
 
 
 def _comparison(value: str) -> bool:
@@ -55,15 +61,19 @@ def _comparison(value: str) -> bool:
 
 
 def _personification(value: str) -> bool:
-    return any(
-        re.search(
-            rf"\b{re.escape(subject)}\b"
-            rf"(?:\s+\w+){{0,4}}\s+\b{re.escape(verb)}\b",
-            value,
-        )
-        for subject in INANIMATE_SUBJECTS
-        for verb in ANIMATE_VERBS
-    )
+    clause_starts = re.split(r"[.;:!?]+", value)
+    for clause in clause_starts:
+        clause = clause.strip()
+        for subject in INANIMATE_SUBJECTS:
+            for verb in ANIMATE_VERBS:
+                if re.match(
+                    rf"^(?:l'|le\s+|la\s+|les\s+|un\s+|une\s+|des\s+)?"
+                    rf"{re.escape(subject)}\b"
+                    rf"(?:\s+\w+){{0,3}}\s+\b{re.escape(verb)}\b",
+                    clause,
+                ):
+                    return True
+    return False
 
 
 def _metaphor(value: str) -> bool:

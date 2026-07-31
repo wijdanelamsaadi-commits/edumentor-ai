@@ -77,6 +77,50 @@ def test_nlp_figures_endpoint():
     assert data["figure_type"]
 
 
+def test_nlp_figures_detects_accumulation_with_final_conjunction():
+    response = build_nlp_client(professor()).post(
+        "/api/nlp/figures",
+        json={"text": "Des cris, des pas, des chaines et des prieres remplissent la prison."},
+    )
+    data = response.json()["data"]
+
+    assert response.status_code == 200
+    assert data["contains_figure"] is True
+    assert data["figure_type"] == "accumulation"
+
+
+def test_nlp_figures_keeps_inanimate_subject_personification_positive():
+    cases = [
+        "Le palais observe les personnages.",
+        "La nuit murmure a Antigone.",
+        "La prison avale les jours du condamne.",
+    ]
+
+    for text in cases:
+        response = build_nlp_client(professor()).post("/api/nlp/figures", json={"text": text})
+        data = response.json()["data"]
+
+        assert response.status_code == 200
+        assert data["contains_figure"] is True
+        assert data["figure_type"] == "personnification"
+
+
+def test_nlp_figures_does_not_classify_location_complement_as_personification():
+    cases = [
+        "Creon parle dans le palais.",
+        "Antigone entre dans le palais et parle a Creon.",
+        "Le condamne marche devant la prison.",
+    ]
+
+    for text in cases:
+        response = build_nlp_client(professor()).post("/api/nlp/figures", json={"text": text})
+        data = response.json()["data"]
+
+        assert response.status_code == 200
+        assert data["contains_figure"] is False
+        assert data["figure_type"] is None
+
+
 def test_nlp_exam_competence_endpoint():
     response = build_nlp_client(professor()).post(
         "/api/nlp/exam-competence",
