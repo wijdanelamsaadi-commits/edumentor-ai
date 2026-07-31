@@ -5,6 +5,7 @@ import {
   Brain,
   ClipboardCheck,
   Folder,
+  GraduationCap,
   Home,
   LogOut,
   MessageCircle,
@@ -12,6 +13,7 @@ import {
   PieChart,
   Settings,
   ShieldCheck,
+  Tags,
   Target,
   Users,
 } from 'lucide-react'
@@ -21,14 +23,17 @@ import { useAuth } from '../hooks/useAuth.js'
 const icons = {
   BarChart3,
   BookOpen,
+  Brain,
   ClipboardCheck,
   Folder,
+  GraduationCap,
   Home,
   MessageCircle,
   FileText,
   PieChart,
   Settings,
   ShieldCheck,
+  Tags,
   Target,
   Users,
 }
@@ -36,15 +41,36 @@ const icons = {
 const adminItems = [
   { icon: 'ShieldCheck', path: '/admin', label: 'Tableau de bord admin' },
   { icon: 'Users', path: '/admin/users', label: 'Utilisateurs' },
+  { icon: 'Tags', path: '/admin/subjects', label: 'Matieres' },
+  { icon: 'Target', path: '/admin/diagnostic', label: 'Positionnement' },
+  { icon: 'Brain', path: '/professor/pedagogical-assistant', label: 'Assistant pedagogique' },
   { icon: 'FileText', path: '/admin/courses', label: 'Cours & PDF' },
   { icon: 'PieChart', path: '/admin/statistics', label: 'Statistiques' },
   { icon: 'BarChart3', path: '/admin/rag', label: 'Gestion RAG' },
   { icon: 'ClipboardCheck', path: '/admin/audit', label: 'Journal admin' },
 ]
 
+const professorItems = [
+  { icon: 'GraduationCap', path: '/professor', label: 'Tableau de bord' },
+  { icon: 'BookOpen', path: '/professor/courses', label: 'Mes cours' },
+  { icon: 'FileText', path: '/professor/courses/automatic-import', label: 'Import automatique' },
+  { icon: 'Brain', path: '/professor/pedagogical-assistant', label: 'Assistant pedagogique' },
+  { icon: 'Users', path: '/professor/classrooms', label: 'Classes' },
+  { icon: 'ClipboardCheck', path: '/professor/assessments', label: 'Évaluations' },
+  { icon: 'Target', path: '/professor/remediation', label: 'Remediation' },
+  { icon: 'BarChart3', path: '/professor/analytics', label: 'Statistiques' },
+  { icon: 'Target', path: '/professor/profile', label: 'Profil' },
+  { icon: 'Settings', path: '/professor/settings', label: 'Paramètres' },
+]
+
+const parentItems = [
+  { icon: 'Home', path: '/parent/dashboard', label: 'Suivi parent' },
+  { icon: 'Settings', path: '/parent/settings', label: 'Parametres' },
+]
+
 function Sidebar() {
   const navigate = useNavigate()
-  const { isAdmin, logout } = useAuth()
+  const { isAdmin, isProfessor, isStudent, isParent, logout } = useAuth()
 
   async function handleLogout() {
     try {
@@ -63,7 +89,7 @@ function Sidebar() {
         </div>
       </div>
       <nav className="nav-list" aria-label="Navigation principale">
-        {navItems.map((item) => {
+        {isStudent && navItems.map((item) => {
           const Icon = icons[item.icon]
           return (
             <NavLink
@@ -71,6 +97,32 @@ function Sidebar() {
                 const suppressActive = item.label === 'Ressources' || item.label === 'Paramètres'
                 return isActive && !suppressActive ? 'nav-item active' : 'nav-item'
               }}
+              key={`${item.path}-${item.label}`}
+              to={item.path}
+            >
+              <Icon size={22} />
+              {item.label}
+            </NavLink>
+          )
+        })}
+        {isProfessor && !isAdmin && professorItems.map((item) => {
+          const Icon = icons[item.icon]
+          return (
+            <NavLink
+              className={({ isActive }) => (isActive ? 'nav-item active' : 'nav-item')}
+              key={`${item.path}-${item.label}`}
+              to={item.path}
+            >
+              <Icon size={22} />
+              {item.label}
+            </NavLink>
+          )
+        })}
+        {isParent && !isAdmin && parentItems.map((item) => {
+          const Icon = icons[item.icon]
+          return (
+            <NavLink
+              className={({ isActive }) => (isActive ? 'nav-item active' : 'nav-item')}
               key={`${item.path}-${item.label}`}
               to={item.path}
             >
