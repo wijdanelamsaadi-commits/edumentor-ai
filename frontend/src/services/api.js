@@ -1023,6 +1023,35 @@ export function getRegionalExamPreparation() {
   return authenticatedRequest('/api/regional-exam-preparation')
 }
 
+export function getRegionalExams(filters = {}) {
+  const query = buildQuery(filters)
+  return authenticatedRequest(`/api/regional-exams${query}`)
+}
+
+export function getRegionalExam(examId) {
+  return authenticatedRequest(`/api/regional-exams/${examId}`)
+}
+
+export function startRegionalExam(examId) {
+  return authenticatedRequest(`/api/regional-exams/${examId}/start`, { method: 'POST' })
+}
+
+export function submitRegionalExam(examId, data) {
+  return authenticatedRequest(`/api/regional-exams/${examId}/submit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+}
+
+export function getRegionalExamAttempts(examId) {
+  return authenticatedRequest(`/api/regional-exams/${examId}/attempts`)
+}
+
+export function getRegionalExamAttempt(attemptId) {
+  return authenticatedRequest(`/api/regional-exam-attempts/${attemptId}`)
+}
+
 export function createAdminParentStudentLink(data) {
   return authenticatedRequest('/api/admin/parents/links', {
     method: 'POST',

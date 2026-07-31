@@ -46,6 +46,7 @@ import ParentStudentDetailPage from './pages/ParentStudentDetailPage.jsx'
 import QuizPage from './pages/QuizPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 import ResourcesPage from './pages/ResourcesPage.jsx'
+import RegionalExamDetailPage from './pages/RegionalExamDetailPage.jsx'
 import RegionalExamPreparationPage from './pages/RegionalExamPreparationPage.jsx'
 import RemediationPage from './pages/RemediationPage.jsx'
 import RemediationComparisonPage from './pages/RemediationComparisonPage.jsx'
@@ -113,6 +114,7 @@ function App() {
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/resources" element={<ResourcesPage />} />
               <Route path="/regional-exam-preparation" element={<RegionalExamPreparationPage />} />
+              <Route path="/regional-exam-preparation/:examId" element={<RegionalExamDetailPage />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Route>
             <Route element={<ParentRoute><AppLayout /></ParentRoute>}>
