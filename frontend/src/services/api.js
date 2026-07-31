@@ -189,6 +189,22 @@ export function fetchCourseById(courseId) {
   return optionalAuthenticatedRequest(`/api/courses/${courseId}`)
 }
 
+export function getChapterExercises(courseId, chapterId) {
+  return authenticatedRequest(`/api/courses/${courseId}/chapters/${chapterId}/exercises`)
+}
+
+export function submitChapterExercise(courseId, chapterId, questionId, data) {
+  return authenticatedRequest(`/api/courses/${courseId}/chapters/${chapterId}/exercises/${encodeURIComponent(questionId)}/submit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+}
+
+export function getChapterExerciseProgress(courseId, chapterId) {
+  return authenticatedRequest(`/api/courses/${courseId}/chapters/${chapterId}/exercise-progress`)
+}
+
 export function testOllamaVariantPreview() {
   return publicRequest('/api/ai/test-ollama-variant', {
     method: 'POST',

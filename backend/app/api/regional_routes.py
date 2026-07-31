@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.api.auth_dependencies import get_current_student
 from app.core.database import get_db
 from app.models.persistence import UserProfile
-from app.services import regional_exam_service
+from app.services import chapter_exercise_service, regional_exam_service
 
 router = APIRouter(tags=["Regional exam"])
 
@@ -88,3 +88,35 @@ def get_regional_attempt(
     current_student: UserProfile = Depends(get_current_student),
 ) -> dict:
     return regional_exam_service.get_regional_attempt(db, current_student, attempt_id)
+
+
+@router.get("/courses/{course_id}/chapters/{chapter_id}/exercises")
+def chapter_exercises(
+    course_id: int,
+    chapter_id: int,
+    db: Session = Depends(get_db),
+    current_student: UserProfile = Depends(get_current_student),
+) -> dict:
+    return chapter_exercise_service.list_chapter_exercises(db, current_student, course_id, chapter_id)
+
+
+@router.post("/courses/{course_id}/chapters/{chapter_id}/exercises/{question_id}/submit")
+def submit_chapter_exercise(
+    course_id: int,
+    chapter_id: int,
+    question_id: str,
+    payload: dict,
+    db: Session = Depends(get_db),
+    current_student: UserProfile = Depends(get_current_student),
+) -> dict:
+    return chapter_exercise_service.submit_chapter_exercise(db, current_student, course_id, chapter_id, question_id, payload)
+
+
+@router.get("/courses/{course_id}/chapters/{chapter_id}/exercise-progress")
+def chapter_exercise_progress(
+    course_id: int,
+    chapter_id: int,
+    db: Session = Depends(get_db),
+    current_student: UserProfile = Depends(get_current_student),
+) -> dict:
+    return chapter_exercise_service.get_chapter_exercise_progress(db, current_student, course_id, chapter_id)
