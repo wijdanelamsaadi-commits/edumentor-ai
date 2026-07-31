@@ -1,0 +1,91 @@
+{
+  "version": "v15",
+  "family_mapping": {
+    "resume_adapte": "synthese",
+    "explication_detaillee": "synthese",
+    "idee_essentielle": "synthese",
+    "a_retenir": "synthese",
+    "personnages": "reperes",
+    "lieux": "reperes",
+    "evenement_principal": "reperes",
+    "theme": "reperes",
+    "vocabulaire": "reperes",
+    "objectif_pedagogique": "objectif",
+    "question_comprehension": "question",
+    "question_interpretation": "question",
+    "correction_comprehension": "correction",
+    "correction_interpretation": "correction",
+    "exercice_langue": "langue",
+    "correction_langue": "langue",
+    "figure_style_contextualisee": "style",
+    "production_ecrite": "production"
+  },
+  "families": {
+    "synthese": {
+      "content_types": [
+        "resume_adapte",
+        "explication_detaillee",
+        "idee_essentielle",
+        "a_retenir"
+      ],
+      "model": "subtype_synthese_v15.joblib",
+      "constant_label": null
+    },
+    "reperes": {
+      "content_types": [
+        "personnages",
+        "lieux",
+        "evenement_principal",
+        "theme",
+        "vocabulaire"
+      ],
+      "model": "subtype_reperes_v15.joblib",
+      "constant_label": null
+    },
+    "objectif": {
+      "content_types": [
+        "objectif_pedagogique"
+      ],
+      "model": null,
+      "constant_label": "objectif_pedagogique"
+    },
+    "question": {
+      "content_types": [
+        "question_comprehension",
+        "question_interpretation"
+      ],
+      "model": "subtype_question_v15.joblib",
+      "constant_label": null
+    },
+    "correction": {
+      "content_types": [
+        "correction_comprehension",
+        "correction_interpretation"
+      ],
+      "model": "subtype_correction_v15.joblib",
+      "constant_label": null
+    },
+    "langue": {
+      "content_types": [
+        "exercice_langue",
+        "correction_langue"
+      ],
+      "model": "subtype_langue_v15.joblib",
+      "constant_label": null
+    },
+    "style": {
+      "content_types": [
+        "figure_style_contextualisee"
+      ],
+      "model": null,
+      "constant_label": "figure_style_contextualisee"
+    },
+    "production": {
+      "content_types": [
+        "production_ecrite"
+      ],
+      "model": null,
+      "constant_label": "production_ecrite"
+    }
+  }
+}
