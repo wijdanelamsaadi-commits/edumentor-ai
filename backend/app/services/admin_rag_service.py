@@ -65,3 +65,23 @@ def run_reindex() -> None:
                     "progress": 100,
                 }
             )
+
+
+def mark_reindex_finished() -> None:
+    try:
+        documents = get_documents_summary()
+        vector_status = get_vector_store_status()
+        with _status_lock:
+            _status.update(
+                {
+                    "state": "success",
+                    "pdf_count": documents.get("pdf_count", 0),
+                    "chunk_count": vector_status.get("chunk_count", 0),
+                    "last_indexed_at": datetime.utcnow().isoformat(),
+                    "error": None,
+                    "progress": 100,
+                }
+            )
+    except Exception as exc:
+        with _status_lock:
+            _status.update({"state": "failed", "error": str(exc), "progress": 100})

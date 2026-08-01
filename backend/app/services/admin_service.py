@@ -10,6 +10,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
+from app.core.roles import VALID_ROLES, UserRole, normalize_role
 from app.models.persistence import (
     AdminAuditLog,
     ChatFeedback,
@@ -19,11 +20,16 @@ from app.models.persistence import (
     CourseProgress,
     DiagnosticResult,
     Notification,
+    NotificationDelivery,
+    ParentNotification,
+    ParentStudentLink,
     QuizResult,
     UserProfile,
 )
 from app.schemas.admin import AdminAuditLogRead, AdminUserRead
+from app.services import course_service
 from app.services.mock_data import COURSES
+from app.services.notifications.parent_notification_service import create_parent_notification
 
 
 def list_users(db: Session) -> list[AdminUserRead]:
@@ -38,15 +44,82 @@ def get_user(db: Session, user_id: int) -> AdminUserRead:
     return to_admin_user(user, last_activity)
 
 
+def create_parent_student_link(db: Session, admin: UserProfile, payload: dict) -> dict:
+    ensure_admin_actor(admin)
+    parent = get_user_or_404(db, int(payload.get("parent_id") or 0))
+    student = get_user_or_404(db, int(payload.get("student_id") or 0))
+    if parent.role != UserRole.PARENT.value:
+        raise HTTPException(status_code=422, detail="Le compte parent doit avoir le role parent")
+    if student.role != UserRole.STUDENT.value:
+        raise HTTPException(status_code=422, detail="Le compte enfant doit avoir le role student")
+    link = db.scalars(
+        select(ParentStudentLink).where(
+            ParentStudentLink.parent_id == parent.id,
+            ParentStudentLink.student_id == student.id,
+        )
+    ).first()
+    if link is None:
+        link = ParentStudentLink(
+            parent_id=parent.id,
+            student_id=student.id,
+            created_by_user_id=admin.id,
+            relation=str(payload.get("relation") or "responsable"),
+            status="active",
+            verified_at=datetime.utcnow(),
+        )
+        db.add(link)
+    else:
+        link.status = "active"
+        link.verified_at = link.verified_at or datetime.utcnow()
+    create_parent_notification(
+        db,
+        parent,
+        student,
+        "student_linked",
+        "Compte eleve lie",
+        f"Vous pouvez maintenant suivre la progression de {student.full_name}.",
+        f"student-linked-{student.id}",
+    )
+    db.commit()
+    db.refresh(link)
+    create_audit_log(db, admin.id, "link_parent_student", "parent_student_link", str(link.id), None, serialize_parent_link(link))
+    return serialize_parent_link(link)
+
+
+def list_parent_student_links(db: Session) -> list[dict]:
+    rows = list(db.scalars(select(ParentStudentLink).order_by(ParentStudentLink.created_at.desc())))
+    return [serialize_parent_link(row) for row in rows]
+
+
+def list_parent_notifications(db: Session) -> list[dict]:
+    rows = list(db.scalars(select(ParentNotification).order_by(ParentNotification.created_at.desc()).limit(200)))
+    return [serialize_parent_notification(row) for row in rows]
+
+
+def retry_parent_notification_delivery(db: Session, admin: UserProfile, delivery_id: int) -> dict:
+    ensure_admin_actor(admin)
+    delivery = db.get(NotificationDelivery, delivery_id)
+    if delivery is None:
+        raise HTTPException(status_code=404, detail="Livraison introuvable")
+    before = {"status": delivery.status, "error_message": delivery.error_message}
+    delivery.status = "pending_configuration"
+    delivery.error_message = "Relance demandee; credentials fournisseur a verifier."
+    db.commit()
+    create_audit_log(db, admin.id, "retry_parent_notification", "notification_delivery", str(delivery.id), before, {"status": delivery.status})
+    return {"id": delivery.id, "status": delivery.status, "channel": delivery.channel}
+
+
 def update_user_role(db: Session, admin: UserProfile, user_id: int, role: str) -> AdminUserRead:
-    if role not in {"admin", "user"}:
+    ensure_admin_actor(admin)
+    role = normalize_role(role)
+    if role not in VALID_ROLES:
         raise HTTPException(status_code=422, detail="Role invalide")
 
     user = get_user_or_404(db, user_id)
-    if user.id == admin.id and user.role == "admin" and role == "user" and count_admins(db) <= 1:
+    if user.role == UserRole.ADMIN.value and role != UserRole.ADMIN.value and count_active_admins(db) <= 1:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Impossible de retrograder le dernier administrateur.",
+            detail="Impossible de retrograder le dernier administrateur actif.",
         )
 
     before = user_to_log(user)
@@ -58,10 +131,17 @@ def update_user_role(db: Session, admin: UserProfile, user_id: int, role: str) -
 
 
 def update_user_status(db: Session, admin: UserProfile, user_id: int, status_value: str) -> AdminUserRead:
+    ensure_admin_actor(admin)
     if status_value not in {"active", "disabled"}:
         raise HTTPException(status_code=422, detail="Statut invalide")
 
     user = get_user_or_404(db, user_id)
+    if user.role == UserRole.ADMIN.value and status_value == "disabled" and count_active_admins(db) <= 1:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Impossible de desactiver le dernier administrateur actif.",
+        )
+
     before = user_to_log(user)
     user.status = status_value
     db.commit()
@@ -71,13 +151,45 @@ def update_user_status(db: Session, admin: UserProfile, user_id: int, status_val
     return get_user(db, user.id)
 
 
+def assign_course_professor(db: Session, admin: UserProfile, course_id: int, professor_id: int | None) -> dict:
+    ensure_admin_actor(admin)
+    course = course_service.get_course_model(db, course_id)
+    if course is None:
+        raise HTTPException(status_code=404, detail="Cours introuvable")
+
+    before = {
+        "course_id": course.id,
+        "professor_id": course.professor_id,
+        "professor": course_service.serialize_professor_ref(course.professor),
+    }
+    professor = None
+    if professor_id is not None:
+        professor = db.get(UserProfile, professor_id)
+        if professor is None:
+            raise HTTPException(status_code=404, detail="Professeur introuvable")
+        if professor.role != UserRole.PROFESSOR.value:
+            raise HTTPException(status_code=422, detail="L'utilisateur selectionne doit avoir le role professor")
+    course.professor_id = professor_id
+    course.updated_at = datetime.utcnow()
+    db.commit()
+    db.refresh(course)
+    after = {
+        "course_id": course.id,
+        "professor_id": course.professor_id,
+        "professor": course_service.serialize_professor_ref(professor),
+    }
+    create_audit_log(db, admin.id, "assign_course_professor", "course", str(course.id), before, after)
+    return course_service.get_course_detail(db, course.id, include_unpublished=True)
+
+
 def delete_user(db: Session, admin: UserProfile, user_id: int) -> dict:
+    ensure_admin_actor(admin)
     user = get_user_or_404(db, user_id)
 
-    if user.role == "admin" and count_admins(db) <= 1:
+    if user.role == UserRole.ADMIN.value and count_active_admins(db) <= 1:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Impossible de supprimer le dernier administrateur.",
+            detail="Impossible de supprimer le dernier administrateur actif.",
         )
 
     if user.id == admin.id:
@@ -140,8 +252,10 @@ def get_overview(db: Session) -> dict:
 
     return {
         "total_users": len(users),
-        "total_admins": sum(1 for user in users if user.role == "admin"),
-        "total_regular_users": sum(1 for user in users if user.role == "user"),
+        "total_admins": sum(1 for user in users if user.role == UserRole.ADMIN.value),
+        "total_professors": sum(1 for user in users if user.role == UserRole.PROFESSOR.value),
+        "total_students": sum(1 for user in users if user.role == UserRole.STUDENT.value),
+        "total_regular_users": sum(1 for user in users if user.role in {UserRole.STUDENT.value, UserRole.PROFESSOR.value}),
         "total_courses": len(courses) or len(COURSES),
         "total_diagnostics": len(diagnostics),
         "total_quizzes": len(quiz_results),
@@ -253,13 +367,23 @@ def create_audit_log(
         action=action,
         target_type=target_type,
         target_id=target_id,
-        before_data=before_data,
-        after_data=after_data,
+        before_data=make_json_safe(before_data),
+        after_data=make_json_safe(after_data),
     )
     db.add(log)
     db.commit()
     db.refresh(log)
     return AdminAuditLogRead.model_validate(log)
+
+
+def make_json_safe(value: Any) -> Any:
+    if isinstance(value, datetime):
+        return value.isoformat()
+    if isinstance(value, dict):
+        return {key: make_json_safe(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [make_json_safe(item) for item in value]
+    return value
 
 
 def list_audit_logs(
@@ -312,7 +436,24 @@ def get_user_or_404(db: Session, user_id: int) -> UserProfile:
 
 
 def count_admins(db: Session) -> int:
-    return db.scalar(select(func.count(UserProfile.id)).where(UserProfile.role == "admin")) or 0
+    return db.scalar(select(func.count(UserProfile.id)).where(UserProfile.role == UserRole.ADMIN.value)) or 0
+
+
+def ensure_admin_actor(admin: UserProfile) -> None:
+    if admin.role != UserRole.ADMIN.value:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Action reservee aux administrateurs.",
+        )
+
+
+def count_active_admins(db: Session) -> int:
+    return db.scalar(
+        select(func.count(UserProfile.id)).where(
+            UserProfile.role == UserRole.ADMIN.value,
+            UserProfile.status != "disabled",
+        )
+    ) or 0
 
 
 def get_last_activity_map(db: Session, user_ids: list[int]) -> dict[int, datetime]:
@@ -447,3 +588,43 @@ def normalize_level(level: str) -> str:
         return "Avance"
     return "Intermediaire"
 
+
+def serialize_parent_link(link: ParentStudentLink) -> dict:
+    return {
+        "id": link.id,
+        "parent_id": link.parent_id,
+        "parent_name": link.parent.full_name if link.parent else None,
+        "parent_email": link.parent.email if link.parent else None,
+        "student_id": link.student_id,
+        "student_name": link.student.full_name if link.student else None,
+        "student_email": link.student.email if link.student else None,
+        "relation": link.relation,
+        "status": link.status,
+        "verified_at": link.verified_at.isoformat() if link.verified_at else None,
+        "created_at": link.created_at.isoformat() if link.created_at else None,
+    }
+
+
+def serialize_parent_notification(notification: ParentNotification) -> dict:
+    return {
+        "id": notification.id,
+        "parent_id": notification.parent_id,
+        "student_id": notification.student_id,
+        "event_type": notification.event_type,
+        "title": notification.title,
+        "message": notification.message,
+        "severity": notification.severity,
+        "status": notification.status,
+        "created_at": notification.created_at.isoformat() if notification.created_at else None,
+        "deliveries": [
+            {
+                "id": delivery.id,
+                "channel": delivery.channel,
+                "status": delivery.status,
+                "provider": delivery.provider,
+                "error_message": delivery.error_message,
+                "sent_at": delivery.sent_at.isoformat() if delivery.sent_at else None,
+            }
+            for delivery in notification.deliveries
+        ],
+    }

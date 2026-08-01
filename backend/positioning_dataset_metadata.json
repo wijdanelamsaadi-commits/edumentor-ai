@@ -1,0 +1,38 @@
+{
+  "generator_version": "positioning_synthetic_v1",
+  "seed": 20260801,
+  "synthetic": true,
+  "total_rows": 6000,
+  "profiles_per_level": 500,
+  "attempts_per_profile": 4,
+  "total_profiles": 1500,
+  "label_distribution": {
+    "debutant": 2000,
+    "intermediaire": 2000,
+    "avance": 2000
+  },
+  "profile_distribution": {
+    "debutant": 500,
+    "intermediaire": 500,
+    "avance": 500
+  },
+  "feature_columns": [
+    "score_global",
+    "questions_repondues",
+    "bonnes_reponses",
+    "taux_reponse",
+    "score_comprehension",
+    "score_langue_grammaire",
+    "score_connaissance_oeuvres",
+    "score_figures_procedes",
+    "score_interpretation_justification",
+    "score_debutant",
+    "score_intermediaire",
+    "score_avance"
+  ],
+  "target_column": "label_niveau",
+  "group_column": "profile_id",
+  "scientific_status": "Jeu de données synthétique contrôlé, créé pour prototyper et comparer les modèles. Il ne remplace pas une validation ultérieure sur de vrais élèves.",
+  "anti_leakage_rule": "Les futures séparations train/test doivent être faites par profile_id, jamais ligne par ligne.",
+  "generation_principle": "Le label provient d'un profil latent. Les scores observés sont ensuite simulés question par question avec variation par compétence, difficulté et tentative."
+}

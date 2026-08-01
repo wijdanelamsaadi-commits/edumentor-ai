@@ -2,14 +2,16 @@ import { useEffect, useMemo, useState } from 'react'
 import { BarChart3, BookOpen, Calendar, CheckCircle2, Star } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useUserData } from '../hooks/useUserData.js'
-import { fetchCourses } from '../services/api.js'
+import { fetchCourses, fetchSubjects, getStudentAdaptiveDashboard } from '../services/api.js'
 
 const PASSING_QUIZ_SCORE = 60
 
 function DashboardPage() {
   const navigate = useNavigate()
-  const { diagnosticResult, progress, quizResults } = useUserData()
+  const { diagnosticResult, diagnosticResults, progress, quizResults } = useUserData()
   const [courses, setCourses] = useState([])
+  const [subjects, setSubjects] = useState([])
+  const [adaptiveDashboard, setAdaptiveDashboard] = useState(null)
   const localData = useMemo(() => ({
     chapterProgress: progress,
     quizResults,
@@ -18,15 +20,12 @@ function DashboardPage() {
   useEffect(() => {
     let isMounted = true
 
-    fetchCourses()
-      .then((data) => {
+    Promise.allSettled([fetchCourses(), getStudentAdaptiveDashboard(), fetchSubjects()])
+      .then(([coursesResult, adaptiveResult, subjectsResult]) => {
         if (isMounted) {
-          setCourses(Array.isArray(data) ? data : [])
-        }
-      })
-      .catch(() => {
-        if (isMounted) {
-          setCourses([])
+          setCourses(coursesResult.status === 'fulfilled' && Array.isArray(coursesResult.value) ? coursesResult.value : [])
+          setAdaptiveDashboard(adaptiveResult.status === 'fulfilled' ? adaptiveResult.value : null)
+          setSubjects(subjectsResult.status === 'fulfilled' && Array.isArray(subjectsResult.value) ? subjectsResult.value : [])
         }
       })
 
@@ -40,12 +39,12 @@ function DashboardPage() {
     [courses, localData, diagnosticResult],
   )
   const learnerName = diagnosticResult?.name || 'Wijdane'
-  const displayLevel = diagnosticResult?.level || 'Test diagnostique non encore passe'
+  const displayLevel = diagnosticResult?.level || 'Test de positionnement non encore passe'
   const displayScore = Number.isFinite(diagnosticResult?.score) ? `${diagnosticResult.score}%` : '--'
   const displayDate = diagnosticResult?.date ? formatDate(diagnosticResult.date) : 'Aucun test'
   const recommendations = useMemo(
-    () => buildRecommendations(courses, localData, diagnosticResult, dashboardData),
-    [courses, localData, diagnosticResult, dashboardData],
+    () => buildRecommendations(courses, localData, diagnosticResult, dashboardData, subjects, diagnosticResults),
+    [courses, localData, diagnosticResult, dashboardData, subjects, diagnosticResults],
   )
   const activities = useMemo(
     () => buildActivities(courses, localData, diagnosticResult),
@@ -66,7 +65,7 @@ function DashboardPage() {
             <p>Niveau actuel</p>
             <h2>{displayLevel}</h2>
             {diagnosticResult ? (
-              <strong>Score diagnostique : {displayScore} - {displayDate}</strong>
+              <strong>Score de positionnement : {displayScore} - {displayDate}</strong>
             ) : (
               <button className="outline-button" onClick={() => navigate('/diagnostic')} type="button">Passer le test</button>
             )}
@@ -86,7 +85,44 @@ function DashboardPage() {
         </article>
       </div>
 
+      <div className="dashboard-stats">
+        <article className="metric-card">
+          <p>Évaluations disponibles</p>
+          <h2>{adaptiveDashboard?.available_count || 0}</h2>
+          <strong>{adaptiveDashboard?.upcoming_count || 0} à venir</strong>
+        </article>
+        <article className="metric-card">
+          <p>Dernier résultat</p>
+          <h2>{adaptiveDashboard?.latest_result ? `${Math.round(adaptiveDashboard.latest_result.percentage)}%` : '--'}</h2>
+          <strong>{adaptiveDashboard?.weakest_skill ? `À renforcer : ${adaptiveDashboard.weakest_skill.name}` : 'Aucune compétence faible détectée'}</strong>
+        </article>
+        <article className="metric-card">
+          <p>Remédiation active</p>
+          <h2>{adaptiveDashboard?.active_remediation ? `${Math.round(adaptiveDashboard.active_remediation.progress)}%` : '--'}</h2>
+          <strong>{adaptiveDashboard?.personalized_assessment_available ? 'Test personnalisé disponible' : 'Parcours ciblé'}</strong>
+        </article>
+      </div>
+
       <div className="dashboard-grid">
+        {adaptiveDashboard?.active_study_path && (
+          <article className="panel-card recommend-panel">
+            <div className="panel-title">
+              <h2>Mon parcours actuel</h2>
+              <button type="button" onClick={() => navigate(`/study-paths/${adaptiveDashboard.active_study_path.id}`)}>Ouvrir</button>
+            </div>
+            <div className="recommended-item">
+              <span><Star size={22} /></span>
+              <div>
+                <strong>{adaptiveDashboard.active_study_path.course_title}</strong>
+                <p>{adaptiveDashboard.active_study_path.next_action?.label || 'Continuer le parcours guide'}</p>
+                <div className="progress-track"><span style={{ width: `${adaptiveDashboard.active_study_path.progress_percentage}%` }} /></div>
+              </div>
+              <button type="button" onClick={() => navigate(adaptiveDashboard.active_study_path.next_action?.route || `/study-paths/${adaptiveDashboard.active_study_path.id}`)}>
+                Continuer
+              </button>
+            </div>
+          </article>
+        )}
         <article className="panel-card history-panel">
           <div className="panel-title">
             <h2>Historique</h2>
@@ -160,8 +196,22 @@ function DashboardPage() {
           <button className="primary-button" onClick={() => navigate('/courses')}>Mes cours</button>
         </article>
       )}
+
+      <article className="continue-card">
+        <span><ClipboardIcon /></span>
+        <div>
+          <h2>Prochaine action recommandée</h2>
+          <h3>{adaptiveDashboard?.next_action?.title || 'Continuer le parcours'}</h3>
+          <p>{adaptiveDashboard?.next_action?.description || 'Aucune évaluation prioritaire pour le moment.'}</p>
+        </div>
+        <button className="primary-button" onClick={() => navigate(adaptiveDashboard?.next_action?.path || '/courses')}>Ouvrir</button>
+      </article>
     </section>
   )
+}
+
+function ClipboardIcon() {
+  return <CheckCircle2 size={44} />
 }
 
 function buildDashboardData(courses, localData, diagnosticResult) {
@@ -196,15 +246,36 @@ function buildDashboardData(courses, localData, diagnosticResult) {
   }
 }
 
-function buildRecommendations(courses, localData, diagnosticResult, dashboardData) {
+function buildRecommendations(courses, localData, diagnosticResult, dashboardData, subjects = [], diagnosticResults = {}) {
+  const unevaluatedSubject = subjects.find((subject) => !diagnosticResults?.[subject.id])
+  if (unevaluatedSubject) {
+    return [{
+      icon: BarChart3,
+      title: `Evaluer ${unevaluatedSubject.name}`,
+      subtitle: 'Passez un test de positionnement dans une matiere non evaluee',
+      action: 'Passer le test',
+      path: '/diagnostic',
+    }]
+  }
+
   if (!diagnosticResult) {
     return [{
       icon: BarChart3,
-      title: 'Test diagnostique non encore passe',
+      title: 'Test de positionnement non encore passe',
       subtitle: 'Passez le test pour personnaliser votre parcours',
       action: 'Passer le test',
       path: '/diagnostic',
     }]
+  }
+
+  if (Array.isArray(diagnosticResult.recommendations) && diagnosticResult.recommendations.length > 0) {
+    return diagnosticResult.recommendations.slice(0, 2).map((course) => ({
+      icon: Star,
+      title: course.title,
+      subtitle: course.reason || 'Cours recommande selon votre test de positionnement.',
+      action: 'Commencer',
+      path: course.path || `/courses/${course.course_id}`,
+    }))
   }
 
   const level = dashboardData.diagnosticLevel
@@ -279,8 +350,8 @@ function buildActivities(courses, localData, diagnosticResult) {
   if (diagnosticResult?.date) {
     activities.push({
       Icon: BarChart3,
-      title: 'Test diagnostique complete',
-      text: `Niveau obtenu : ${diagnosticResult.level} - Score : ${diagnosticResult.score}%`,
+      title: 'Test de positionnement complete',
+      text: `Niveau obtenu en ${diagnosticResult.subject?.name || 'matiere'} : ${diagnosticResult.level} - Score : ${diagnosticResult.score}%`,
       timestamp: diagnosticResult.date,
     })
   }

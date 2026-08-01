@@ -37,7 +37,12 @@ function AdminDashboardPage() {
       <AdminMessage message={message} />
 
       <div className="dashboard-stats">
-        <AdminMetric icon={Users} label="Utilisateurs" value={overview?.total_users || 0} text={`${overview?.total_admins || 0} admins - ${overview?.total_regular_users || 0} users`} />
+        <AdminMetric
+          icon={Users}
+          label="Utilisateurs"
+          text={`${overview?.total_admins || 0} admins - ${overview?.total_professors || 0} professors - ${overview?.total_students || 0} students`}
+          value={overview?.total_users || 0}
+        />
         <AdminMetric icon={BookOpen} label="Cours" value={overview?.total_courses || 0} text={`${overview?.completed_courses || 0} cours termines`} />
         <AdminMetric icon={ClipboardList} label="Quiz" value={overview?.total_quizzes || 0} text={`Score moyen : ${overview?.average_quiz_score || 0}%`} />
         <AdminMetric icon={Bot} label="Chatbot" value={overview?.total_chat_conversations || 0} text={`${overview?.total_notifications || 0} notifications`} />

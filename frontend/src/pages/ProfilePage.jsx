@@ -3,7 +3,7 @@ import { Award, BarChart3, BookOpen, CheckCircle2, ClipboardList, Download, Flam
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth.js'
 import { useUserData } from '../hooks/useUserData.js'
-import { fetchCourses } from '../services/api.js'
+import { fetchCourses, fetchSubjects } from '../services/api.js'
 import { buildCertificateEligibility, generateCertificatePdf } from '../services/certificate.js'
 
 const PASSING_QUIZ_SCORE = 60
@@ -11,21 +11,24 @@ const PASSING_QUIZ_SCORE = 60
 function ProfilePage() {
   const navigate = useNavigate()
   const { currentUser, userProfile } = useAuth()
-  const { diagnosticResult, progress, quizResults } = useUserData()
+  const { diagnosticResult, diagnosticResults, progress, quizResults } = useUserData()
   const [courses, setCourses] = useState([])
+  const [subjects, setSubjects] = useState([])
   const localData = useMemo(() => ({
     diagnosticResult,
+    diagnosticResults,
     quizResults,
     chapterProgress: progress,
-  }), [diagnosticResult, progress, quizResults])
+  }), [diagnosticResult, diagnosticResults, progress, quizResults])
 
   useEffect(() => {
     let isMounted = true
 
-    fetchCourses()
-      .then((data) => {
+    Promise.allSettled([fetchCourses(), fetchSubjects()])
+      .then(([coursesResult, subjectsResult]) => {
         if (isMounted) {
-          setCourses(Array.isArray(data) ? data : [])
+          setCourses(coursesResult.status === 'fulfilled' && Array.isArray(coursesResult.value) ? coursesResult.value : [])
+          setSubjects(subjectsResult.status === 'fulfilled' && Array.isArray(subjectsResult.value) ? subjectsResult.value : [])
         }
       })
       .catch(() => {
@@ -89,7 +92,7 @@ function ProfilePage() {
           <span><BarChart3 size={30} /></span>
           <div>
             <strong>Aucune donnee de progression disponible</strong>
-            <p>Passez le test diagnostique ou terminez un quiz pour alimenter votre profil.</p>
+            <p>Passez le test de positionnement ou terminez un quiz pour alimenter votre profil.</p>
           </div>
           <button className="outline-button" onClick={() => navigate('/diagnostic')} type="button">Passer le test</button>
         </article>
@@ -101,11 +104,11 @@ function ProfilePage() {
           <div>
             <p>Niveau actuel</p>
             <h2>{currentLevel}</h2>
-            <strong>{localData.diagnosticResult ? 'Niveau obtenu au dernier test' : 'Test diagnostique non encore passe'}</strong>
+            <strong>{localData.diagnosticResult ? 'Niveau obtenu au dernier test' : 'Test de positionnement non encore passe'}</strong>
           </div>
         </article>
         <article className="metric-card">
-          <p>Score diagnostique</p>
+          <p>Score de positionnement</p>
           <h2>{diagnosticScore}</h2>
           <div className="progress-track"><span style={{ width: `${localData.diagnosticResult?.score || 0}%` }} /></div>
           <strong>{localData.diagnosticResult ? formatDate(localData.diagnosticResult.date) : 'Aucune donnee'}</strong>
@@ -135,6 +138,27 @@ function ProfilePage() {
           <strong>{passedQuizCount} quiz reussis</strong>
         </article>
       </div>
+
+      <article className="panel-card">
+        <div className="panel-title">
+          <div>
+            <h2>Mes niveaux par matiere</h2>
+            <p>Chaque matiere conserve son propre niveau de positionnement.</p>
+          </div>
+        </div>
+        <div className="dashboard-stats">
+          {subjects.map((subject) => {
+            const subjectResult = localData.diagnosticResults?.[subject.id]
+            return (
+              <article className="metric-card" key={subject.id}>
+                <p>{subject.name}</p>
+                <h2>{subjectResult?.level || 'Non evalue'}</h2>
+                <strong>{subjectResult ? `${subjectResult.score}% - ${formatDate(subjectResult.date)}` : 'Test non encore passe'}</strong>
+              </article>
+            )
+          })}
+        </div>
+      </article>
 
       <article className="panel-card certificate-panel">
         <div className="panel-title">
@@ -310,8 +334,8 @@ function buildActivities(courses, localData) {
     activities.push({
       Icon: BarChart3,
       date: localData.diagnosticResult.date,
-      text: `Niveau obtenu : ${localData.diagnosticResult.level} - Score : ${localData.diagnosticResult.score}%`,
-      title: 'Test diagnostique complete',
+      text: `Niveau obtenu en ${localData.diagnosticResult.subject?.name || 'matiere'} : ${localData.diagnosticResult.level} - Score : ${localData.diagnosticResult.score}%`,
+      title: 'Test de positionnement complete',
     })
   }
 

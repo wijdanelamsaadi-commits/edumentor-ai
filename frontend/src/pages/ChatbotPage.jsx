@@ -14,7 +14,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { API_BASE_URL, sendChatMessage } from '../services/api.js'
+import { API_BASE_URL, fetchCourseRagStatus, fetchCourses, fetchSubjects, sendChatMessage } from '../services/api.js'
 import { addNotification } from '../services/notifications.js'
 
 const CHAT_SESSIONS_KEY = 'edumentor:chatSessions'
@@ -42,6 +42,11 @@ function ChatbotPage() {
   const [feedback, setFeedback] = useState(() => readLocalStorage(CHAT_FEEDBACK_KEY, {}))
   const [xp, setXp] = useState(() => Number(readLocalStorage(CHAT_XP_KEY, 0)))
   const [chatPreferences, setChatPreferences] = useState(() => readLocalStorage(PREFERENCES_STORAGE_KEY, DEFAULT_CHAT_PREFERENCES))
+  const [subjects, setSubjects] = useState([])
+  const [courses, setCourses] = useState([])
+  const [selectedSubjectId, setSelectedSubjectId] = useState('')
+  const [selectedCourseId, setSelectedCourseId] = useState('')
+  const [ragContextStatus, setRagContextStatus] = useState(null)
   const learnerLevel = diagnosticResult?.level ? getDisplayLevel(diagnosticResult.level) : ''
 
   useEffect(() => {
@@ -67,6 +72,43 @@ function ChatbotPage() {
   }, [sessions])
 
   useEffect(() => () => clearStreamTimer(), [])
+
+  useEffect(() => {
+    let cancelled = false
+    Promise.all([fetchSubjects(), fetchCourses()])
+      .then(([subjectsData, coursesData]) => {
+        if (cancelled) return
+        setSubjects(subjectsData)
+        setCourses(coursesData)
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setSubjects([])
+          setCourses([])
+        }
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!selectedCourseId) {
+      setRagContextStatus(null)
+      return
+    }
+    let cancelled = false
+    fetchCourseRagStatus(selectedCourseId)
+      .then((status) => {
+        if (!cancelled) setRagContextStatus(status)
+      })
+      .catch(() => {
+        if (!cancelled) setRagContextStatus({ index_status: 'failed', error: 'Statut RAG indisponible.' })
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [selectedCourseId])
 
   const activeSession = sessions.find((session) => session.id === activeSessionId) || sessions[0] || createSession()
   const filteredSessions = useMemo(
@@ -107,11 +149,15 @@ function ChatbotPage() {
     updateSession(nextSession)
 
     try {
-      const data = await sendChatMessage(cleanMessage, learnerLevel, context)
+      const data = await sendChatMessage(cleanMessage, learnerLevel, context, {
+        course_id: selectedCourseId ? Number(selectedCourseId) : null,
+        subject_id: selectedSubjectId ? Number(selectedSubjectId) : null,
+        session_id: activeSession.id,
+      })
       const assistantMessage = buildMessage('assistant', '', {
         fullText: data.answer,
         mode: data.mode,
-        sources: data.mode === 'rag_semantic' ? data.sources || [] : [],
+        sources: isRagMode(data.mode) ? data.sources || [] : [],
       })
       const sessionWithAssistant = appendMessagesToSession(nextSession, [assistantMessage])
       updateSession(sessionWithAssistant)
@@ -253,6 +299,12 @@ function ChatbotPage() {
     URL.revokeObjectURL(url)
   }
 
+  function handleSubjectChange(event) {
+    setSelectedSubjectId(event.target.value)
+    setSelectedCourseId('')
+    setRagContextStatus(null)
+  }
+
   return (
     <section className="page-section chatbot-page">
       <div className="page-heading page-heading-row">
@@ -312,6 +364,36 @@ function ChatbotPage() {
                 Export texte
               </button>
             </div>
+          </div>
+
+          <div className="chat-context-bar panel-card">
+            <label>
+              <span>Matière</span>
+              <select onChange={handleSubjectChange} value={selectedSubjectId}>
+                <option value="">Tous les supports autorisés</option>
+                {subjects.map((subject) => (
+                  <option key={subject.id} value={subject.id}>{subject.name}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>Cours</span>
+              <select onChange={(event) => setSelectedCourseId(event.target.value)} value={selectedCourseId}>
+                <option value="">Aucun cours précis</option>
+                {courses
+                  .filter((course) => !selectedSubjectId || Number(course.subject_id) === Number(selectedSubjectId))
+                  .map((course) => (
+                    <option key={course.id} value={course.id}>{course.title}</option>
+                  ))}
+              </select>
+            </label>
+            <button className="outline-button" onClick={() => { setSelectedSubjectId(''); setSelectedCourseId(''); setRagContextStatus(null) }} type="button">
+              Retirer le filtre
+            </button>
+            <p>
+              Contexte : {selectedCourseId ? courses.find((course) => Number(course.id) === Number(selectedCourseId))?.title : selectedSubjectId ? subjects.find((subject) => Number(subject.id) === Number(selectedSubjectId))?.name : 'Tous les supports'}
+              {ragContextStatus && <span> - État : {statusLabel(ragContextStatus.index_status)}</span>}
+            </p>
           </div>
 
           <div className="chat-window panel-card">
@@ -405,7 +487,7 @@ function MessageBubble({
   const isAssistant = role === 'assistant'
   const mode = message.mode
   const suggestions = isAssistant && showSuggestions ? buildSuggestions(text) : []
-  const quiz = isAssistant && showMiniQuiz && ['rag_semantic', 'general'].includes(mode) ? buildMiniQuiz(text) : null
+  const quiz = isAssistant && showMiniQuiz && (isRagMode(mode) || ['general', 'general_education'].includes(mode)) ? buildMiniQuiz(text) : null
 
   return (
     <div className={`chat-message ${role}`}>
@@ -421,12 +503,13 @@ function MessageBubble({
           </div>
         )}
         <MarkdownContent text={text} />
-        {isAssistant && mode === 'rag_semantic' && sources.length > 0 && (
+        {isAssistant && isRagMode(mode) && sources.length > 0 && (
           <div className="chat-sources">
             <strong>Sources utilisées</strong>
             {sources.map((source, index) => (
-              <a href={sourceUrl(source)} key={`${source.file_name}-${source.page_number}-${index}`} rel="noreferrer" target="_blank">
-                {source.file_name} · {source.course_name} · page {source.page_number || '-'}
+              <a href={sourceUrl(source)} key={`${source.file_name || source.pdf_name}-${source.page_start || source.page_number}-${index}`} rel="noreferrer" target="_blank">
+                {source.file_name || source.pdf_name} · {source.course_title || source.course_name} · {source.subject_name || 'Matière'} · page {source.page_start || source.page_number || '-'}
+                {source.excerpt && <span>{shortPreview(source.excerpt, 120)}</span>}
               </a>
             ))}
           </div>
@@ -680,16 +763,34 @@ function notifyChatUsage(regenerated) {
 }
 
 function sourceUrl(source) {
-  const page = source.page_number ? `#page=${source.page_number}` : ''
-  return `${API_BASE_URL}/docs/courses/${encodeURIComponent(source.file_name)}${page}`
+  const page = source.page_start || source.page_number
+  const pageAnchor = page ? `#page=${page}` : ''
+  if (source.file_url) return `${API_BASE_URL}${source.file_url}${pageAnchor}`
+  return `${API_BASE_URL}/docs/courses/${encodeURIComponent(source.file_name || source.pdf_name)}${pageAnchor}`
 }
 
 function modeLabel(mode) {
+  if (mode === 'rag_course') return 'Réponse basée sur le cours'
+  if (mode === 'rag_subject') return 'Réponse basée sur la matière'
   if (mode === 'rag_semantic') return 'Réponse basée sur les supports'
+  if (mode === 'general_education') return 'Réponse générale'
   if (mode === 'out_of_scope') return 'Assistant EduMentor'
   if (mode === 'social') return 'Assistant EduMentor'
   if (mode === 'error') return 'Service indisponible'
   return 'Réponse générale'
+}
+
+function isRagMode(mode) {
+  return ['rag_semantic', 'rag_course', 'rag_subject'].includes(mode)
+}
+
+function statusLabel(status) {
+  if (status === 'ready') return 'Indexé'
+  if (status === 'processing') return 'Indexation en cours'
+  if (status === 'pending') return 'En attente'
+  if (status === 'outdated') return 'Réindexation nécessaire'
+  if (status === 'failed') return 'Échec'
+  return status || 'Non indexé'
 }
 
 function readSessions() {
@@ -750,10 +851,10 @@ function displaySessionPreview(session) {
   return shortPreview(session.lastMessage || session.messages?.find((message) => message.role === 'user')?.text || 'Conversation vide')
 }
 
-function shortPreview(value) {
+function shortPreview(value, maxLength = 20) {
   const text = String(value || '').replace(/\s+/g, ' ').trim()
   if (!text) return 'Conversation vide'
-  return text.length > 20 ? `${text.slice(0, 20)}...` : text
+  return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text
 }
 
 function slugify(value) {

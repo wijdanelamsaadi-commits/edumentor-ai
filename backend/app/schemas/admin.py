@@ -5,6 +5,8 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict
 
+from app.core.roles import UserRole
+
 
 class OrmModel(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -25,16 +27,22 @@ class AdminUserRead(OrmModel):
 
 
 class RoleUpdate(BaseModel):
-    role: Literal["admin", "user"]
+    role: UserRole
 
 
 class StatusUpdate(BaseModel):
     status: Literal["active", "disabled"]
 
 
+class CourseProfessorAssignment(BaseModel):
+    professor_id: int | None = None
+
+
 class AdminStatsOverview(BaseModel):
     total_users: int
     total_admins: int
+    total_professors: int = 0
+    total_students: int = 0
     total_regular_users: int
     total_courses: int
     total_diagnostics: int

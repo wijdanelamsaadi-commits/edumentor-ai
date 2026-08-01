@@ -9,6 +9,7 @@ from sqlalchemy.dialects.postgresql import insert as postgresql_insert
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, selectinload
 
+from app.core.roles import DEFAULT_ROLE, normalize_role
 from app.models.persistence import (
     ChatFeedback,
     ChatMessage,
@@ -19,6 +20,7 @@ from app.models.persistence import (
     QuizResult,
     UserProfile,
 )
+from app.services import diagnostic_service
 from app.schemas.persistence import (
     ChatFeedbackCreate,
     ChatSessionCreate,
@@ -30,7 +32,6 @@ from app.schemas.persistence import (
     UserProfileUpdate,
 )
 
-DEFAULT_USER_ROLE = "user"
 PLACEHOLDER_UID_PREFIXES = ("test-firebase-", "placeholder-", "demo-")
 
 
@@ -41,6 +42,10 @@ def get_or_create_user_from_firebase(db: Session, decoded_token: dict) -> UserPr
 
     user = db.scalars(select(UserProfile).where(UserProfile.firebase_uid == firebase_uid)).first()
     if user is not None:
+        normalized_role = normalize_role(user.role)
+        if normalized_role != user.role:
+            user.role = normalized_role
+            return commit_user(db, user)
         return user
 
     email = normalize_email(decoded_token.get("email") or f"{firebase_uid}@firebase.local")
@@ -65,7 +70,7 @@ def get_or_create_user_from_firebase(db: Session, decoded_token: dict) -> UserPr
             firebase_uid=firebase_uid,
             email=email,
             full_name=full_name,
-            role=DEFAULT_USER_ROLE,
+            role=DEFAULT_ROLE,
             level="Intermediaire",
             registration_date="2026",
         )
@@ -120,10 +125,6 @@ def commit_user(db: Session, user: UserProfile) -> UserProfile:
         ) from exc
 
 
-def normalize_role(role: str | None) -> str:
-    return "admin" if role == "admin" else DEFAULT_USER_ROLE
-
-
 def get_profile(user: UserProfile) -> UserProfile:
     return user
 
@@ -147,13 +148,15 @@ def update_profile(db: Session, user: UserProfile, payload: UserProfileUpdate) -
         ) from exc
 
 
-def get_latest_diagnostic(db: Session, user: UserProfile) -> DiagnosticResult | None:
-    return db.scalars(
-        select(DiagnosticResult)
-        .where(DiagnosticResult.user_id == user.id)
-        .order_by(DiagnosticResult.created_at.desc())
-        .limit(1)
-    ).first()
+def get_latest_diagnostic(db: Session, user: UserProfile, subject_id: int | None = None) -> DiagnosticResult | None:
+    query = select(DiagnosticResult).where(DiagnosticResult.user_id == user.id)
+    if subject_id:
+        query = query.where(DiagnosticResult.subject_id == subject_id)
+    return db.scalars(query.order_by(DiagnosticResult.created_at.desc()).limit(1)).first()
+
+
+def get_diagnostic_results_by_subject(db: Session, user: UserProfile) -> list[dict]:
+    return diagnostic_service.get_latest_results_by_subject(db, user)
 
 
 def create_diagnostic(db: Session, user: UserProfile, payload: DiagnosticResultCreate) -> DiagnosticResult:

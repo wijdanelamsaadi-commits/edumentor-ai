@@ -110,7 +110,8 @@ function AdminUsersPage() {
           <select onChange={(event) => setFilters((current) => ({ ...current, role: event.target.value }))} value={filters.role}>
             <option value="all">Tous les roles</option>
             <option value="admin">Admin</option>
-            <option value="user">User</option>
+            <option value="professor">Professor</option>
+            <option value="student">Student</option>
           </select>
           <select onChange={(event) => setFilters((current) => ({ ...current, level: event.target.value }))} value={filters.level}>
             <option value="all">Tous les niveaux</option>
@@ -147,7 +148,16 @@ function AdminUsersPage() {
                   <td>{user.last_activity ? `${formatDate(user.last_activity)} ${formatTime(user.last_activity)}` : '--'}</td>
                   <td>
                     <div className="admin-actions">
-                      <button onClick={() => handleRoleChange(user, user.role === 'admin' ? 'user' : 'admin')} type="button">
+                      <select
+                        aria-label={`Changer le role de ${user.email}`}
+                        onChange={(event) => handleRoleChange(user, event.target.value)}
+                        value={user.role}
+                      >
+                        <option value="student">Student</option>
+                        <option value="professor">Professor</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                      <button onClick={() => handleRoleChange(user, user.role === 'admin' ? 'student' : 'admin')} type="button">
                         <UserCog size={16} />
                         {user.role === 'admin' ? 'Retrograder' : 'Promouvoir'}
                       </button>

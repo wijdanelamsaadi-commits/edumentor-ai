@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useAuth } from '../hooks/useAuth.js'
 import {
   getDiagnosticResult,
+  getDiagnosticResults,
   getNotifications,
   getProgress,
   getQuizResults,
@@ -9,12 +10,14 @@ import {
 import { UserDataContext } from './userDataContext.js'
 
 const DIAGNOSTIC_STORAGE_KEY = 'diagnosticResult'
+const DIAGNOSTIC_BY_SUBJECT_STORAGE_KEY = 'edumentor:diagnosticResultsBySubject'
 const CHAPTER_PROGRESS_STORAGE_KEY = 'edumentor:chapterProgress'
 const QUIZ_RESULTS_STORAGE_KEY = 'edumentor:quizResults'
 const NOTIFICATIONS_STORAGE_KEY = 'edumentor:notifications'
 
 const EMPTY_DATA = {
   diagnosticResult: null,
+  diagnosticResults: {},
   notifications: [],
   profile: null,
   progress: {},
@@ -39,8 +42,9 @@ export function UserDataProvider({ children }) {
     const localData = readLocalData()
     setData(localData)
 
-    const [diagnosticResponse, progressResponse, quizResponse, notificationsResponse] = await Promise.allSettled([
+    const [diagnosticResponse, diagnosticResultsResponse, progressResponse, quizResponse, notificationsResponse] = await Promise.allSettled([
       getDiagnosticResult(),
+      getDiagnosticResults(),
       getProgress(),
       getQuizResults(),
       getNotifications(),
@@ -55,6 +59,9 @@ export function UserDataProvider({ children }) {
       diagnosticResult: diagnosticResponse.status === 'fulfilled'
         ? normalizeBackendDiagnostic(diagnosticResponse.value)
         : localData.diagnosticResult,
+      diagnosticResults: diagnosticResultsResponse.status === 'fulfilled'
+        ? normalizeBackendDiagnosticResults(diagnosticResultsResponse.value)
+        : localData.diagnosticResults,
       progress: progressResponse.status === 'fulfilled'
         ? normalizeBackendProgress(progressResponse.value)
         : localData.progress,
@@ -103,6 +110,7 @@ function readLocalData() {
   return {
     profile: readLocalStorage('edumentor:userProfile', null),
     diagnosticResult: readLocalStorage(DIAGNOSTIC_STORAGE_KEY, null),
+    diagnosticResults: readLocalStorage(DIAGNOSTIC_BY_SUBJECT_STORAGE_KEY, {}),
     progress: readLocalStorage(CHAPTER_PROGRESS_STORAGE_KEY, {}),
     quizResults: readLocalStorage(QUIZ_RESULTS_STORAGE_KEY, {}),
     notifications: readLocalStorage(NOTIFICATIONS_STORAGE_KEY, []),
@@ -116,6 +124,7 @@ function writeLocalData(data) {
   if (data.diagnosticResult) {
     localStorage.setItem(DIAGNOSTIC_STORAGE_KEY, JSON.stringify(data.diagnosticResult))
   }
+  localStorage.setItem(DIAGNOSTIC_BY_SUBJECT_STORAGE_KEY, JSON.stringify(data.diagnosticResults || {}))
   localStorage.setItem(CHAPTER_PROGRESS_STORAGE_KEY, JSON.stringify(data.progress || {}))
   localStorage.setItem(QUIZ_RESULTS_STORAGE_KEY, JSON.stringify(data.quizResults || {}))
   localStorage.setItem(NOTIFICATIONS_STORAGE_KEY, JSON.stringify(data.notifications || []))
@@ -131,9 +140,27 @@ function normalizeBackendDiagnostic(result) {
     level: result.level,
     total: result.total,
     correct_count: result.correct_count,
-    corrections: result.corrections,
+      corrections: result.corrections,
+      results_by_topic: result.results_by_topic || [],
+      results_by_difficulty: result.results_by_difficulty || [],
+      recommendations: result.recommendations || [],
+      subject_id: result.subject_id,
+      subject: result.subject || null,
+      justification: result.justification || '',
     date: result.created_at || result.date,
   }
+}
+
+function normalizeBackendDiagnosticResults(results) {
+  if (!Array.isArray(results)) {
+    return {}
+  }
+
+  return results.reduce((resultMap, result) => {
+    if (!result?.subject_id) return resultMap
+    resultMap[result.subject_id] = normalizeBackendDiagnostic(result)
+    return resultMap
+  }, {})
 }
 
 function normalizeBackendProgress(progressRows) {

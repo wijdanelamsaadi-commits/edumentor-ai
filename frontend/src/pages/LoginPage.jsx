@@ -6,7 +6,7 @@ import { useAuth } from '../hooks/useAuth.js'
 
 function LoginPage() {
   const navigate = useNavigate()
-  const { login, loginWithGoogle, resetPassword } = useAuth()
+  const { login, loginWithGoogle, refreshAuthProfile, resetPassword } = useAuth()
   const [authMessage, setAuthMessage] = useState('')
   const [showPassword, setShowPassword] = useState(false)
 
@@ -20,7 +20,8 @@ function LoginPage() {
 
     try {
       await login(email, password)
-      navigate('/dashboard')
+      const profile = await refreshAuthProfile()
+      navigate(getRedirectPath(profile?.role))
     } catch {
       setAuthMessage("Impossible de se connecter avec ces identifiants Firebase.")
     }
@@ -31,7 +32,8 @@ function LoginPage() {
 
     try {
       await loginWithGoogle()
-      navigate('/dashboard')
+      const profile = await refreshAuthProfile()
+      navigate(getRedirectPath(profile?.role))
     } catch {
       setAuthMessage('Connexion Google indisponible pour le moment.')
     }
@@ -181,3 +183,9 @@ export function AuthFooter() {
 }
 
 export default LoginPage
+
+function getRedirectPath(role) {
+  if (role === 'admin') return '/admin'
+  if (role === 'professor') return '/professor'
+  return '/dashboard'
+}

@@ -1,0 +1,149 @@
+{
+  "benchmark_metadata": {
+    "created_at": "2026-07-28T21:14:57.658453+00:00",
+    "course_id": 23,
+    "chapter_id": 197,
+    "chapter_source_id": "chapter_1",
+    "chapter_position": 1,
+    "level": "Debutant",
+    "reference_course_level_variant_id": 74,
+    "postgres_mode": "read_only_selects_only",
+    "course_level_variant_write": "none",
+    "groq_api_key_modified": false,
+    "env_files_modified": false,
+    "frontend_modified": false,
+    "application_files_modified": false
+  },
+  "metrics": {
+    "model_exact": "qwen3:1.7b",
+    "ollama_version": "0.32.5",
+    "local_execution_confirmed": true,
+    "ollama_host": "http://localhost:11434",
+    "external_provider_calls": "none; only localhost:11434 was called for generation",
+    "load_duration_seconds": 1.539,
+    "generation_duration_seconds": 214.605,
+    "prompt_eval_duration_seconds": 50.755,
+    "total_wall_seconds": 269.23,
+    "ollama_total_duration_seconds": 267.102,
+    "prompt_tokens": 2050,
+    "generated_tokens": 1263,
+    "free_ram_before_gb": 2.05,
+    "free_ram_after_gb": 2.43,
+    "approx_free_ram_delta_gb": -0.38,
+    "ollama_process_ram_before_mb": 47.7,
+    "ollama_process_ram_after_mb": 29.3,
+    "approx_ollama_ram_delta_mb": -18.4,
+    "memory_error": null,
+    "repairs_needed": [],
+    "parse_error": null
+  },
+  "validation": {
+    "json_valid": true,
+    "schema_valid": true,
+    "missing_keys": [],
+    "type_errors": [],
+    "summary_word_count": 189,
+    "explanation_word_count": 164,
+    "summary_min_80": true,
+    "explanation_min_140": true
+  },
+  "pedagogical_quality": {
+    "rating": "bon pour benchmark initial",
+    "grounded_terms_found": [
+      "sidi mohammed",
+      "dar chouafa",
+      "merveilles",
+      "lalla zoubida",
+      "rahma",
+      "bain maure",
+      "solitude",
+      "narrateur"
+    ],
+    "generic_markers_found": [],
+    "issues": []
+  },
+  "source_context": {
+    "course": {
+      "id": 23,
+      "title": "La Boîte à Merveilles — Adaptation IA complète V11",
+      "level": "Adaptatif"
+    },
+    "chapter": {
+      "id": 197,
+      "position": 1,
+      "title": "Chapitre 1 — Solitude, Dar Chouafa et monde merveilleux",
+      "source_id": "chapter_1",
+      "content": "La nuit, l’insomnie et le poids de la solitude déclenchent le retour du narrateur adulte vers son enfance. Sidi Mohammed, âgé de six ans, présente Dar Chouafa, le Msid et le bain maure. Sa Boîte à Merveilles lui sert de refuge. Le chapitre s’achève sur la violente dispute entre Lalla Zoubida et Rahma, puis sur l’évanouissement de l’enfant.\n\nTemps : Présent du narrateur adulte, imparfait itératif, lendemain du bain, un lundi.\nLieux : Impasse, Dar Chouafa, Msid, bain maure, patio.\nPersonnages : Sidi Mohammed, Lalla Zoubida, Mâalem Abdeslam, Kenza la Chouafa, Rahma, Zineb, Driss El Aouad, Fatma Bziouya.\nÉvénements : Présentation de l’enfant et de la maison, rituels de la voyante, bain maure, inventaire de la boîte, récits de la mère, dispute Lalla Zoubida–Rahma, évanouissement.\nThèmes : solitude, enfance, superstition, rêve, peur, vie collective.\n\nLe chapitre construit une opposition entre le réel quotidien, souvent hostile, et l’univers merveilleux créé par l’enfant. La focalisation est interne et le récit fait alterner le regard de l’adulte qui se souvient et la sensibilité de l’enfant.\n\nPour analyser un extrait, situer le passage dans l’incipit, identifier le regard de l’enfant, relever les champs lexicaux de la solitude ou du merveilleux, puis expliquer les figures de style et leur effet.\n\nSéquence 1 — La solitude et le moineau\nLe narrateur adulte évoque l’enfant de six ans qui cherche un compagnon et souffre d’un isolement ancien.\n\nSéquence 2 — Dar Chouafa, le Msid et le bain maure\nLe cadre traditionnel de Fès est présenté à travers la maison, la voyante, l’école coranique et le bain, perçus par un enfant sensible et craintif.\n\nSéquence 3 — La boîte, la dispute et l’évanouissement\nLes objets de la boîte deviennent des amis imaginaires. La querelle des voisines transforme ensuite la maison en espace de violence et provoque l’évanouissement du garçon.\n\nRéférence 1 pour ce chapitre.\nSource documentaire : ProfZiani — index examens 1 Bac.\nRepérage : Chapitre 1, pages 9, 10 et 12.\nLa copie intégrale et les questions ne sont pas incluses dans ce package lorsque la source consultée ne fournit qu’un index ou une référence.\nVérification recommandée : Vérifier le PDF original avant de présenter le sujet comme copie officielle intégrale.\n\nRéférence 2 pour ce chapitre.\nSource documentaire : ProfZiani — index examens 1 Bac.\nRepérage : Chapitre 1, pages 16 à 18, avec réponses signalées.\nLa copie intégrale et les questions ne sont pas incluses dans ce package lorsque la source consultée ne fournit qu’un index ou une référence.\nVérification recommandée : Vérifier le PDF original avant de présenter le sujet comme copie officielle intégrale.\n\nRéférence 3 pour ce chapitre.\nSource documentaire : ProfZiani — index examens 1 Bac.\nRepérage : Chapitre 1, pages 18 et 19, avec réponses signalées.\nLa copie intégrale et les questions ne sont pas incluses dans ce package lorsque la source consultée ne fournit qu’un index ou une référence.\nVérification recommandée : Vérifier le PDF original avant de présenter le sujet comme copie officielle intégrale.\n\nRéférence 4 pour ce chapitre.\nSource documentaire : 1-1.pdf fourni dans la conversation.\nLa copie intégrale et les questions ne sont pas incluses dans ce package lorsque la source consultée ne fournit qu’un index ou une référence.\nVérification recommandée : Ne pas présenter comme examen régional officiel sans copie institutionnelle.\n\nExamen d’entraînement — Solitude et Dar Chouafa (/10)\n\nEntraînement créé pour EduMentor AI à partir du contenu du chapitre. Ce sujet n’est pas un examen régional officiel; la correction est une proposition pédagogique.\n\nQuestion 1 — 2 pt(s)\nRésumez l’événement principal de Solitude et Dar Chouafa en quatre ou cinq lignes.\n\nQuestion 2 — 1.5 pt(s)\nCitez deux personnages importants du chapitre et précisez leur rôle.\n\nQuestion 3 — 1.5 pt(s)\nPrésentez les trois grandes séquences du chapitre.\n\nQuestion 4 — 2 pt(s)\nExpliquez un thème important du chapitre et appuyez votre réponse sur un événement.\n\nQuestion 5 — 1.5 pt(s)\nQuel rôle joue l’imagination de Sidi Mohammed ou le symbole de la Boîte à Merveilles dans ce chapitre?\n\nQuestion 6 — 1.5 pt(s)\nProduction courte : réagissez à l’un des thèmes suivants en donnant deux arguments et un exemple : solitude, enfance, superstition.\n\nQuestion 1\nRéponse : La nuit, l’insomnie et le poids de la solitude déclenchent le retour du narrateur adulte vers son enfance. Sidi Mohammed, âgé de six ans, présente Dar Chouafa, le Msid et le bain maure. Sa Boîte à Merveilles lui sert de refuge. Le chapitre s’achève sur la violente dispute entre Lalla Zoubida et Rahma, puis sur l’évanouissement de l’enfant.\nExplication : La réponse doit conserver la chronologie et les événements essentiels sans recopier tout le cours.\n\nQuestion 2\nRéponse : Exemples acceptés : Sidi Mohammed et Lalla Zoubida. D’autres personnages de la liste sont acceptés si leur rôle est correctement expliqué.\nExplication : Il faut associer chaque nom à une action ou à une fonction dans le chapitre.\n\nQuestion 3\nRéponse : 1) La solitude et le moineau. 2) Dar Chouafa, le Msid et le bain maure. 3) La boîte, la dispute et l’évanouissement.\nExplication : La division proposée suit l’évolution narrative du chapitre.\n\nQuestion 4\nRéponse : Thèmes possibles : solitude, enfance, superstition, rêve. L’élève doit relier le thème choisi à un événement précis.\nExplication : Une bonne réponse ne se contente pas de nommer le thème; elle montre comment le récit le met en scène.\n\nQuestion 5\nRéponse : L’incipit installe la solitude de Sidi Mohammed, présente Dar Chouafa et donne à la Boîte à Merveilles sa fonction de refuge contre la tristesse.\nExplication : L’importance de la boîte varie selon les chapitres: refuge, objet oublié pendant la fête, cercueil imaginaire ou retour final aux objets.\n\nQuestion 6\nRéponse : Réponse personnelle organisée: prise de position claire, deux arguments, un exemple et une conclusion brève.\nExplication : La correction porte sur la cohérence, l’argumentation, les exemples et la langue.\n\nBarème : 10 points. L’évaluation porte sur l’exactitude, la chronologie, la justification, l’analyse littéraire et la qualité de l’expression.\n\nÀ retenir : L’incipit installe la solitude de Sidi Mohammed, présente Dar Chouafa et donne à la Boîte à Merveilles sa fonction de refuge contre la tristesse.\n\nQuel âge a Sidi Mohammed dans ses souvenirs d’enfance ?\n\nÀ quoi sert principalement la Boîte à Merveilles dans le chapitre 1 ?\n\nOrganisation du chapitre 1\n\nRepères du chapitre 1"
+    },
+    "objectives": [
+      "Situer les événements du chapitre 1 dans l’œuvre.",
+      "Identifier les personnages, les lieux et les étapes narratives.",
+      "Analyser les thèmes, les procédés et le point de vue.",
+      "S’entraîner sur un sujet proche des attentes de l’examen régional."
+    ],
+    "reference_source_block_ids": [
+      "chapter_1_analysis",
+      "chapter_1_method",
+      "chapter_1_repères",
+      "chapter_1_summary",
+      "chapter_1_takeaway"
+    ],
+    "reference_source_hash": "84b85050da587187e5014755a037f7ac9978c734a7c1d90d22c3beee61fd9f9e"
+  },
+  "ollama_output": {
+    "summary": "Le chapitre 1 de la littérature française présente l'histoire d'un enfant nommé Sidi Mohammed, âgé de six ans, qui vit dans une maison isolée. Il décrit la solitude de ce jeune enfant, la vie quotidienne, et la présence d'une boîte à merveilles qui lui permet de fuir la tristesse. Le récit se concentre sur l'enfance, les rituels, et la vie collective. Le point de vue est celui du narrateur adulte, et les thèmes principaux incluent la solitude, la superstition, et le rêve. La boîte à merveilles est un refuge imaginaire, servant à échapper à la solitude et à la peur. Les personnages clés sont Sidi Mohammed, Lalla Zoubida, Mâalem Abdeslam, Kenza la Chouafa, Rahma, Zineb, Driss El Aouad, et Fatma Bziouya. Les lieux mentionnés sont l'impasse, Dar Chouafa, le bain maure, et le patio. Les événements incluent la présentation de l'enfant et de la maison, les rituels de la voyante, le bain maure, l'inventaire de la boîte, les récits de la mère, et une dispute entre Lalla Zoubida et Rahma. Le chapitre met en lumière l'importance de la solitude, de la vie collective, et de la réflexion sur l'enfance.",
+    "explanation": "Le récit de ce chapitre se concentre sur l'enfance de Sidi Mohammed, sa solitude, et la vie quotidienne. Il présente la maison isolée, la boîte à merveilles comme refuge imaginaire, et les personnages et lieux clés. Le point de vue est celui du narrateur adulte, et les thèmes principaux incluent la solitude, la superstition, et le rêve. La boîte à merveilles est un refuge imaginaire, servant à échapper à la solitude et à la peur. Les personnages clés sont Sidi Mohammed, Lalla Zoubida, Mâalem Abdeslam, Kenza la Chouafa, Rahma, Zineb, Driss El Aouad, et Fatma Bziouya. Les lieux mentionnés sont l'impasse, Dar Chouafa, le bain maure, et le patio. Les événements incluent la présentation de l'enfant et de la maison, les rituels de la voyante, le bain maure, l'inventaire de la boîte, les récits de la mère, et une dispute entre Lalla Zoubida et Rahma. Le chapitre met en lumière l'importance de la solitude, de la vie collective, et de la réflexion sur l'enfance.",
+    "key_points": [
+      "Sidi Mohammed est un enfant âgé de six ans.",
+      "La boîte à merveilles est un refuge imaginaire.",
+      "Le récit se concentre sur l'enfance, la solitude, et la vie collective.",
+      "Les personnages clés incluent Sidi Mohammed, Lalla Zoubida, Mâalem Abdeslam, Kenza la Chouafa, Rahma, Zineb, Driss El Aouad, et Fatma Bziouya.",
+      "Les lieux mentionnés sont l'impasse, Dar Chouafa, le bain maure, et le patio.",
+      "Les événements incluent la présentation de l'enfant et de la maison, les rituels de la voyante, le bain maure, l'inventaire de la boîte, les récits de la mère, et une dispute entre Lalla Zoubida et Rahma.",
+      "Les thèmes principaux sont la solitude, la superstition, et le rêve."
+    ],
+    "vocabulary": [
+      {
+        "term": "Boîte à merveilles",
+        "definition": "Un refuge imaginaire, utilisé par Sidi Mohammed pour échapper à la solitude et à la peur."
+      },
+      {
+        "term": "Solitude",
+        "definition": "La solitude de Sidi Mohammed, qui est l'élément central du chapitre."
+      },
+      {
+        "term": "Voyante",
+        "definition": "Une personne qui prédit des choses, souvent associée à la superstition."
+      }
+    ],
+    "guided_example": {
+      "title": "Analyse du chapitre 1",
+      "description": "Analysez les thèmes, les personnages, et les lieux mentionnés dans le chapitre 1 pour comprendre leur rôle dans le récit."
+    },
+    "learning_support": {
+      "title": "Résumé du chapitre 1",
+      "description": "Résumez les événements, les personnages, et les thèmes du chapitre 1 pour mieux comprendre le récit."
+    },
+    "practice_question": "Identifiez les personnages clés et les lieux mentionnés dans le chapitre 1.",
+    "expected_answer": "Personnages clés : Sidi Mohammed, Lalla Zoubida, Mâalem Abdeslam, Kenza la Chouafa, Rahma, Zineb, Driss El Aouad, Fatma Bziouya. Lieux mentionnés : l'impasse, Dar Chouafa, le bain maure, et le patio.",
+    "correction": "Personnages clés : Sidi Mohammed, Lalla Zoubida, Mâalem Abdeslam, Kenza la Chouafa, Rahma, Zineb, Driss El Aouad, Fatma Bziouya. Lieux mentionnés : l'impasse, Dar Chouafa, le bain maure, et le patio."
+  },
+  "raw_ollama_response": "{\"summary\": \"Le chapitre 1 de la littérature française présente l'histoire d'un enfant nommé Sidi Mohammed, âgé de six ans, qui vit dans une maison isolée. Il décrit la solitude de ce jeune enfant, la vie quotidienne, et la présence d'une boîte à merveilles qui lui permet de fuir la tristesse. Le récit se concentre sur l'enfance, les rituels, et la vie collective. Le point de vue est celui du narrateur adulte, et les thèmes principaux incluent la solitude, la superstition, et le rêve. La boîte à merveilles est un refuge imaginaire, servant à échapper à la solitude et à la peur. Les personnages clés sont Sidi Mohammed, Lalla Zoubida, Mâalem Abdeslam, Kenza la Chouafa, Rahma, Zineb, Driss El Aouad, et Fatma Bziouya. Les lieux mentionnés sont l'impasse, Dar Chouafa, le bain maure, et le patio. Les événements incluent la présentation de l'enfant et de la maison, les rituels de la voyante, le bain maure, l'inventaire de la boîte, les récits de la mère, et une dispute entre Lalla Zoubida et Rahma. Le chapitre met en lumière l'importance de la solitude, de la vie collective, et de la réflexion sur l'enfance.\", \"explanation\": \"Le récit de ce chapitre se concentre sur l'enfance de Sidi Mohammed, sa solitude, et la vie quotidienne. Il présente la maison isolée, la boîte à merveilles comme refuge imaginaire, et les personnages et lieux clés. Le point de vue est celui du narrateur adulte, et les thèmes principaux incluent la solitude, la superstition, et le rêve. La boîte à merveilles est un refuge imaginaire, servant à échapper à la solitude et à la peur. Les personnages clés sont Sidi Mohammed, Lalla Zoubida, Mâalem Abdeslam, Kenza la Chouafa, Rahma, Zineb, Driss El Aouad, et Fatma Bziouya. Les lieux mentionnés sont l'impasse, Dar Chouafa, le bain maure, et le patio. Les événements incluent la présentation de l'enfant et de la maison, les rituels de la voyante, le bain maure, l'inventaire de la boîte, les récits de la mère, et une dispute entre Lalla Zoubida et Rahma. Le chapitre met en lumière l'importance de la solitude, de la vie collective, et de la réflexion sur l'enfance.\", \"key_points\": [\"Sidi Mohammed est un enfant âgé de six ans.\", \"La boîte à merveilles est un refuge imaginaire.\", \"Le récit se concentre sur l'enfance, la solitude, et la vie collective.\", \"Les personnages clés incluent Sidi Mohammed, Lalla Zoubida, Mâalem Abdeslam, Kenza la Chouafa, Rahma, Zineb, Driss El Aouad, et Fatma Bziouya.\", \"Les lieux mentionnés sont l'impasse, Dar Chouafa, le bain maure, et le patio.\", \"Les événements incluent la présentation de l'enfant et de la maison, les rituels de la voyante, le bain maure, l'inventaire de la boîte, les récits de la mère, et une dispute entre Lalla Zoubida et Rahma.\", \"Les thèmes principaux sont la solitude, la superstition, et le rêve.\"], \"vocabulary\": [{\"term\": \"Boîte à merveilles\", \"definition\": \"Un refuge imaginaire, utilisé par Sidi Mohammed pour échapper à la solitude et à la peur.\"}, {\"term\": \"Solitude\", \"definition\": \"La solitude de Sidi Mohammed, qui est l'élément central du chapitre.\"}, {\"term\": \"Voyante\", \"definition\": \"Une personne qui prédit des choses, souvent associée à la superstition.\"}], \"guided_example\": {\"title\": \"Analyse du chapitre 1\", \"description\": \"Analysez les thèmes, les personnages, et les lieux mentionnés dans le chapitre 1 pour comprendre leur rôle dans le récit.\"}, \"learning_support\": {\"title\": \"Résumé du chapitre 1\", \"description\": \"Résumez les événements, les personnages, et les thèmes du chapitre 1 pour mieux comprendre le récit.\"}, \"practice_question\": \"Identifiez les personnages clés et les lieux mentionnés dans le chapitre 1.\", \"expected_answer\": \"Personnages clés : Sidi Mohammed, Lalla Zoubida, Mâalem Abdeslam, Kenza la Chouafa, Rahma, Zineb, Driss El Aouad, Fatma Bziouya. Lieux mentionnés : l'impasse, Dar Chouafa, le bain maure, et le patio.\",\"correction\": \"Personnages clés : Sidi Mohammed, Lalla Zoubida, Mâalem Abdeslam, Kenza la Chouafa, Rahma, Zineb, Driss El Aouad, Fatma Bziouya. Lieux mentionnés : l'impasse, Dar Chouafa, le bain maure, et le patio.\"}",
+  "groq_reference": {
+    "variant_id": 74,
+    "row_generation_method": "mixed",
+    "chapter_generation_method": "ai_generated",
+    "model": "openai/gpt-oss-20b",
+    "source_hash": "84b85050da587187e5014755a037f7ac9978c734a7c1d90d22c3beee61fd9f9e",
+    "generated_at": "2026-07-28 15:00:44.233718",
+    "source_block_ids": [
+      "chapter_1_analysis",
+      "chapter_1_method",
+      "chapter_1_repères",
+      "chapter_1_summary",
+      "chapter_1_takeaway"
+    ],
+    "summary_word_count": 129,
+    "explanation_word_count": 188
+  }
+}
