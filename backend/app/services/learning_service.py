@@ -1,5 +1,7 @@
 from fastapi import HTTPException
+import logging
 import unicodedata
+from uuid import uuid4
 from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 
@@ -10,6 +12,8 @@ from app.rag.vector_store import semantic_search
 from app.services import rag_document_service, student_weakness_model_service
 from app.services.groq_service import generate_general_answer
 from app.services.mock_data import COURSES, LEARNER, QUIZZES, RECOMMENDATIONS
+
+logger = logging.getLogger(__name__)
 
 
 def login_demo_user() -> dict:
@@ -398,29 +402,39 @@ def rag_chat(
     db: Session | None = None,
     course_id: int | None = None,
     subject_id: int | None = None,
+    client_message_id: str | None = None,
     preferred_language: str | None = None,
     current_user: UserProfile | None = None,
 ) -> dict:
+    request_id = client_message_id or uuid4().hex
+    current_message = message.strip()
     social_answer = _social_answer(message)
     if social_answer:
+        _log_chat_request(request_id, current_user, current_message, "social", 0, "social")
         return {
             "answer": social_answer,
             "sources": [],
             "mode": "social",
+            "request_id": request_id,
+            "client_message_id": client_message_id,
             "used_rag": False,
             "used_general_llm": False,
         }
 
-    contextual_message = _contextual_message(message, context or [])
+    contextual_message = _contextual_message(current_message, context or [])
+    search_query = _search_query_for_current_message(current_message, context or [])
     detected_language = preferred_language or _detect_language(message)
-    intent = _detect_french_bac_intent(contextual_message)
+    intent = _detect_french_bac_intent(current_message)
     pedagogical_profile = _student_pedagogical_profile(db, current_user) if db is not None and current_user is not None else []
 
     if intent == "out_of_scope":
+        _log_chat_request(request_id, current_user, current_message, intent, 0, "out_of_scope")
         return {
             "answer": _out_of_scope_answer(detected_language),
             "sources": [],
             "mode": "out_of_scope",
+            "request_id": request_id,
+            "client_message_id": client_message_id,
             "course_id": course_id,
             "subject_id": subject_id,
             "intent": intent,
@@ -431,10 +445,13 @@ def rag_chat(
         }
 
     if intent == "targeted_practice":
+        _log_chat_request(request_id, current_user, current_message, intent, 0, "targeted_practice")
         return {
             "answer": _targeted_practice_answer(level, pedagogical_profile),
             "sources": [],
             "mode": "targeted_practice",
+            "request_id": request_id,
+            "client_message_id": client_message_id,
             "course_id": course_id,
             "subject_id": subject_id,
             "intent": intent,
@@ -453,23 +470,26 @@ def rag_chat(
         resolved_subject_id = scope.get("subject_id")
         results = rag_document_service.filtered_semantic_search(
             db,
-            contextual_message,
+            search_query,
             course_id=resolved_course_id,
             subject_id=resolved_subject_id,
             top_k=3,
             published_only=True,
         ) if (resolved_course_id or resolved_subject_id) else []
-    elif _is_french_bac_related_question(contextual_message):
+    elif _is_french_bac_related_question(current_message):
         results = []
     threshold = get_settings()["rag_score_threshold"]
     relevant_results = [result for result in results if float(result.get("score", 0)) >= threshold]
 
     if relevant_results:
         mode = "rag_course" if resolved_course_id else "rag_subject" if resolved_subject_id else "rag_semantic"
+        _log_chat_request(request_id, current_user, current_message, intent, len(relevant_results), mode)
         return {
-            "answer": _build_french_rag_answer(contextual_message, level, relevant_results, intent, pedagogical_profile),
+            "answer": _build_french_rag_answer(current_message, level, relevant_results, intent, pedagogical_profile),
             "sources": [_format_chat_source(result) for result in relevant_results],
             "mode": mode,
+            "request_id": request_id,
+            "client_message_id": client_message_id,
             "course_id": resolved_course_id,
             "subject_id": resolved_subject_id or relevant_results[0].get("subject_id"),
             "intent": intent,
@@ -480,7 +500,8 @@ def rag_chat(
             "fallback_reason": None,
         }
 
-    if _is_french_bac_related_question(contextual_message):
+    if _is_french_bac_related_question(current_message):
+        _log_chat_request(request_id, current_user, current_message, intent, 0, "general_french")
         return {
             "answer": generate_general_answer(
                 contextual_message,
@@ -491,6 +512,8 @@ def rag_chat(
             ),
             "sources": [],
             "mode": "general_french",
+            "request_id": request_id,
+            "client_message_id": client_message_id,
             "label": _general_label(detected_language),
             "course_id": resolved_course_id or course_id,
             "subject_id": resolved_subject_id or subject_id,
@@ -502,10 +525,13 @@ def rag_chat(
             "fallback_reason": "not_found_in_french_supports",
         }
 
+    _log_chat_request(request_id, current_user, current_message, "out_of_scope", 0, "out_of_scope")
     return {
         "answer": _out_of_scope_answer(detected_language),
         "sources": [],
         "mode": "out_of_scope",
+        "request_id": request_id,
+        "client_message_id": client_message_id,
         "course_id": course_id,
         "subject_id": subject_id,
         "intent": "out_of_scope",
@@ -657,8 +683,10 @@ def _detect_french_bac_intent(message: str) -> str:
         return "figure_of_style"
     if any(term in normalized for term in ("production ecrite", "rediger", "redaction", "introduction", "conclusion", "argument", "plan")):
         return "writing_assistance"
-    if any(term in normalized for term in ("methode", "methodologie", "regional", "examen", "bareme", "gestion du temps", "consigne")):
-        return "methodology_help" if "regional" not in normalized else "regional_exam"
+    if any(term in normalized for term in ("situer", "passage", "methode", "methodologie", "bareme", "gestion du temps", "consigne")):
+        return "methodology_help"
+    if any(term in normalized for term in ("regional", "examen")):
+        return "regional_exam"
     if any(term in normalized for term in ("grammaire", "conjugaison", "langue", "vocabulaire", "discours direct", "discours indirect", "champ lexical")):
         return "language_help"
     if any(term in normalized for term in ("resume", "résume", "explique", "passage", "antigone", "creon", "créon", "boite a merveilles", "boîte à merveilles", "sidi mohamed", "sefrioui", "dernier jour", "condamne", "victor hugo", "jean anouilh")):
@@ -738,7 +766,7 @@ def _targeted_practice_answer(level: str, pedagogical_profile: list[dict]) -> st
     elif competence == "Production écrite":
         exercise = "Redigez une introduction courte sur le theme de la solidarite en annonçant clairement votre point de vue."
     elif competence == "Méthodologie":
-        exercise = "Lisez une consigne d'examen, soulignez le verbe de consigne, puis indiquez le type de reponse attendu."
+        exercise = "Lisez une consigne d'examen, soulignez le verbe de consigne, puis indiquez le type de réponse attendu."
     else:
         exercise = "Lisez un court passage d'une oeuvre au programme, puis relevez le personnage principal, l'evenement important et l'idee dominante."
     return "\n\n".join([
@@ -772,11 +800,11 @@ def _build_french_rag_answer(
     if intent == "answer_correction":
         return "\n\n".join([
             "### Ce qui est correct",
-            facts[0] if facts else "Votre reponse contient une piste utile, mais elle doit etre verifiee avec le texte.",
-            "### Ce qui doit etre ameliore",
+            facts[0] if facts else "Votre réponse contient une piste utile, mais elle doit être vérifiée avec le texte.",
+            "### Ce qui doit être amélioré",
             "Ajoutez un indice precis du passage et reliez-le clairement a l'oeuvre ou a la consigne.",
             "### Proposition corrigee",
-            "Formulez une reponse courte, puis justifiez-la par un element observe dans le texte.",
+            "Formulez une réponse courte, puis justifiez-la par un élément observé dans le texte.",
             "### Conseil",
             profile_tip or "Pour progresser, commencez toujours par reperer les mots de la consigne.",
         ])
@@ -786,25 +814,40 @@ def _build_french_rag_answer(
             facts[0] if facts else "La figure doit etre identifiee a partir des mots exacts de la phrase.",
             "### Indice dans la phrase",
             "Reperez le rapprochement, l'exageration ou le fait qu'un objet reçoit une action humaine.",
-            "### Effet recherche",
+            "### Effet recherché",
             "Expliquez ce que cette image ajoute au sens du passage.",
         ])
     if intent == "writing_assistance":
         return "\n\n".join([
-            "### Comprehension du sujet",
+            "### Compréhension du sujet",
             f"Le sujet demande de traiter clairement le theme lie a {topic}.",
+            "### Problématique",
+            "Transformez le theme en question simple: pourquoi cette valeur est-elle importante et comment peut-elle apparaitre dans la vie quotidienne ou dans une oeuvre ?",
             "### Plan propose",
             "- Introduction courte avec le theme et la problematique\n- Deux arguments organises\n- Conclusion qui reprend l'idee principale",
+            "### Exemple d'introduction",
+            "La solidarite est une valeur essentielle car elle aide les personnes a affronter les difficultes ensemble. On peut donc se demander comment elle renforce les liens entre les individus.",
             "### Arguments possibles",
             "\n".join(f"- {fact}" for fact in (facts[:3] or ["Appuyez chaque argument sur un exemple clair."])),
             "### Conseils de redaction",
             profile_tip or "Utilisez des connecteurs logiques et evitez les phrases trop longues.",
         ])
+    if intent in {"methodology_help", "regional_exam"}:
+        return "\n\n".join([
+            "### Méthode",
+            "Situer un passage consiste a presenter rapidement l'oeuvre, le moment de l'histoire et l'evenement qui entoure l'extrait.",
+            "### Étapes",
+            "- Nommer l'oeuvre et l'auteur si la question le demande.\n- Dire ce qui se passe juste avant le passage.\n- Identifier les personnages presents ou concernes.\n- Relier le passage a l'evenement principal ou au theme dominant.",
+            "### Exemple de formulation",
+            "Ce passage se situe après un événement important du récit. Il met en scène un personnage dans une situation précise et permet de comprendre la suite de l'action.",
+            "### Erreurs à éviter",
+            "- Recopier tout le texte support.\n- Donner une réponse vague sans événement précédent.\n- Inventer un chapitre, une page ou une citation absente du document.",
+        ])
     return "\n\n".join([
         "### Reponse",
         facts[0] if facts else f"La question porte sur {topic}.",
         "### Explication",
-        " ".join(facts[:4]) if facts else "Les supports disponibles donnent des elements proches, mais pas assez de details pour affirmer une information precise.",
+        " ".join(facts[:4]) if facts else "Les supports disponibles donnent des éléments proches, mais pas assez de détails pour affirmer une information précise.",
         "### A retenir",
         "\n".join(f"- {item}" for item in (facts[:3] or ["Verifier l'information dans le support du cours.", "Justifier avec un indice du texte.", "Adapter la reponse a la consigne."])),
         "### Petit exercice",
@@ -817,14 +860,14 @@ def _french_topic(message: str, results: list[dict]) -> str:
     if "antigone" in normalized or "creon" in normalized:
         return "Antigone"
     if "boite" in normalized or "sidi mohamed" in normalized:
-        return "La Boite a merveilles"
+        return "La Boîte à merveilles"
     if "dernier jour" in normalized or "condamne" in normalized:
         return "Le Dernier Jour d'un condamne"
     if results:
         title = results[0].get("chapter_title") or results[0].get("course_title") or results[0].get("course_name")
         if title:
             return str(title)
-    return "le francais de 1ere Bac"
+    return "le français de 1ère Bac"
 
 
 def _profile_tip_for_message(message: str, pedagogical_profile: list[dict]) -> str:
@@ -834,7 +877,7 @@ def _profile_tip_for_message(message: str, pedagogical_profile: list[dict]) -> s
     competence = target.get("competence")
     if not competence:
         return ""
-    return f"Pour renforcer votre competence en {competence.lower()}, avancez par etapes et justifiez chaque reponse avec un indice clair."
+    return f"Pour renforcer votre compétence en {competence.lower()}, avancez par étapes et justifiez chaque réponse avec un indice clair."
 
 
 def _extract_french_facts(message: str, results: list[dict]) -> list[str]:
@@ -844,11 +887,11 @@ def _extract_french_facts(message: str, results: list[dict]) -> list[str]:
     normalized_text = _normalize_text(all_text)
     priority: list[str] = []
     if "auteur" in normalized_message and "ahmed sefrioui" in normalized_text:
-        priority.append("L'auteur de La Boite a merveilles est Ahmed Sefrioui.")
+        priority.append("L'auteur de La Boîte à merveilles est Ahmed Sefrioui.")
     if "personnification" in normalized_text and ("djellaba" in normalized_message or "dormait" in normalized_message):
-        priority.append("Dans l'expression la djellaba dormait, l'objet recoit une action humaine: c'est une personnification.")
+        priority.append("Dans l'expression la djellaba dormait, l'objet reçoit une action humaine : c'est une personnification.")
     if "narrateur externe" in normalized_message and "sidi mohamed" in normalized_text:
-        priority.append("Sidi Mohamed n'est pas un narrateur externe: dans La Boite a merveilles, il raconte son experience d'enfant a la premiere personne.")
+        priority.append("Sidi Mohamed n'est pas un narrateur externe : dans La Boîte à merveilles, il raconte son expérience d'enfant à la première personne.")
     return _unique_items(priority + facts)
 
 
@@ -1221,8 +1264,26 @@ def _contextual_message(message: str, context: list[dict]) -> str:
         return message
 
     context_text = " ".join(recent_context[-3:])
-    return f"Contexte récent: {context_text}\nQuestion actuelle: {message}"
+    return (
+        "Réponds à la dernière question utilisateur. Le contexte précédent sert uniquement à comprendre "
+        "les références ambiguës et ne doit pas remplacer la demande actuelle.\n"
+        f"Question actuelle: {message}\n"
+        f"Contexte secondaire: {context_text}"
+    )
 
+
+def _search_query_for_current_message(message: str, context: list[dict]) -> str:
+    if not _needs_context(message):
+        return message
+    recent_user_messages = [
+        str(item.get("content") or item.get("text") or "").strip()
+        for item in context[-6:]
+        if str(item.get("role") or "").lower() == "user"
+        and str(item.get("content") or item.get("text") or "").strip()
+    ]
+    if not recent_user_messages:
+        return message
+    return f"{message}\nContexte secondaire bref: {recent_user_messages[-1]}"
 
 def _needs_context(message: str) -> bool:
     normalized = _normalize_social_text(message)
@@ -1242,11 +1303,30 @@ def _needs_context(message: str) -> bool:
         "explain it",
         "explique ca",
         "explique ça",
-        "donne un exemple",
         "give an example",
     }
     return any(marker in normalized for marker in context_markers)
 
+
+
+
+def _log_chat_request(
+    request_id: str,
+    current_user: UserProfile | None,
+    message: str,
+    intent: str,
+    source_count: int,
+    mode: str,
+) -> None:
+    logger.info(
+        "chat_request request_id=%s user_id=%s intent=%s mode=%s sources=%s message=%r",
+        request_id,
+        current_user.id if current_user else None,
+        intent,
+        mode,
+        source_count,
+        message[:160],
+    )
 
 def _general_label(language: str) -> str:
     if language == "english":
@@ -1331,6 +1411,7 @@ def _out_of_scope_answer(language: str) -> str:
             "Please ask me about a program work, a language exercise, a figure of speech, methodology, or written production."
         )
     return (
-        "Je suis specialise dans la preparation au regional de francais de 1ere Bac. "
-        "Posez-moi une question sur une oeuvre au programme, un exercice de langue, une figure de style, la methodologie ou une production ecrite."
+        "Je suis spécialisé dans la préparation au régional de français de 1ère Bac. "
+        "Posez-moi une question sur une œuvre au programme, un exercice de langue, une figure de style, la méthodologie ou une production écrite."
     )
+

@@ -32,6 +32,7 @@ const DEFAULT_CHAT_PREFERENCES = {
 function ChatbotPage() {
   const streamTimerRef = useRef(null)
   const stopStreamingRef = useRef(false)
+  const pendingRequestsRef = useRef(new Set())
   const [input, setInput] = useState('')
   const [isSending, setIsSending] = useState(false)
   const [diagnosticResult, setDiagnosticResult] = useState(null)
@@ -138,26 +139,37 @@ function ChatbotPage() {
       return
     }
 
+    const sessionSnapshot = options.sessionOverride || sessions.find((session) => session.id === activeSessionId) || activeSession
+    const clientMessageId = createId()
     clearStreamTimer()
     stopStreamingRef.current = false
     setInput('')
     setIsSending(true)
+    pendingRequestsRef.current.add(clientMessageId)
 
-    const userMessage = buildMessage('user', cleanMessage)
-    const context = buildRecentContext(activeSession.messages)
-    const nextSession = appendMessagesToSession(activeSession, [userMessage])
+    const userMessage = buildMessage('user', cleanMessage, { clientMessageId })
+    const context = buildRecentContext(sessionSnapshot.messages)
+    const nextSession = appendMessagesToSession(sessionSnapshot, [userMessage])
     updateSession(nextSession)
 
     try {
       const data = await sendChatMessage(cleanMessage, learnerLevel, context, {
+        client_message_id: clientMessageId,
         course_id: selectedCourseId ? Number(selectedCourseId) : null,
         subject_id: selectedSubjectId ? Number(selectedSubjectId) : null,
-        session_id: activeSession.id,
+        session_id: sessionSnapshot.id,
       })
+      if (!pendingRequestsRef.current.has(clientMessageId)) {
+        return
+      }
+      pendingRequestsRef.current.delete(clientMessageId)
       const assistantMessage = buildMessage('assistant', '', {
         fullText: data.answer,
         mode: data.mode,
         sources: isRagMode(data.mode) ? data.sources || [] : [],
+        replyTo: clientMessageId,
+        requestId: data.request_id,
+        clientMessageId: data.client_message_id || clientMessageId,
       })
       const sessionWithAssistant = appendMessagesToSession(nextSession, [assistantMessage])
       updateSession(sessionWithAssistant)
@@ -168,10 +180,13 @@ function ChatbotPage() {
         animateAssistantMessage(sessionWithAssistant.id, assistantMessage)
       }
       notifyChatUsage(options.regenerated)
-    } catch {
+    } catch (error) {
+      pendingRequestsRef.current.delete(clientMessageId)
       const errorMessage = buildMessage('assistant', "Impossible de contacter le service IA pour le moment.", {
         mode: 'error',
         sources: [],
+        replyTo: clientMessageId,
+        error: error?.message || '',
       })
       updateSession(appendMessagesToSession(nextSession, [errorMessage]))
       setIsSending(false)
@@ -219,11 +234,20 @@ function ChatbotPage() {
       lastMessage: trimmedMessages.at(-1)?.text || '',
       updatedAt: new Date().toISOString(),
     })
-    sendUserMessage(lastUserMessage.text, { regenerated: true })
+    sendUserMessage(lastUserMessage.text, {
+      regenerated: true,
+      sessionOverride: {
+        ...activeSession,
+        messages: trimmedMessages,
+        lastMessage: trimmedMessages.at(-1)?.text || '',
+        updatedAt: new Date().toISOString(),
+      },
+    })
   }
 
   function startNewConversation() {
     clearStreamTimer()
+    pendingRequestsRef.current.clear()
     const newSession = createSession()
     setSessions((current) => [newSession, ...current])
     setActiveSessionId(newSession.id)
@@ -507,10 +531,7 @@ function MessageBubble({
           <div className="chat-sources">
             <strong>Sources utilisées</strong>
             {sources.map((source, index) => (
-              <a href={sourceUrl(source)} key={`${source.file_name || source.pdf_name}-${source.page_start || source.page_number}-${index}`} rel="noreferrer" target="_blank">
-                {source.file_name || source.pdf_name} · {source.course_title || source.course_name} · {source.subject_name || 'Matière'} · page {source.page_start || source.page_number || '-'}
-                {source.excerpt && <span>{shortPreview(source.excerpt, 120)}</span>}
-              </a>
+              <SourceLink key={`${source.chunk_id || source.display_source || source.source_label || index}-${index}`} source={source} />
             ))}
           </div>
         )}
@@ -565,6 +586,19 @@ function MiniQuiz({ answer, messageId, onAnswer, quiz }) {
         </p>
       )}
     </div>
+  )
+}
+
+function SourceLink({ source }) {
+  const url = sourceUrl(source)
+  const label = sourceDisplayLabel(source)
+  if (!url) {
+    return <span>{label}</span>
+  }
+  return (
+    <a href={url} rel="noreferrer" target="_blank">
+      {label}
+    </a>
   )
 }
 
@@ -766,7 +800,25 @@ function sourceUrl(source) {
   const page = source.page_start || source.page_number
   const pageAnchor = page ? `#page=${page}` : ''
   if (source.file_url) return `${API_BASE_URL}${source.file_url}${pageAnchor}`
-  return `${API_BASE_URL}/docs/courses/${encodeURIComponent(source.file_name || source.pdf_name)}${pageAnchor}`
+  const fileName = source.file_name || source.pdf_name
+  if (!fileName || String(fileName).startsWith('Corpus francais 1ere Bac')) return ''
+  return `${API_BASE_URL}/docs/courses/${encodeURIComponent(fileName)}${pageAnchor}`
+}
+
+function sourceDisplayLabel(source) {
+  const explicit = source.display_source || source.source_label
+  if (explicit) return cleanSourceLabel(explicit)
+  if (source.document_type === 'figure_of_style' && source.competence) return `Figures de style — ${source.competence}`
+  if (source.chapter_title) return cleanSourceLabel(source.chapter_title)
+  return cleanSourceLabel(source.course_title || source.course_name || source.file_name || source.pdf_name || 'Source pédagogique')
+}
+
+function cleanSourceLabel(value) {
+  return String(value || '')
+    .replace(/^Corpus francais 1ere Bac\s*-\s*/i, '')
+    .replace(/\s*-\s*page\s*-?\s*$/i, '')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
 function modeLabel(mode) {
@@ -899,3 +951,4 @@ function normalizeText(value) {
 }
 
 export default ChatbotPage
+

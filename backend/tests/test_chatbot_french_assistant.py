@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import unicodedata
+
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
@@ -14,6 +16,14 @@ from app.core.professor_migration import apply_professor_migration
 from app.models import persistence as persistence_models  # noqa: F401
 from app.models.persistence import Course, Subject, UserProfile
 from app.services import learning_service, rag_document_service
+
+
+def strip_accents(value: str) -> str:
+    return "".join(
+        char
+        for char in unicodedata.normalize("NFKD", value)
+        if not unicodedata.combining(char)
+    )
 
 
 @pytest.fixture()
@@ -142,7 +152,7 @@ def test_chat_rejects_python_as_out_of_scope(db_session):
     response = learning_service.rag_chat("Explique-moi Python.", "Intermédiaire", db=db_session, current_user=student)
 
     assert response["mode"] == "out_of_scope"
-    assert "regional de francais" in response["answer"]
+    assert "regional de francais" in strip_accents(response["answer"])
 
 
 def test_targeted_practice_uses_public_weakness_profile(monkeypatch, db_session):
@@ -172,3 +182,139 @@ def test_targeted_practice_uses_public_weakness_profile(monkeypatch, db_session)
     assert "Langue" in response["answer"]
     assert "secret" not in response["answer"]
     assert "confidence" not in response["answer"]
+
+
+def test_chat_sequential_conversation_uses_current_message_for_intent_and_rag(monkeypatch, db_session):
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
+    student = UserProfile(id=7106, firebase_uid="chat-sequential", email="chat-sequential@example.com", full_name="Student", role="student")
+    course = Course(id=7107, title="Francais 1ere Bac - Preparation au regional", subject=subject, published=True, status="published")
+    db_session.add_all([student, course])
+    db_session.commit()
+    queries = []
+
+    def fake_filtered_semantic_search(db, query, **kwargs):
+        queries.append(query)
+        normalized = learning_service._normalize_text(query)
+        if "djellaba" in normalized:
+            return [{
+                "file_name": "figures.md",
+                "display_source": "Figures de style - Personnification",
+                "course_title": course.title,
+                "course_id": course.id,
+                "subject_id": subject.id,
+                "score": 0.92,
+                "excerpt": "Dans l'expression la djellaba dormait, l'objet recoit une action humaine: c'est une personnification.",
+                "text_preview": "Dans l'expression la djellaba dormait, l'objet recoit une action humaine: c'est une personnification.",
+            }]
+        if "narrateur externe" in normalized:
+            return [{
+                "file_name": "boite.md",
+                "display_source": "La Boite a merveilles - Fiche de revision",
+                "course_title": course.title,
+                "course_id": course.id,
+                "subject_id": subject.id,
+                "score": 0.91,
+                "excerpt": "Sidi Mohamed est narrateur-personnage et raconte a la premiere personne.",
+                "text_preview": "Sidi Mohamed est narrateur-personnage et raconte a la premiere personne.",
+            }]
+        if "situer un passage" in normalized:
+            return [{
+                "file_name": "methodologie.md",
+                "display_source": "Methodologie - Situer un passage",
+                "course_title": course.title,
+                "course_id": course.id,
+                "subject_id": subject.id,
+                "score": 0.9,
+                "excerpt": "Situer un passage consiste a presenter l'evenement precedent, le contexte et la situation du passage.",
+                "text_preview": "Situer un passage consiste a presenter l'evenement precedent, le contexte et la situation du passage.",
+            }]
+        if "solidarite" in normalized:
+            return [{
+                "file_name": "production.md",
+                "display_source": "Production ecrite - Introduction",
+                "course_title": course.title,
+                "course_id": course.id,
+                "subject_id": subject.id,
+                "score": 0.9,
+                "excerpt": "Une introduction presente le sujet, pose une problematique et annonce une opinion.",
+                "text_preview": "Une introduction presente le sujet, pose une problematique et annonce une opinion.",
+            }]
+        return []
+
+    monkeypatch.setattr(rag_document_service, "filtered_semantic_search", fake_filtered_semantic_search)
+    monkeypatch.setattr(learning_service.student_weakness_model_service, "predict_student_weaknesses", lambda db, user: {"competencies": []})
+
+    messages = [
+        "Quelle figure de style trouve-t-on dans la djellaba dormait ?",
+        "Corrige ma reponse : Sidi Mohamed est un narrateur externe.",
+        "Comment situer un passage dans une oeuvre lors de l'examen regional ?",
+        "Aide-moi a preparer une introduction sur la solidarite.",
+        "Explique-moi le Deep Learning.",
+    ]
+    context = []
+    responses = []
+    for index, message in enumerate(messages, start=1):
+        response = learning_service.rag_chat(
+            message,
+            "Intermediaire",
+            context=context,
+            db=db_session,
+            current_user=student,
+            client_message_id=f"msg-{index}",
+        )
+        responses.append(response)
+        context.extend([
+            {"role": "user", "content": message},
+            {"role": "assistant", "content": response["answer"]},
+        ])
+
+    assert responses[0]["intent"] == "figure_of_style"
+    assert "personnification" in learning_service._normalize_text(responses[0]["answer"])
+    assert responses[1]["intent"] == "answer_correction"
+    assert "narrateur-personnage" in responses[1]["answer"] or "premiere personne" in learning_service._normalize_text(responses[1]["answer"])
+    assert "personnification" not in learning_service._normalize_text(responses[1]["answer"])
+    assert responses[2]["intent"] == "methodology_help"
+    normalized_method = learning_service._normalize_text(responses[2]["answer"])
+    assert "evenement" in normalized_method or "contexte" in normalized_method or "situation" in normalized_method
+    assert "djellaba dormait" not in normalized_method
+    assert "narrateur externe" not in normalized_method
+    assert responses[3]["intent"] == "writing_assistance"
+    normalized_writing = learning_service._normalize_text(responses[3]["answer"])
+    assert "sujet" in normalized_writing
+    assert "problematique" in normalized_writing or "opinion" in normalized_writing or "introduction" in normalized_writing
+    assert "sidi mohamed" not in normalized_writing
+    assert responses[4]["intent"] == "out_of_scope"
+    assert responses[4]["mode"] == "out_of_scope"
+    assert all(message in query for message, query in zip(messages[:4], queries[:4]))
+
+
+def test_chat_returns_client_message_id_for_fast_requests(monkeypatch, db_session):
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
+    student = UserProfile(id=7108, firebase_uid="chat-fast", email="chat-fast@example.com", full_name="Student", role="student")
+    course = Course(id=7109, title="Francais 1ere Bac - Preparation au regional", subject=subject, published=True, status="published")
+    db_session.add_all([student, course])
+    db_session.commit()
+    monkeypatch.setattr(learning_service.student_weakness_model_service, "predict_student_weaknesses", lambda db, user: {"competencies": []})
+    monkeypatch.setattr(
+        rag_document_service,
+        "filtered_semantic_search",
+        lambda db, query, **kwargs: [{
+            "file_name": "methodologie.md",
+            "display_source": "Methodologie - Situer un passage",
+            "course_title": course.title,
+            "course_id": course.id,
+            "subject_id": subject.id,
+            "score": 0.9,
+            "excerpt": "Situer un passage demande de rappeler le contexte.",
+            "text_preview": "Situer un passage demande de rappeler le contexte.",
+        }],
+    )
+
+    first = learning_service.rag_chat("Comment situer un passage ?", "Intermediaire", db=db_session, current_user=student, client_message_id="fast-1")
+    second = learning_service.rag_chat("Aide-moi a preparer une introduction sur la solidarite.", "Intermediaire", db=db_session, current_user=student, client_message_id="fast-2")
+
+    assert first["client_message_id"] == "fast-1"
+    assert second["client_message_id"] == "fast-2"
+    assert first["intent"] == "methodology_help"
+    assert second["intent"] == "writing_assistance"
+

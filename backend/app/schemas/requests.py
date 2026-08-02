@@ -13,6 +13,7 @@ class ChatRequest(BaseModel):
     message: str
     level: str = "Intermediaire"
     context: list[dict] = Field(default_factory=list)
+    client_message_id: str | None = None
     course_id: int | None = None
     subject_id: int | None = None
     session_id: str | None = None

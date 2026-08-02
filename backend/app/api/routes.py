@@ -146,6 +146,7 @@ def chat(
         db=db,
         course_id=payload.course_id,
         subject_id=payload.subject_id,
+        client_message_id=payload.client_message_id,
         preferred_language=payload.preferred_language,
         current_user=current_user,
     )
