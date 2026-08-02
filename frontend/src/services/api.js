@@ -337,11 +337,11 @@ export function deleteNotification(id) {
 }
 
 export function sendChatMessage(message, level, context = [], options = {}) {
-  return publicRequest('/api/chat', {
+  return authenticatedRequest('/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message, level, context, ...options }),
-  }).then(parseResponse)
+  })
 }
 
 export function fetchRagStatus() {

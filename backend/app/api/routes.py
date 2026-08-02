@@ -134,7 +134,11 @@ def submit_quiz(course_id: int, payload: QuizSubmission, db: Session = Depends(g
 
 
 @router.post("/chat")
-def chat(payload: ChatRequest, db: Session = Depends(get_db)) -> dict:
+def chat(
+    payload: ChatRequest,
+    db: Session = Depends(get_db),
+    current_user: UserProfile = Depends(get_current_user),
+) -> dict:
     return learning_service.rag_chat(
         payload.message,
         payload.level,
@@ -143,6 +147,7 @@ def chat(payload: ChatRequest, db: Session = Depends(get_db)) -> dict:
         course_id=payload.course_id,
         subject_id=payload.subject_id,
         preferred_language=payload.preferred_language,
+        current_user=current_user,
     )
 
 

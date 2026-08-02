@@ -103,7 +103,7 @@ function ChatbotPage() {
         if (!cancelled) setRagContextStatus(status)
       })
       .catch(() => {
-        if (!cancelled) setRagContextStatus({ index_status: 'failed', error: 'Statut RAG indisponible.' })
+        if (!cancelled) setRagContextStatus({ index_status: 'failed', error: 'Contexte de cours indisponible.' })
       })
     return () => {
       cancelled = true
@@ -310,7 +310,7 @@ function ChatbotPage() {
       <div className="page-heading page-heading-row">
         <div>
           <h1>Chatbot IA</h1>
-          <p>Posez toutes vos questions sur l'intelligence artificielle.</p>
+          <p>Posez vos questions sur les oeuvres, la langue, les figures de style et la production ecrite.</p>
         </div>
         <div className="chat-xp-pill">XP {xp}</div>
       </div>
@@ -401,7 +401,7 @@ function ChatbotPage() {
               <MessageBubble role="assistant" text="Passez d'abord le test diagnostique pour que je puisse adapter mes réponses à votre niveau." time="Maintenant" />
             )}
             {diagnosticResult && activeSession.messages.length === 0 && (
-              <MessageBubble role="assistant" text="Bonjour ! Je suis EduMentor AI. Posez-moi une question sur vos cours d'IA." time="Maintenant" />
+              <MessageBubble role="assistant" text="Bonjour ! Je suis votre assistant de francais pour la preparation au regional. Je peux vous aider avec les oeuvres, la langue, les figures de style, la methodologie et la production ecrite." time="Maintenant" />
             )}
             {diagnosticResult && activeSession.messages.map((message) => (
               <MessageBubble
@@ -432,7 +432,7 @@ function ChatbotPage() {
           )}
 
           {chatPreferences.questionSuggestions !== false && <div className="suggestion-row">
-            {['Explique le Deep Learning', 'Différence IA, ML, DL', "Exemples d'utilisation du RAG", 'What is overfitting?'].map((item) => (
+            {['Explique-moi ce passage de La Boite a merveilles.', 'Quelle figure de style est utilisee dans cette phrase ?', 'Corrige ma reponse a cette question.', 'Aide-moi a preparer une production ecrite.', 'Fais-moi reviser mes points faibles.', 'Pose-moi cinq questions sur Antigone.'].map((item) => (
               <button disabled={!diagnosticResult || isSending} key={item} onClick={() => sendUserMessage(item)} type="button">{item}</button>
             ))}
           </div>}
@@ -451,15 +451,15 @@ function ChatbotPage() {
 
         <aside className="chat-side panel-card">
           <h2>À propos de l'assistant</h2>
-          <p>Je suis votre assistant IA personnel. Je peux vous aider à comprendre les concepts, résoudre des problèmes et vous accompagner dans votre apprentissage.</p>
+          <p>Je suis votre assistant de francais pour la 1ere Bac. Je peux vous aider a comprendre les oeuvres, analyser une phrase, corriger une reponse et preparer une production ecrite.</p>
           <h3>Niveau utilisé</h3>
           <p>{diagnosticResult ? learnerLevel : 'Test diagnostique non encore passé'}</p>
-          <h3>Modes de réponse</h3>
-          <p>RAG <span>Supports PDF</span></p>
-          <p>Général <span>Groq</span></p>
-          <p>Hors sujet <span>Filtré</span></p>
+          <h3>Accompagnement</h3>
+          <p>Oeuvres <span>Programme regional</span></p>
+          <p>Langue <span>Exercices guides</span></p>
+          <p>Methodologie <span>Conseils adaptes</span></p>
           <h3>Exemples</h3>
-          {["Qu'est-ce que l'IA générative ?", 'Comment fonctionne un réseau de neurones ?', 'Donne-moi un exemple de prompt efficace.'].map((item) => (
+          {["Explique-moi le role de Creon dans Antigone.", 'Quelle figure de style est utilisee dans cette phrase ?', 'Aide-moi a rediger une introduction.'].map((item) => (
             <p className="sample-question" key={item}><Sparkles size={18} />{item}</p>
           ))}
         </aside>
@@ -487,7 +487,7 @@ function MessageBubble({
   const isAssistant = role === 'assistant'
   const mode = message.mode
   const suggestions = isAssistant && showSuggestions ? buildSuggestions(text) : []
-  const quiz = isAssistant && showMiniQuiz && (isRagMode(mode) || ['general', 'general_education'].includes(mode)) ? buildMiniQuiz(text) : null
+  const quiz = isAssistant && showMiniQuiz && (isRagMode(mode) || ['general', 'general_education', 'general_french'].includes(mode)) ? buildMiniQuiz(text) : null
 
   return (
     <div className={`chat-message ${role}`}>
@@ -714,41 +714,41 @@ function buildRecentContext(messages) {
 
 function buildSuggestions(text) {
   const normalized = normalizeText(text)
-  if (normalized.includes('rag')) {
-    return ['Donne un exemple RAG', 'Explique le chunking', 'Pourquoi citer les sources ?']
+  if (normalized.includes('antigone') || normalized.includes('creon')) {
+    return ['Resume le conflit', 'Explique Creon', 'Pose-moi 3 questions']
   }
-  if (normalized.includes('deep learning') || normalized.includes('neurone')) {
-    return ['Explique les couches', 'Donne un exemple simple', 'Quels sont les risques ?']
+  if (normalized.includes('figure') || normalized.includes('metaphore') || normalized.includes('comparaison')) {
+    return ['Donne un exemple', 'Explique son effet', 'Propose un exercice']
   }
-  if (normalized.includes('prompt')) {
-    return ['Donne un bon prompt', 'Quels sont les pièges ?', 'Améliore ce prompt']
+  if (normalized.includes('production') || normalized.includes('redaction')) {
+    return ['Propose un plan', 'Aide-moi a introduire', 'Donne des connecteurs']
   }
-  return ['Donne un exemple', 'Résume en 3 points', 'Propose un mini exercice']
+  return ['Donne un exemple', 'Resume en 3 points', 'Propose un mini exercice']
 }
 
 function buildMiniQuiz(text) {
   const normalized = normalizeText(text)
-  if (normalized.includes('rag')) {
+  if (normalized.includes('figure') || normalized.includes('metaphore') || normalized.includes('comparaison')) {
     return {
-      question: 'Quel est le rôle principal du RAG ?',
-      options: ['Citer des sources et rechercher dans les documents', 'Remplacer tous les PDF', 'Créer une base SQL', 'Supprimer les chunks'],
-      answer: 'Citer des sources et rechercher dans les documents',
-      explanation: 'Le RAG récupère des passages pertinents puis aide à formuler une réponse sourcée.',
+      question: 'Que faut-il toujours expliquer apres avoir nomme une figure de style ?',
+      options: ['Son effet dans le texte', 'Le nombre de pages', 'Le nom du correcteur', 'La couleur de la couverture'],
+      answer: 'Son effet dans le texte',
+      explanation: 'Identifier la figure ne suffit pas : il faut expliquer ce qu elle apporte au sens.',
     }
   }
-  if (normalized.includes('overfitting')) {
+  if (normalized.includes('antigone') || normalized.includes('creon')) {
     return {
-      question: "Que signifie l'overfitting ?",
-      options: ['Le modèle mémorise trop les données', 'Le modèle ne reçoit aucune donnée', 'Le modèle refuse de prédire', 'Le modèle supprime les features'],
-      answer: 'Le modèle mémorise trop les données',
-      explanation: "Un modèle surappris fonctionne bien sur l'entraînement mais généralise mal.",
+      question: 'Dans une reponse sur Antigone, que faut-il ajouter pour justifier son idee ?',
+      options: ['Un indice du texte', 'Une information inventee', 'Un avis sans preuve', 'Une phrase hors sujet'],
+      answer: 'Un indice du texte',
+      explanation: 'Une bonne reponse de comprehension doit etre justifiee par un element precis du passage.',
     }
   }
   return {
-    question: 'Quelle bonne pratique aide à apprendre ce concept ?',
-    options: ['Relier la définition à un exemple', 'Ignorer les sources', 'Tout mémoriser sans exercice', 'Supprimer les questions'],
-    answer: 'Relier la définition à un exemple',
-    explanation: 'Un exemple concret facilite la compréhension et la mémorisation.',
+    question: 'Quelle bonne pratique aide a reussir une question de regional ?',
+    options: ['Lire la consigne puis justifier', 'Repondre sans lire', 'Inventer une citation', 'Ignorer le bareme'],
+    answer: 'Lire la consigne puis justifier',
+    explanation: 'La consigne indique le type de reponse attendu et la justification montre votre comprehension.',
   }
 }
 
@@ -774,6 +774,8 @@ function modeLabel(mode) {
   if (mode === 'rag_subject') return 'Réponse basée sur la matière'
   if (mode === 'rag_semantic') return 'Réponse basée sur les supports'
   if (mode === 'general_education') return 'Réponse générale'
+  if (mode === 'general_french') return 'Réponse générale'
+  if (mode === 'targeted_practice') return 'Entrainement personnalisé'
   if (mode === 'out_of_scope') return 'Assistant EduMentor'
   if (mode === 'social') return 'Assistant EduMentor'
   if (mode === 'error') return 'Service indisponible'
@@ -829,9 +831,9 @@ function buildTextExport(session) {
 
 function titleFromMessage(message) {
   const normalized = normalizeText(message)
-  if (normalized.includes('deep learning')) return 'Deep Learning'
-  if (normalized.includes('rag')) return 'Question RAG'
-  if (normalized.includes('overfitting')) return 'Overfitting'
+  if (normalized.includes('antigone')) return 'Antigone'
+  if (normalized.includes('figure')) return 'Figure de style'
+  if (normalized.includes('production')) return 'Production ecrite'
   if (normalized.includes('bonjour') || normalized.includes('salut') || normalized.includes('hello') || normalized.includes('hi')) return 'Bonjour'
 
   const words = String(message || '')

@@ -1,12 +1,13 @@
 from fastapi import HTTPException
 import unicodedata
+from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
-from app.models.persistence import Course
+from app.models.persistence import Course, Subject, UserProfile
 from app.rag.engine import rag_status
 from app.rag.vector_store import semantic_search
-from app.services import rag_document_service
+from app.services import rag_document_service, student_weakness_model_service
 from app.services.groq_service import generate_general_answer
 from app.services.mock_data import COURSES, LEARNER, QUIZZES, RECOMMENDATIONS
 
@@ -398,6 +399,7 @@ def rag_chat(
     course_id: int | None = None,
     subject_id: int | None = None,
     preferred_language: str | None = None,
+    current_user: UserProfile | None = None,
 ) -> dict:
     social_answer = _social_answer(message)
     if social_answer:
@@ -410,29 +412,67 @@ def rag_chat(
         }
 
     contextual_message = _contextual_message(message, context or [])
+    detected_language = preferred_language or _detect_language(message)
+    intent = _detect_french_bac_intent(contextual_message)
+    pedagogical_profile = _student_pedagogical_profile(db, current_user) if db is not None and current_user is not None else []
+
+    if intent == "out_of_scope":
+        return {
+            "answer": _out_of_scope_answer(detected_language),
+            "sources": [],
+            "mode": "out_of_scope",
+            "course_id": course_id,
+            "subject_id": subject_id,
+            "intent": intent,
+            "confidence": 0,
+            "relevance": 0,
+            "used_rag": False,
+            "used_general_llm": False,
+        }
+
+    if intent == "targeted_practice":
+        return {
+            "answer": _targeted_practice_answer(level, pedagogical_profile),
+            "sources": [],
+            "mode": "targeted_practice",
+            "course_id": course_id,
+            "subject_id": subject_id,
+            "intent": intent,
+            "confidence": 0,
+            "relevance": 0,
+            "used_rag": False,
+            "used_general_llm": False,
+        }
+
+    results: list[dict] = []
+    resolved_course_id: int | None = None
+    resolved_subject_id: int | None = None
     if db is not None:
-        _validate_chat_scope(db, course_id, subject_id)
+        scope = _resolve_french_chat_scope(db, course_id, subject_id, current_user)
+        resolved_course_id = scope.get("course_id")
+        resolved_subject_id = scope.get("subject_id")
         results = rag_document_service.filtered_semantic_search(
             db,
             contextual_message,
-            course_id=course_id,
-            subject_id=subject_id,
+            course_id=resolved_course_id,
+            subject_id=resolved_subject_id,
             top_k=3,
             published_only=True,
-        )
-    else:
-        results = semantic_search(contextual_message, limit=3)
+        ) if (resolved_course_id or resolved_subject_id) else []
+    elif _is_french_bac_related_question(contextual_message):
+        results = []
     threshold = get_settings()["rag_score_threshold"]
     relevant_results = [result for result in results if float(result.get("score", 0)) >= threshold]
 
     if relevant_results:
-        mode = "rag_course" if course_id else "rag_subject" if subject_id else "rag_semantic"
+        mode = "rag_course" if resolved_course_id else "rag_subject" if resolved_subject_id else "rag_semantic"
         return {
-            "answer": _build_multi_course_rag_answer(contextual_message, level, relevant_results),
+            "answer": _build_french_rag_answer(contextual_message, level, relevant_results, intent, pedagogical_profile),
             "sources": [_format_chat_source(result) for result in relevant_results],
             "mode": mode,
-            "course_id": course_id,
-            "subject_id": subject_id or relevant_results[0].get("subject_id"),
+            "course_id": resolved_course_id,
+            "subject_id": resolved_subject_id or relevant_results[0].get("subject_id"),
+            "intent": intent,
             "confidence": round(max(float(result.get("score", 0)) for result in relevant_results), 4),
             "relevance": round(max(float(result.get("score", 0)) for result in relevant_results), 4),
             "used_rag": True,
@@ -440,28 +480,35 @@ def rag_chat(
             "fallback_reason": None,
         }
 
-    detected_language = preferred_language or _detect_language(message)
-    if _is_education_related_question(contextual_message):
+    if _is_french_bac_related_question(contextual_message):
         return {
-            "answer": generate_general_answer(contextual_message, detected_language, level),
+            "answer": generate_general_answer(
+                contextual_message,
+                detected_language,
+                level,
+                pedagogical_profile=pedagogical_profile,
+                intent=intent,
+            ),
             "sources": [],
-            "mode": "general_education",
+            "mode": "general_french",
             "label": _general_label(detected_language),
-            "course_id": course_id,
-            "subject_id": subject_id,
+            "course_id": resolved_course_id or course_id,
+            "subject_id": resolved_subject_id or subject_id,
+            "intent": intent,
             "confidence": 0,
             "relevance": 0,
             "used_rag": False,
             "used_general_llm": True,
-            "fallback_reason": "not_found_in_selected_supports" if course_id or subject_id else "not_found_in_supports",
+            "fallback_reason": "not_found_in_french_supports",
         }
 
     return {
-    "answer": _out_of_scope_answer(detected_language),
+        "answer": _out_of_scope_answer(detected_language),
         "sources": [],
         "mode": "out_of_scope",
         "course_id": course_id,
         "subject_id": subject_id,
+        "intent": "out_of_scope",
         "confidence": 0,
         "relevance": 0,
         "used_rag": False,
@@ -477,6 +524,317 @@ def _validate_chat_scope(db: Session, course_id: int | None, subject_id: int | N
         raise HTTPException(status_code=404, detail="Cours introuvable ou non publie")
     if subject_id is not None and course.subject_id != subject_id:
         raise HTTPException(status_code=422, detail="Le cours ne correspond pas a la matiere selectionnee")
+
+
+def _resolve_french_chat_scope(
+    db: Session,
+    course_id: int | None,
+    subject_id: int | None,
+    current_user: UserProfile | None,
+) -> dict[str, int | None]:
+    from app.services import course_service
+
+    french_subject = _find_french_subject(db)
+    requested_course = db.get(Course, course_id) if course_id else None
+    if requested_course and _is_french_course(requested_course, french_subject):
+        if course_service.can_access_course(db, requested_course, current_user):
+            return {"course_id": requested_course.id, "subject_id": requested_course.subject_id}
+
+    if subject_id and french_subject and subject_id == french_subject.id:
+        return {"course_id": None, "subject_id": subject_id}
+
+    preferred_course = _find_preferred_french_course(db, current_user, french_subject)
+    if preferred_course is not None:
+        return {"course_id": preferred_course.id, "subject_id": preferred_course.subject_id}
+
+    if french_subject is not None:
+        return {"course_id": None, "subject_id": french_subject.id}
+
+    return {"course_id": None, "subject_id": None}
+
+
+def _find_french_subject(db: Session) -> Subject | None:
+    return db.scalars(
+        select(Subject)
+        .where(
+            Subject.active.is_(True),
+            or_(
+                Subject.slug == "francais",
+                Subject.name.ilike("%francais%"),
+                Subject.name.ilike("%fran%C3%A7ais%"),
+                Subject.name.ilike("%français%"),
+            ),
+        )
+        .order_by(Subject.id)
+        .limit(1)
+    ).first()
+
+
+def _find_preferred_french_course(db: Session, current_user: UserProfile | None, french_subject: Subject | None) -> Course | None:
+    from app.services import course_service
+
+    query = select(Course).where(Course.published.is_(True), Course.status.in_(["published", "active"]))
+    if french_subject is not None:
+        query = query.where(Course.subject_id == french_subject.id)
+    query = query.order_by(Course.display_order, Course.id)
+    courses = list(db.scalars(query))
+    courses = [course for course in courses if _is_french_course(course, french_subject)]
+    accessible = [course for course in courses if course_service.can_access_course(db, course, current_user)]
+    if not accessible:
+        return None
+    regional = [
+        course for course in accessible
+        if "regional" in _normalize_text(" ".join([course.title or "", course.summary or "", course.description or ""]))
+    ]
+    return (regional or accessible)[0]
+
+
+def _is_french_course(course: Course, french_subject: Subject | None = None) -> bool:
+    if french_subject is not None and course.subject_id == french_subject.id:
+        return True
+    searchable = _normalize_text(" ".join([
+        course.title or "",
+        course.summary or "",
+        course.description or "",
+        course.level or "",
+        str((course.information or {}).get("language") or ""),
+    ]))
+    return any(term in searchable for term in ("francais", "français", "regional", "bac", "antigone", "sefrioui", "victor hugo"))
+
+
+def _student_pedagogical_profile(db: Session, current_user: UserProfile) -> list[dict]:
+    try:
+        prediction = student_weakness_model_service.predict_student_weaknesses(db, current_user)
+    except Exception:
+        return []
+
+    competencies = prediction.get("competencies") if isinstance(prediction, dict) else []
+    if not isinstance(competencies, list):
+        return []
+
+    allowed = {"Compréhension", "Langue", "Figures de style", "Production écrite", "Méthodologie"}
+    normalized_allowed = {_normalize_text(item): item for item in allowed}
+    profile: list[dict] = []
+    for row in competencies:
+        if not isinstance(row, dict):
+            continue
+        normalized_competence = _normalize_text(str(row.get("competence") or ""))
+        if normalized_competence not in normalized_allowed:
+            continue
+        status = _public_weakness_status(row.get("status"))
+        score = row.get("score_percentage")
+        profile.append(
+            {
+                "competence": normalized_allowed[normalized_competence],
+                "status": status,
+                "score_percentage": round(float(score), 1) if isinstance(score, (int, float)) else None,
+                "recommendation": str(row.get("recommendation") or "").strip(),
+            }
+        )
+    return profile
+
+
+def _public_weakness_status(status: object) -> str:
+    normalized = _normalize_text(str(status or ""))
+    if "faible" in normalized:
+        return "faible"
+    if "renforcer" in normalized:
+        return "a renforcer"
+    if "maitris" in normalized or "maitris" in normalized:
+        return "maitrise"
+    return "non evalue"
+
+
+def _detect_french_bac_intent(message: str) -> str:
+    if _is_old_ai_topic(message):
+        return "out_of_scope"
+    normalized = _normalize_text(message)
+    if any(term in normalized for term in ("point faible", "points faibles", "competence la plus faible", "fais moi travailler", "entrainement cible", "reviser mes difficultes")):
+        return "targeted_practice"
+    if any(term in normalized for term in ("corrige", "correction", "ma reponse", "ma réponse", "ameliore ma reponse", "note ma reponse")):
+        return "answer_correction"
+    if any(term in normalized for term in ("figure de style", "metaphore", "comparaison", "personnification", "antithese", "hyperbole", "anaphore", "oxymore")):
+        return "figure_of_style"
+    if any(term in normalized for term in ("production ecrite", "rediger", "redaction", "introduction", "conclusion", "argument", "plan")):
+        return "writing_assistance"
+    if any(term in normalized for term in ("methode", "methodologie", "regional", "examen", "bareme", "gestion du temps", "consigne")):
+        return "methodology_help" if "regional" not in normalized else "regional_exam"
+    if any(term in normalized for term in ("grammaire", "conjugaison", "langue", "vocabulaire", "discours direct", "discours indirect", "champ lexical")):
+        return "language_help"
+    if any(term in normalized for term in ("resume", "résume", "explique", "passage", "antigone", "creon", "créon", "boite a merveilles", "boîte à merveilles", "sidi mohamed", "sefrioui", "dernier jour", "condamne", "victor hugo", "jean anouilh")):
+        return "work_explanation"
+    if _is_french_bac_related_question(message):
+        return "course_rag"
+    return "out_of_scope"
+
+
+def _is_old_ai_topic(message: str) -> bool:
+    normalized = _normalize_text(message)
+    blocked_terms = {
+        "python",
+        "machine learning",
+        "deep learning",
+        "prompt engineering",
+        "overfitting",
+        "underfitting",
+        "backpropagation",
+        "reinforcement learning",
+        "diffusion model",
+        "diffusion models",
+        "intelligence artificielle",
+        "artificial intelligence",
+        "llm",
+        "embedding",
+        "chroma",
+        "rag",
+    }
+    return any(term in normalized for term in blocked_terms)
+
+
+def _is_french_bac_related_question(message: str) -> bool:
+    normalized = _normalize_text(message)
+    french_terms = {
+        "francais",
+        "français",
+        "1ere bac",
+        "premiere bac",
+        "regional",
+        "examen",
+        "antigone",
+        "creon",
+        "boite a merveilles",
+        "boîte à merveilles",
+        "sidi mohamed",
+        "dernier jour",
+        "condamne",
+        "victor hugo",
+        "jean anouilh",
+        "sefrioui",
+        "figure de style",
+        "metaphore",
+        "comparaison",
+        "personnification",
+        "langue",
+        "grammaire",
+        "vocabulaire",
+        "production ecrite",
+        "redaction",
+        "comprehension",
+        "methodologie",
+        "consigne",
+        "corrige",
+    }
+    return any(term in normalized for term in french_terms)
+
+
+def _targeted_practice_answer(level: str, pedagogical_profile: list[dict]) -> str:
+    target = _weakest_competence(pedagogical_profile)
+    competence = target.get("competence") or "Compréhension"
+    recommendation = target.get("recommendation") or "Relisez attentivement la consigne puis justifiez votre reponse avec un indice du texte."
+    if competence == "Langue":
+        exercise = "Transformez cette phrase au discours indirect : Le professeur dit : \"Relisez le passage avant de repondre.\""
+    elif competence == "Figures de style":
+        exercise = "Identifiez la figure de style dans : \"La ville dormait sous un ciel lourd\", puis expliquez son effet."
+    elif competence == "Production écrite":
+        exercise = "Redigez une introduction courte sur le theme de la solidarite en annonçant clairement votre point de vue."
+    elif competence == "Méthodologie":
+        exercise = "Lisez une consigne d'examen, soulignez le verbe de consigne, puis indiquez le type de reponse attendu."
+    else:
+        exercise = "Lisez un court passage d'une oeuvre au programme, puis relevez le personnage principal, l'evenement important et l'idee dominante."
+    return "\n\n".join([
+        "### Entrainement cible",
+        f"Nous allons travailler en priorite la competence : **{competence}**.",
+        "### Exercice",
+        exercise,
+        "### Conseil",
+        recommendation,
+    ])
+
+
+def _weakest_competence(pedagogical_profile: list[dict]) -> dict:
+    priority = {"faible": 0, "a renforcer": 1, "non evalue": 2, "maitrise": 3}
+    rows = pedagogical_profile or []
+    if not rows:
+        return {"competence": "Compréhension", "status": "non evalue", "score_percentage": None}
+    return sorted(rows, key=lambda item: (priority.get(str(item.get("status")), 4), item.get("score_percentage") if item.get("score_percentage") is not None else 999))[0]
+
+
+def _build_french_rag_answer(
+    message: str,
+    level: str,
+    results: list[dict],
+    intent: str,
+    pedagogical_profile: list[dict],
+) -> str:
+    facts = _sentences_from_results(results)
+    topic = _french_topic(message, results)
+    profile_tip = _profile_tip_for_message(message, pedagogical_profile)
+    if intent == "answer_correction":
+        return "\n\n".join([
+            "### Ce qui est correct",
+            facts[0] if facts else "Votre reponse contient une piste utile, mais elle doit etre verifiee avec le texte.",
+            "### Ce qui doit etre ameliore",
+            "Ajoutez un indice precis du passage et reliez-le clairement a l'oeuvre ou a la consigne.",
+            "### Proposition corrigee",
+            "Formulez une reponse courte, puis justifiez-la par un element observe dans le texte.",
+            "### Conseil",
+            profile_tip or "Pour progresser, commencez toujours par reperer les mots de la consigne.",
+        ])
+    if intent == "figure_of_style":
+        return "\n\n".join([
+            "### Figure",
+            facts[0] if facts else "La figure doit etre identifiee a partir des mots exacts de la phrase.",
+            "### Indice dans la phrase",
+            "Reperez le rapprochement, l'exageration ou le fait qu'un objet reçoit une action humaine.",
+            "### Effet recherche",
+            "Expliquez ce que cette image ajoute au sens du passage.",
+        ])
+    if intent == "writing_assistance":
+        return "\n\n".join([
+            "### Comprehension du sujet",
+            f"Le sujet demande de traiter clairement le theme lie a {topic}.",
+            "### Plan propose",
+            "- Introduction courte avec le theme et la problematique\n- Deux arguments organises\n- Conclusion qui reprend l'idee principale",
+            "### Arguments possibles",
+            "\n".join(f"- {fact}" for fact in (facts[:3] or ["Appuyez chaque argument sur un exemple clair."])),
+            "### Conseils de redaction",
+            profile_tip or "Utilisez des connecteurs logiques et evitez les phrases trop longues.",
+        ])
+    return "\n\n".join([
+        "### Reponse",
+        facts[0] if facts else f"La question porte sur {topic}.",
+        "### Explication",
+        " ".join(facts[:4]) if facts else "Les supports disponibles donnent des elements proches, mais pas assez de details pour affirmer une information precise.",
+        "### A retenir",
+        "\n".join(f"- {item}" for item in (facts[:3] or ["Verifier l'information dans le support du cours.", "Justifier avec un indice du texte.", "Adapter la reponse a la consigne."])),
+        "### Petit exercice",
+        profile_tip or "Expliquez l'idee principale en deux phrases, puis ajoutez un exemple du texte.",
+    ])
+
+
+def _french_topic(message: str, results: list[dict]) -> str:
+    normalized = _normalize_text(message)
+    if "antigone" in normalized or "creon" in normalized:
+        return "Antigone"
+    if "boite" in normalized or "sidi mohamed" in normalized:
+        return "La Boite a merveilles"
+    if "dernier jour" in normalized or "condamne" in normalized:
+        return "Le Dernier Jour d'un condamne"
+    if results:
+        title = results[0].get("chapter_title") or results[0].get("course_title") or results[0].get("course_name")
+        if title:
+            return str(title)
+    return "le francais de 1ere Bac"
+
+
+def _profile_tip_for_message(message: str, pedagogical_profile: list[dict]) -> str:
+    if not pedagogical_profile:
+        return ""
+    target = _weakest_competence(pedagogical_profile)
+    competence = target.get("competence")
+    if not competence:
+        return ""
+    return f"Pour renforcer votre competence en {competence.lower()}, avancez par etapes et justifiez chaque reponse avec un indice clair."
 
 
 def _build_multi_course_rag_answer(message: str, level: str, results: list[dict]) -> str:
@@ -939,4 +1297,16 @@ def _out_of_scope_answer(language: str) -> str:
     return (
         "Je suis spécialisé dans les cours d'IA EduMentor AI. "
         "Posez-moi une question sur l'IA, le Machine Learning, le Deep Learning, les LLM, le Prompt Engineering, le RAG, les chatbots ou l'IA responsable."
+    )
+
+# Final French 1ere Bac scope guard for the active chatbot path.
+def _out_of_scope_answer(language: str) -> str:
+    if language == "english":
+        return (
+            "I am specialized in Moroccan 1st-year baccalaureate French regional exam preparation. "
+            "Please ask me about a program work, a language exercise, a figure of speech, methodology, or written production."
+        )
+    return (
+        "Je suis specialise dans la preparation au regional de francais de 1ere Bac. "
+        "Posez-moi une question sur une oeuvre au programme, un exercice de langue, une figure de style, la methodologie ou une production ecrite."
     )
