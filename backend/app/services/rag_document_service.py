@@ -17,6 +17,7 @@ from app.rag.vector_store import COLLECTION_NAME, EMBEDDING_MODEL_NAME, delete_d
 
 DOCS_DIR = Path(__file__).resolve().parents[2] / "docs" / "courses"
 LEGACY_DOCS_DIR = Path(__file__).resolve().parents[3] / "docs" / "courses"
+FRENCH_REGIONAL_DOCS_DIR = Path(__file__).resolve().parents[2] / "docs" / "french_regional"
 CHUNK_SIZE = 800
 CHUNK_OVERLAP = 150
 MAX_TOP_K = 10
@@ -278,6 +279,8 @@ def build_document_chunks(db: Session, document: RagDocument) -> list[dict[str, 
     course = db.get(Course, document.course_id)
     if course is None:
         raise HTTPException(status_code=404, detail="Cours du document introuvable")
+    if document.mime_type in {"text/markdown", "text/plain", "application/json", "application/x-ndjson"}:
+        return build_structured_text_document_chunks(course, document)
     pdf_path = _safe_pdf_path(document.stored_filename)
     if not pdf_path.exists():
         raise FileNotFoundError("Le fichier PDF associe est introuvable")
@@ -322,6 +325,90 @@ def build_document_chunks(db: Session, document: RagDocument) -> list[dict[str, 
     return chunks
 
 
+def build_structured_text_document_chunks(course: Course, document: RagDocument) -> list[dict[str, Any]]:
+    document_path = _safe_text_path(document.file_path or document.stored_filename)
+    if not document_path.exists():
+        raise FileNotFoundError("Le fichier texte associe est introuvable")
+
+    sidecar_path = document_path.with_suffix(document_path.suffix + ".chunks.json")
+    if sidecar_path.exists():
+        raw_chunks = json_load(sidecar_path)
+        chunks = []
+        for index, raw_chunk in enumerate(raw_chunks if isinstance(raw_chunks, list) else [], start=1):
+            text = " ".join(str(raw_chunk.get("text") or "").split())
+            if not text:
+                continue
+            chunk_key = str(raw_chunk.get("chunk_key") or index)
+            metadata = dict(raw_chunk.get("metadata") or {})
+            metadata.update({
+                "document_id": document.id,
+                "course_id": course.id,
+                "course_name": course.title,
+                "course_title": course.title,
+                "subject_id": course.subject_id or -1,
+                "subject_name": course.subject.name if course.subject else metadata.get("subject_name", ""),
+                "subject_slug": course.subject.slug if course.subject else metadata.get("subject_slug", ""),
+                "professor_id": course.professor_id or -1,
+                "education_level_id": course.education_level_id or -1,
+                "difficulty_level_id": course.difficulty_level_id or -1,
+                "file_name": document.original_filename,
+                "pdf_name": document.original_filename,
+                "file_url": "",
+                "page_number": -1,
+                "page_start": -1,
+                "page_end": -1,
+                "chunk_index": index,
+                "checksum_sha256": document.checksum_sha256,
+                "published": bool(course.published),
+                "active": bool(document.active),
+                "index_status": "ready",
+                "character_count": len(text),
+            })
+            if not metadata.get("source_label"):
+                metadata["source_label"] = metadata.get("display_source") or document.original_filename
+            chunks.append({
+                "id": stable_text_chunk_id(document, chunk_key),
+                "text": text,
+                "metadata": metadata,
+            })
+        return chunks
+
+    text = document_path.read_text(encoding="utf-8")
+    chunks = []
+    for chunk in split_text_sections_into_chunks(text):
+        chunks.append({
+            "id": stable_text_chunk_id(document, str(chunk.chunk_index)),
+            "text": chunk.text,
+            "metadata": {
+                "document_id": document.id,
+                "course_id": course.id,
+                "course_name": course.title,
+                "course_title": course.title,
+                "subject_id": course.subject_id or -1,
+                "subject_name": course.subject.name if course.subject else "",
+                "subject_slug": course.subject.slug if course.subject else "",
+                "professor_id": course.professor_id or -1,
+                "education_level_id": course.education_level_id or -1,
+                "difficulty_level_id": course.difficulty_level_id or -1,
+                "file_name": document.original_filename,
+                "pdf_name": document.original_filename,
+                "page_number": -1,
+                "page_start": -1,
+                "page_end": -1,
+                "chapter_title": chunk.chapter_title,
+                "chunk_index": chunk.chunk_index,
+                "checksum_sha256": document.checksum_sha256,
+                "language": _document_language(course),
+                "published": bool(course.published),
+                "active": bool(document.active),
+                "index_status": "ready",
+                "character_count": len(chunk.text),
+                "source_label": document.original_filename,
+            },
+        })
+    return chunks
+
+
 def extract_pages(pdf_path: Path) -> list[str]:
     reader = PdfReader(str(pdf_path))
     return [(page.extract_text() or "").strip() for page in reader.pages]
@@ -350,6 +437,11 @@ def split_pages_into_chunks(pages: list[str], chunk_size: int = CHUNK_SIZE, over
 
 def stable_chunk_id(document: RagDocument, chunk: PageChunk) -> str:
     return f"doc-{document.id}-{document.checksum_sha256[:12]}-p{chunk.page_start}-c{chunk.chunk_index}"
+
+
+def stable_text_chunk_id(document: RagDocument, chunk_key: str) -> str:
+    safe_key = re.sub(r"[^a-zA-Z0-9_.:-]+", "-", chunk_key).strip("-")[:80] or "chunk"
+    return f"doc-{document.id}-{document.checksum_sha256[:12]}-{safe_key}"
 
 
 def serialize_document(document: RagDocument) -> dict[str, Any]:
@@ -432,6 +524,72 @@ def _safe_pdf_path(pdf_url_or_name: str) -> Path:
         if path.exists():
             return path
     return (DOCS_DIR / file_name).resolve()
+
+
+def _safe_text_path(path_or_name: str) -> Path:
+    raw = Path(str(path_or_name))
+    candidates = [raw] if raw.is_absolute() else [FRENCH_REGIONAL_DOCS_DIR / raw]
+    for candidate in candidates:
+        path = candidate.resolve()
+        docs_root = FRENCH_REGIONAL_DOCS_DIR.resolve()
+        if (path == docs_root or docs_root in path.parents) and path.suffix.lower() in {".md", ".txt", ".json", ".jsonl"}:
+            return path
+    raise HTTPException(status_code=400, detail="Document texte RAG invalide")
+
+
+def split_text_sections_into_chunks(text: str, chunk_size: int = CHUNK_SIZE, overlap: int = CHUNK_OVERLAP) -> list[PageChunk]:
+    sections: list[tuple[str, str]] = []
+    current_title = ""
+    current_lines: list[str] = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("#"):
+            if current_lines:
+                sections.append((current_title, "\n".join(current_lines).strip()))
+            current_title = stripped.lstrip("#").strip()
+            current_lines = [stripped]
+        else:
+            current_lines.append(line)
+    if current_lines:
+        sections.append((current_title, "\n".join(current_lines).strip()))
+
+    chunks: list[PageChunk] = []
+    chunk_index = 1
+    for title, section_text in sections:
+        normalized = " ".join(section_text.split())
+        if not normalized:
+            continue
+        if len(normalized) <= chunk_size * 1.5:
+            chunks.append(PageChunk(-1, -1, chunk_index, normalized, title))
+            chunk_index += 1
+            continue
+        for piece in split_text_into_semantic_pieces(normalized, chunk_size, overlap):
+            chunks.append(PageChunk(-1, -1, chunk_index, piece, title))
+            chunk_index += 1
+    return chunks
+
+
+def split_text_into_semantic_pieces(text: str, chunk_size: int, overlap: int) -> list[str]:
+    if len(text) <= chunk_size:
+        return [text]
+    pieces: list[str] = []
+    sentences = re.split(r"(?<=[.!?])\s+", text)
+    current = ""
+    for sentence in sentences:
+        if len(current) + len(sentence) + 1 <= chunk_size or not current:
+            current = f"{current} {sentence}".strip()
+            continue
+        pieces.append(current)
+        current = f"{current[-overlap:]} {sentence}".strip()
+    if current:
+        pieces.append(current)
+    return [piece for piece in pieces if piece]
+
+
+def json_load(path: Path) -> Any:
+    import json
+
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def public_pdf_name(pdf_url_or_name: str) -> str:

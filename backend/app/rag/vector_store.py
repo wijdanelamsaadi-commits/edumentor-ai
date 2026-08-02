@@ -337,6 +337,23 @@ def _format_query_results(result: dict) -> list[dict]:
                 "page_start": _normalize_page_number(metadata.get("page_start") or metadata.get("page_number")),
                 "page_end": _normalize_page_number(metadata.get("page_end") or metadata.get("page_number")),
                 "chapter_title": metadata.get("chapter_title", ""),
+                "display_source": metadata.get("display_source", ""),
+                "document_type": metadata.get("document_type", ""),
+                "language": metadata.get("language", ""),
+                "level": metadata.get("level", ""),
+                "subject": metadata.get("subject", ""),
+                "program": metadata.get("program", ""),
+                "work": metadata.get("work", ""),
+                "author": metadata.get("author", ""),
+                "exam_id": metadata.get("exam_id", ""),
+                "year": metadata.get("year", ""),
+                "region": metadata.get("region", ""),
+                "session": metadata.get("session", ""),
+                "question_id": metadata.get("question_id", ""),
+                "competence": metadata.get("competence", ""),
+                "question_type": metadata.get("question_type", ""),
+                "points": metadata.get("points", ""),
+                "verified": metadata.get("verified", ""),
                 "source_label": metadata.get("source_label", ""),
                 "score": round(1 / (1 + distance), 4),
                 "text_preview": text[:320],
@@ -367,6 +384,18 @@ def _rerank_results(query: str, results: list[dict]) -> list[dict]:
             adjusted_score += 0.18
         if "installer" in normalized_query and ("installation" in text or "guide d'installation" in text):
             adjusted_score += 0.18
+        if "auteur" in normalized_query and (
+            "auteur" in text
+            or "ecrit par" in text
+            or "ahmed sefrioui" in text
+            or "jean anouilh" in text
+            or "victor hugo" in text
+        ):
+            adjusted_score += 0.22
+        if ("figure" in normalized_query or "style" in normalized_query) and "figure" in text:
+            adjusted_score += 0.12
+        if ("vrai" in normalized_query and "faux" in normalized_query) and ("vrai" in text and "faux" in text):
+            adjusted_score += 0.16
 
         result["score"] = round(adjusted_score, 4)
 

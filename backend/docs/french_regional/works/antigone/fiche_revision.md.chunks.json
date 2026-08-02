@@ -1,0 +1,58 @@
+[
+  {
+    "chunk_key": "overview",
+    "text": "Oeuvre: Antigone\nAuteur: Jean Anouilh\nGenre: Tragédie moderne / pièce de théâtre\nSource: informations bibliographiques et questions presentes dans les examens regionaux du dataset.\n\nPassages disponibles dans les examens:\n- Examen régional de français - Casablanca-Settat 2019: ANTIGONE Tu as choisi la vie et moi la mort. Laisse-moi maintenant avec tes jérémiades. Il fallait y aller ce matin, à quatre pattes, dans la nuit. Il fallait aller gratter la terre avec tes ongles pendant qu’ils étaient tout près et te faire empoigner par eux comme une voleuse ! ISMÈNE Eh bien, j’irai demain ! ANTIGONE Tu l’entends, Créon ? Elle aussi. Qui sait si cela ne va pas prendre à d’autres encore, en m’écoutant ? Qu’est-ce que tu attends pour me faire taire, qu’est-ce que tu attends pour appeler tes gardes ? Allons, Créon, un peu de courage, ce n’est qu’un mauvais moment à passer. Allons, cuisinier, puisqu’il le faut ! CRÉON, crie soudain. Gardes ! Les gardes apparaissent aussitôt\n- Examen régional de français - Casablanca-Settat 2020 - Épreuve 2: Le chœur disparaît, tandis que les gardes poussent Antigone en scène. LE GARDE, qui a repris tout son aplomb. Allez, allez, pas d’histoires ! Vous vous expliquerez devant le chef. Moi, je ne connais que la consigne. Ce que vous aviez à faire là, je ne veux pas le savoir. Tout le monde a des excuses, tout le monde a quelque chose à objecter. S’il fallait écouter les gens, s’il fallait essayer de comprendre, on serait propres. Allez, allez ! Tenez-la, vous autres, et pas d’histoires ! Moi, ce qu’elle a à dire, je ne veux pas le savoir ! ANTIGONE Dis-leur de me lâcher, avec leurs sales mains. Ils me font mal. LE GARDE Leurs sales mains ? Vous pourriez être polie, Mademoiselle… Moi, je suis",
+    "metadata": {
+      "language": "fr",
+      "level": "1ere_bac_maroc",
+      "subject": "francais",
+      "program": "regional",
+      "document_type": "work_sheet",
+      "work": "Antigone",
+      "author": "Jean Anouilh",
+      "exam_id": "",
+      "year": "",
+      "region": "",
+      "session": "",
+      "question_id": "",
+      "competence": "",
+      "question_type": "",
+      "points": "",
+      "chapter_title": "",
+      "source_file": "Antigone - fiche de revision",
+      "verified": "source_synthesis",
+      "course_id": 12,
+      "subject_id": 1534,
+      "display_source": "Antigone - fiche de revision",
+      "source_label": "Antigone - fiche de revision"
+    }
+  },
+  {
+    "chunk_key": "revision-points",
+    "text": "Fiche de revision: Antigone\nElements explicitement travailles par les examens:\nCasablanca-Settat 2019: passage support travaille en examen.\nMéthodologie: Donnez le titre de l’œuvre.\nMéthodologie: Donnez le nom de l’auteur.\nMéthodologie: Précisez le genre littéraire.\nMéthodologie: Citez deux personnages principaux.\nCompréhension: Par qui Antigone a-t-elle été empoignée comme une voleuse ?\nCompréhension: Relevez la phrase qui montre qu’Ismène a décidé d’imiter Antigone.\nCasablanca-Settat 2020: passage support travaille en examen.\nMéthodologie: Précisez le genre de l’œuvre.\nMéthodologie: À quel siècle l’œuvre a-t-elle été écrite ?\nCompréhension: Pourquoi les gardes arrêtent-ils Antigone et la poussent-ils en scène ?\nCompréhension: Après la perte de sa pelle, avec quoi Antigone creusait-elle ?\n\nAttention: cette fiche ne remplace pas l'oeuvre complete et ne donne pas de numero de page.",
+    "metadata": {
+      "language": "fr",
+      "level": "1ere_bac_maroc",
+      "subject": "francais",
+      "program": "regional",
+      "document_type": "work_summary",
+      "work": "Antigone",
+      "author": "Jean Anouilh",
+      "exam_id": "",
+      "year": "",
+      "region": "",
+      "session": "",
+      "question_id": "",
+      "competence": "",
+      "question_type": "",
+      "points": "",
+      "chapter_title": "",
+      "source_file": "Antigone - fiche de revision",
+      "verified": "source_synthesis",
+      "course_id": 12,
+      "subject_id": 1534,
+      "display_source": "Antigone - fiche de revision",
+      "source_label": "Antigone - fiche de revision"
+    }
+  }
+]
