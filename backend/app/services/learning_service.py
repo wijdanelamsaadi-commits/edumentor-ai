@@ -1,5 +1,6 @@
 from fastapi import HTTPException
 import logging
+import re
 import unicodedata
 from uuid import uuid4
 from sqlalchemy import or_, select
@@ -480,13 +481,14 @@ def rag_chat(
         results = []
     threshold = get_settings()["rag_score_threshold"]
     relevant_results = [result for result in results if float(result.get("score", 0)) >= threshold]
+    relevant_results = _select_results_for_intent(current_message, intent, relevant_results)
 
     if relevant_results:
         mode = "rag_course" if resolved_course_id else "rag_subject" if resolved_subject_id else "rag_semantic"
         _log_chat_request(request_id, current_user, current_message, intent, len(relevant_results), mode)
         return {
             "answer": _build_french_rag_answer(current_message, level, relevant_results, intent, pedagogical_profile),
-            "sources": [_format_chat_source(result) for result in relevant_results],
+            "sources": _format_chat_sources(relevant_results),
             "mode": mode,
             "request_id": request_id,
             "client_message_id": client_message_id,
@@ -802,57 +804,409 @@ def _build_french_rag_answer(
             "### Ce qui est correct",
             facts[0] if facts else "Votre réponse contient une piste utile, mais elle doit être vérifiée avec le texte.",
             "### Ce qui doit être amélioré",
-            "Ajoutez un indice precis du passage et reliez-le clairement a l'oeuvre ou a la consigne.",
-            "### Proposition corrigee",
+            "Ajoutez un indice précis du passage et reliez-le clairement à l’œuvre ou à la consigne.",
+            "### Proposition corrigée",
             "Formulez une réponse courte, puis justifiez-la par un élément observé dans le texte.",
             "### Conseil",
-            profile_tip or "Pour progresser, commencez toujours par reperer les mots de la consigne.",
+            profile_tip or "Pour progresser, commencez toujours par repérer les mots de la consigne.",
         ])
     if intent == "figure_of_style":
         return "\n\n".join([
             "### Figure",
-            facts[0] if facts else "La figure doit etre identifiee a partir des mots exacts de la phrase.",
+            facts[0] if facts else "La figure doit être identifiée à partir des mots exacts de la phrase.",
             "### Indice dans la phrase",
-            "Reperez le rapprochement, l'exageration ou le fait qu'un objet reçoit une action humaine.",
+            "Repérez le rapprochement, l’exagération ou le fait qu’un objet reçoit une action humaine.",
             "### Effet recherché",
             "Expliquez ce que cette image ajoute au sens du passage.",
         ])
     if intent == "writing_assistance":
         return "\n\n".join([
             "### Compréhension du sujet",
-            f"Le sujet demande de traiter clairement le theme lie a {topic}.",
+            f"Le sujet demande de traiter clairement le thème lié à {topic}.",
             "### Problématique",
-            "Transformez le theme en question simple: pourquoi cette valeur est-elle importante et comment peut-elle apparaitre dans la vie quotidienne ou dans une oeuvre ?",
-            "### Plan propose",
-            "- Introduction courte avec le theme et la problematique\n- Deux arguments organises\n- Conclusion qui reprend l'idee principale",
-            "### Exemple d'introduction",
-            "La solidarite est une valeur essentielle car elle aide les personnes a affronter les difficultes ensemble. On peut donc se demander comment elle renforce les liens entre les individus.",
+            "Transformez le thème en une question simple : pourquoi cette valeur est-elle importante et comment apparaît-elle dans la vie quotidienne ou dans une œuvre ?",
+            "### Plan proposé",
+            "- Introduction courte avec le thème et la problématique\n- Deux arguments organisés\n- Conclusion qui reprend l’idée principale",
+            "### Exemple d’introduction",
+            "La solidarité est une valeur essentielle, car elle aide les personnes à affronter les difficultés ensemble. On peut donc se demander comment elle renforce les liens entre les individus.",
             "### Arguments possibles",
             "\n".join(f"- {fact}" for fact in (facts[:3] or ["Appuyez chaque argument sur un exemple clair."])),
-            "### Conseils de redaction",
-            profile_tip or "Utilisez des connecteurs logiques et evitez les phrases trop longues.",
+            "### Conseils de rédaction",
+            profile_tip or "Utilisez des connecteurs logiques et évitez les phrases trop longues.",
         ])
     if intent in {"methodology_help", "regional_exam"}:
         return "\n\n".join([
             "### Méthode",
-            "Situer un passage consiste a presenter rapidement l'oeuvre, le moment de l'histoire et l'evenement qui entoure l'extrait.",
+            "Situer un passage consiste à présenter rapidement l’œuvre, le moment de l’histoire et l’événement qui entoure l’extrait.",
             "### Étapes",
-            "- Nommer l'oeuvre et l'auteur si la question le demande.\n- Dire ce qui se passe juste avant le passage.\n- Identifier les personnages presents ou concernes.\n- Relier le passage a l'evenement principal ou au theme dominant.",
+            "- Nommer l’œuvre et l’auteur si la question le demande.\n- Dire ce qui se passe juste avant le passage.\n- Identifier les personnages présents ou concernés.\n- Relier le passage à l’événement principal ou au thème dominant.",
             "### Exemple de formulation",
-            "Ce passage se situe après un événement important du récit. Il met en scène un personnage dans une situation précise et permet de comprendre la suite de l'action.",
+            "Ce passage se situe après un événement important du récit. Il met en scène un personnage dans une situation précise et permet de comprendre la suite de l’action.",
             "### Erreurs à éviter",
             "- Recopier tout le texte support.\n- Donner une réponse vague sans événement précédent.\n- Inventer un chapitre, une page ou une citation absente du document.",
         ])
+    if intent == "work_explanation":
+        return _build_work_explanation_answer(message, results, facts, profile_tip)
+    if intent == "language_help":
+        return _build_language_help_answer(message, results, facts, profile_tip)
     return "\n\n".join([
-        "### Reponse",
+        "### Réponse",
         facts[0] if facts else f"La question porte sur {topic}.",
         "### Explication",
         " ".join(facts[:4]) if facts else "Les supports disponibles donnent des éléments proches, mais pas assez de détails pour affirmer une information précise.",
-        "### A retenir",
-        "\n".join(f"- {item}" for item in (facts[:3] or ["Verifier l'information dans le support du cours.", "Justifier avec un indice du texte.", "Adapter la reponse a la consigne."])),
+        "### À retenir",
+        "\n".join(f"- {item}" for item in (facts[:3] or ["Vérifier l’information dans le support du cours.", "Justifier avec un indice du texte.", "Adapter la réponse à la consigne."])),
         "### Petit exercice",
-        profile_tip or "Expliquez l'idee principale en deux phrases, puis ajoutez un exemple du texte.",
+        profile_tip or "Expliquez l’idée principale en deux phrases, puis ajoutez un exemple du texte.",
     ])
+
+
+
+def _build_work_explanation_answer(
+    message: str,
+    results: list[dict],
+    facts: list[str],
+    profile_tip: str,
+) -> str:
+    normalized = _normalize_text(message)
+    target_work = _target_work_name(message) or _french_topic(message, results)
+    content = "\n".join(_result_text(result) for result in results)
+
+    if "personnage" in normalized:
+        characters = _extract_work_characters(content)
+        principals = characters.get("principaux", [])
+        secondaries = characters.get("secondaires", [])
+        if principals or secondaries:
+            sections = [
+                "### Personnages principaux",
+                "\n".join(f"- {item}" for item in principals) if principals else "Le support consulté ne distingue pas clairement les personnages principaux.",
+            ]
+            if secondaries:
+                sections.extend([
+                    "### Personnages secondaires",
+                    "\n".join(f"- {item}" for item in secondaries),
+                ])
+            sections.extend([
+                "### À retenir",
+                f"Pour présenter les personnages de **{target_work}**, indiquez leur nom, leur lien avec le personnage principal et leur rôle dans l’histoire.",
+                "### Petit exercice",
+                "Classez les personnages suivants en deux catégories : principaux et secondaires.",
+            ])
+            return "\n\n".join(sections)
+
+    if any(term in normalized for term in ("structure", "chapitre", "organisation")):
+        structure_items = _extract_bulleted_items_after_heading(content, ("structure de l oeuvre", "chapitres", "schema narratif"), limit=12)
+        if structure_items:
+            return "\n\n".join([
+                "### Structure de l’œuvre",
+                "\n".join(f"- {item}" for item in structure_items),
+                "### À retenir",
+                "Reliez chaque partie de l’œuvre aux événements principaux et à l’évolution des personnages.",
+            ])
+
+    if any(term in normalized for term in ("presente", "présente", "presentation", "auteur", "genre")):
+        clean_facts = [item for item in facts if item][:5]
+        return "\n\n".join([
+            f"### Présentation de {target_work}",
+            "\n".join(f"- {item}" for item in clean_facts) if clean_facts else "Les supports retrouvés ne contiennent pas assez d’éléments précis pour une présentation complète.",
+            "### À retenir",
+            "Une présentation efficace mentionne l’auteur, le genre, la date de publication et les principaux éléments de l’œuvre.",
+        ])
+
+    clean_facts = [item for item in facts if item][:5]
+    return "\n\n".join([
+        f"### Réponse — {target_work}",
+        clean_facts[0] if clean_facts else "Le support retrouvé concerne bien cette œuvre, mais il ne contient pas assez de détails pour répondre avec précision.",
+        "### Explication",
+        " ".join(clean_facts[1:]) if len(clean_facts) > 1 else "Consultez la fiche de lecture de l’œuvre et repérez les personnages, les événements et les thèmes liés à la question.",
+        "### À retenir",
+        "Appuyez toujours votre réponse sur un élément précis de la fiche ou du texte étudié.",
+        "### Petit exercice",
+        profile_tip or "Résumez l’idée principale en deux phrases, puis citez un personnage ou un événement associé.",
+    ])
+
+
+def _extract_work_characters(text: str) -> dict[str, list[str]]:
+    lines = [" ".join(line.split()).strip() for line in str(text or "").splitlines()]
+    principals: list[str] = []
+    secondaries: list[str] = []
+    section = ""
+
+    for line in lines:
+        normalized = _normalize_text(line).strip(" :-")
+        if not normalized:
+            continue
+        if "personnages principaux" in normalized:
+            section = "principaux"
+            continue
+        if "personnages secondaires" in normalized:
+            section = "secondaires"
+            continue
+        if section and any(marker in normalized for marker in ("la structure de l oeuvre", "chapitres thematique", "schema narratif", "resume de l oeuvre", "module 1")):
+            section = ""
+            continue
+        if section and line.lstrip().startswith(("-", "•", "–")):
+            item = re.sub(r"^[\s\-•–]+", "", line).strip()
+            if 3 <= len(item) <= 240:
+                (principals if section == "principaux" else secondaries).append(item)
+
+    # PDF extraction can flatten bullets or split names across lines. Recover only
+    # characters whose names are explicitly present in the retrieved support text.
+    normalized_text = _normalize_text(text)
+    if "la boite a merveilles" in normalized_text:
+        _append_known_characters(
+            principals,
+            normalized_text,
+            (
+                ("Mohammed", "le personnage principal, enfant de six ans"),
+                ("Lalla Zoubida", "mère de Mohammed"),
+                ("Si Abdeslem", "père de Mohammed"),
+            ),
+        )
+        _append_known_characters(
+            secondaries,
+            normalized_text,
+            (
+                ("Kenza", "la chouafa"),
+                ("Rahma", "voisine de la famille"),
+                ("Fatma Bziouya", "voisine"),
+                ("Lalla Aïcha", "ancienne voisine et amie de la mère de Mohammed"),
+                ("Zineb", "fille de Rahma"),
+                ("Salma", "marieuse professionnelle"),
+                ("Driss El Aouad", "mari de Rahma"),
+                ("Moulay Arbi", "mari de Lalla Aïcha"),
+                ("Moulay Larbi", "mari de Lalla Aïcha"),
+                ("Abdellah", "épicier et conteur"),
+                ("Si Abderrahman", "coiffeur du père et de l'enfant"),
+                ("Le fquih", "maître de l'école coranique"),
+                ("Le fqih", "maître de l'école coranique"),
+                ("Driss le teigneux", "apprenti du père"),
+                ("Si El Arafi", "le voyant"),
+                ("Si El Ara", "le voyant"),
+            ),
+        )
+
+    return {
+        "principaux": _unique_items(principals)[:8],
+        "secondaires": _unique_items(secondaries)[:20],
+    }
+
+
+def _append_known_characters(target: list[str], normalized_text: str, characters: tuple[tuple[str, str], ...]) -> None:
+    existing = {_normalize_text(item).split("—", 1)[0].split("-", 1)[0].strip() for item in target}
+    for name, role in characters:
+        normalized_name = _normalize_text(name)
+        if normalized_name in normalized_text and normalized_name not in existing:
+            target.append(f"{name} — {role}.")
+            existing.add(normalized_name)
+
+def _extract_bulleted_items_after_heading(text: str, headings: tuple[str, ...], limit: int = 10) -> list[str]:
+    lines = [" ".join(line.split()).strip() for line in str(text or "").splitlines()]
+    active = False
+    items: list[str] = []
+    for line in lines:
+        normalized = _normalize_text(line)
+        if any(heading in normalized for heading in headings):
+            active = True
+            continue
+        if active and line.lstrip().startswith(("-", "•", "–")):
+            item = re.sub(r"^[\s\-•–]+", "", line).strip()
+            if item:
+                items.append(item)
+                if len(items) >= limit:
+                    break
+        elif active and items and len(line) < 90 and not line[:1].isdigit():
+            break
+    return _unique_items(items)
+
+
+def _target_work_name(message: str) -> str:
+    normalized = _normalize_text(message)
+    if "antigone" in normalized or "creon" in normalized:
+        return "Antigone"
+    if "boite a merveilles" in normalized or "sidi mohamed" in normalized or "sidi mohammed" in normalized or "sefrioui" in normalized:
+        return "La Boîte à merveilles"
+    if "dernier jour" in normalized or "condamne" in normalized or "victor hugo" in normalized:
+        return "Le Dernier Jour d’un condamné"
+    return ""
+
+
+def _work_matches(target_work: str, result: dict) -> bool:
+    if not target_work:
+        return True
+    haystack = _normalize_text(" ".join([
+        str(result.get("work") or ""),
+        str(result.get("chapter_title") or ""),
+        str(result.get("display_source") or ""),
+        _result_text(result),
+    ]))
+    target = _normalize_text(target_work)
+    target_tokens = {token for token in re.findall(r"[a-z0-9]+", target) if len(token) >= 4}
+    return target in haystack or (target_tokens and sum(token in haystack for token in target_tokens) >= min(2, len(target_tokens)))
+
+
+def _result_text(result: dict) -> str:
+    return str(result.get("content") or result.get("text") or result.get("text_preview") or result.get("excerpt") or "")
+
+def _build_language_help_answer(
+    message: str,
+    results: list[dict],
+    facts: list[str],
+    profile_tip: str,
+) -> str:
+    normalized = _normalize_text(message)
+    combined = " ".join(_result_text(result) for result in results)
+
+    if "champ" in normalized and "lexical" in normalized:
+        definition = _find_supported_sentence(
+            combined,
+            (r"un champ lexical est[^.?!]*[.?!]", r"le champ lexical[^.?!]*(?:ensemble|mots)[^.?!]*[.?!]"),
+        )
+        if not definition:
+            definition = "Un champ lexical est un ensemble de mots liés à une même idée, une même réalité ou un même domaine."
+        example = _extract_field_example(combined)
+        return "\n\n".join([
+            "### Réponse",
+            definition,
+            "### Comment le reconnaître ?",
+            "Repérez plusieurs mots qui se rapportent au même thème. Ils peuvent être des synonymes, appartenir à la même famille ou au même domaine.",
+            "### Exemple",
+            example or "Dans le champ lexical du sommeil, on peut relever : « sommeil », « se réveiller » et « se recoucher ».",
+            "### À retenir",
+            "Un seul mot ne suffit pas : il faut relever plusieurs termes liés au même thème, puis expliquer ce qu’ils révèlent dans le texte.",
+            "### Petit exercice",
+            profile_tip or "Relevez trois mots appartenant au champ lexical de la peur dans un court passage.",
+        ])
+
+    if "discours direct" in normalized or "discours indirect" in normalized:
+        return "\n\n".join([
+            "### Réponse",
+            facts[0] if facts else "Le discours direct rapporte les paroles telles qu’elles sont prononcées, tandis que le discours indirect les intègre dans la phrase du narrateur.",
+            "### Indices",
+            "Le discours direct utilise généralement les deux-points, les guillemets ou les tirets. Le discours indirect utilise un verbe introducteur suivi de « que », « si » ou d’un mot interrogatif.",
+            "### À retenir",
+            "Le passage au discours indirect peut entraîner des changements de pronoms, de temps verbaux et d’indications de temps ou de lieu.",
+            "### Petit exercice",
+            "Transformez au discours indirect : Il déclara : « Je viendrai demain. »",
+        ])
+
+    clean_facts = facts[:3]
+    return "\n\n".join([
+        "### Réponse",
+        clean_facts[0] if clean_facts else "La notion doit être définie à partir du cours sélectionné.",
+        "### Explication",
+        " ".join(clean_facts[1:]) if len(clean_facts) > 1 else "Repérez la règle, puis appliquez-la à un exemple court.",
+        "### À retenir",
+        "Identifiez d’abord la notion demandée, puis justifiez votre réponse avec un indice précis.",
+        "### Petit exercice",
+        profile_tip or "Donnez un exemple personnel qui applique cette règle de langue.",
+    ])
+
+
+def _find_supported_sentence(text: str, patterns: tuple[str, ...]) -> str:
+    normalized_space = " ".join(str(text or "").split())
+    for pattern in patterns:
+        match = re.search(pattern, normalized_space, flags=re.IGNORECASE)
+        if match:
+            return _clean_source_sentence(match.group(0))
+    return ""
+
+
+def _extract_field_example(text: str) -> str:
+    normalized = _normalize_text(text)
+    if "sommeil" in normalized and ("reveill" in normalized or "recoucher" in normalized):
+        return "Dans le texte de l’Achoura, « sommeil », « se réveiller » et « se recoucher » appartiennent au champ lexical du sommeil."
+    return ""
+
+
+def _select_results_for_intent(message: str, intent: str, results: list[dict]) -> list[dict]:
+    if not results:
+        return []
+    normalized = _normalize_text(message)
+    lesson_types = {
+        "language_lesson",
+        "grammar_lesson",
+        "enunciation_lesson",
+        "reported_speech_lesson",
+        "language_register_lesson",
+        "literary_register_lesson",
+        "figure_of_style_lesson",
+        "methodology",
+        "writing_guide",
+        "work_sheet",
+        "work_summary",
+        "work_structure",
+        "work_characters",
+    }
+
+    def result_key(result: dict) -> tuple[float, float]:
+        document_type = str(result.get("document_type") or "").lower()
+        chapter = _normalize_text(str(result.get("chapter_title") or ""))
+        text = _normalize_text(_result_text(result))
+        bonus = 0.0
+        if intent == "language_help" and document_type in lesson_types:
+            bonus += 1.0
+        if "champ" in normalized and "lexical" in normalized and "champ" in (chapter + " " + text) and "lexical" in (chapter + " " + text):
+            bonus += 2.0
+        if intent == "figure_of_style" and "figure" in document_type:
+            bonus += 1.0
+        if intent == "methodology_help" and document_type == "methodology":
+            bonus += 1.0
+        if intent == "writing_assistance" and document_type in {"writing_guide", "writing_topic", "scoring_rubric"}:
+            bonus += 1.0
+        if document_type.startswith("regional_exam") and intent == "language_help" and not any(term in normalized for term in ("examen", "question", "regional", "ancienne")):
+            bonus -= 0.8
+        return bonus, float(result.get("score", 0))
+
+    ordered = sorted(results, key=result_key, reverse=True)
+    if intent == "language_help":
+        lessons = [item for item in ordered if str(item.get("document_type") or "").lower() in lesson_types]
+        if lessons:
+            examples = [item for item in ordered if item not in lessons and _result_matches_query_terms(message, item)]
+            return (lessons[:2] + examples[:1])[:3]
+    if intent == "work_explanation":
+        work_types = {"work_sheet", "work_summary", "work_structure", "work_characters"}
+        target_work = _target_work_name(message)
+        work_results = [
+            item for item in ordered
+            if str(item.get("document_type") or "").lower() in work_types
+            and (not target_work or _work_matches(target_work, item))
+        ]
+        if work_results:
+            if _is_long_list_question(message):
+                return work_results[:5]
+            complementary = [item for item in ordered if item not in work_results and _work_matches(target_work, item)]
+            return (work_results[:2] + complementary[:1])[:3]
+    return ordered[:3]
+
+
+def _result_matches_query_terms(message: str, result: dict) -> bool:
+    query_terms = {term for term in re.findall(r"[a-z0-9]+", _normalize_text(message)) if len(term) >= 4}
+    text = _normalize_text(" ".join([
+        str(result.get("chapter_title") or ""),
+        _result_text(result),
+    ]))
+    return bool(query_terms) and sum(1 for term in query_terms if term in text) >= min(2, len(query_terms))
+
+
+def _is_long_list_question(message: str) -> bool:
+    normalized = _normalize_text(message)
+    return any(
+        phrase in normalized
+        for phrase in (
+            "quels sont les personnages",
+            "personnages principaux",
+            "personnages secondaires",
+            "liste des personnages",
+            "donne la liste",
+            "cite tous",
+            "presente les personnages",
+            "structure complete",
+            "resume des chapitres",
+            "liste complete",
+            "tous les elements",
+        )
+    )
 
 
 def _french_topic(message: str, results: list[dict]) -> str:
@@ -883,7 +1237,7 @@ def _profile_tip_for_message(message: str, pedagogical_profile: list[dict]) -> s
 def _extract_french_facts(message: str, results: list[dict]) -> list[str]:
     facts = _sentences_from_results(results)
     normalized_message = _normalize_text(message)
-    all_text = " ".join(str(result.get("text_preview") or result.get("excerpt") or "") for result in results)
+    all_text = " ".join(_result_text(result) for result in results)
     normalized_text = _normalize_text(all_text)
     priority: list[str] = []
     if "auteur" in normalized_message and "ahmed sefrioui" in normalized_text:
@@ -941,7 +1295,7 @@ def _human_topic(message: str, results: list[dict]) -> str:
 
 
 def _extract_key_facts(message: str, results: list[dict]) -> list[str]:
-    text = " ".join(str(result.get("text_preview") or result.get("excerpt") or "") for result in results)
+    text = " ".join(_result_text(result) for result in results)
     normalized = _normalize_text(f"{message} {text}")
     facts: list[str] = []
     if "erreur" in normalized:
@@ -1027,14 +1381,46 @@ def _exercise_for_topic(topic: str, level: str) -> str:
 
 def _sentences_from_results(results: list[dict]) -> list[str]:
     sentences: list[str] = []
+    blocked_prefixes = (
+        "examen:",
+        "oeuvre:",
+        "question ",
+        "competence:",
+        "type:",
+        "bareme:",
+        "barème:",
+        "elements attendus:",
+        "éléments attendus:",
+        "correction officielle",
+        "correction verifiee",
+        "correction vérifiée",
+        "source pedagogique complementaire:",
+        "source pédagogique complémentaire:",
+    )
     for result in results:
-        text = str(result.get("text_preview") or result.get("excerpt") or "")
-        for sentence in text.replace("\n", " ").split("."):
-            clean = " ".join(sentence.split())
-            if 40 <= len(clean) <= 220:
-                sentences.append(clean + ".")
-    return sentences[:5]
+        text = _result_text(result)
+        text = re.sub(r"Source pédagogique complémentaire\s*:[^.]*\.\s*Page\s+\d+\.\s*", "", text, flags=re.IGNORECASE)
+        text = re.sub(r"Source pedagogique complementaire\s*:[^.]*\.\s*Page\s+\d+\.\s*", "", text, flags=re.IGNORECASE)
+        for part in re.split(r"(?<=[.!?])\s+|\n+", text):
+            clean = _clean_source_sentence(part)
+            normalized = _normalize_text(clean)
+            if not clean or len(clean) < 35 or len(clean) > 280:
+                continue
+            if any(normalized.startswith(_normalize_text(prefix)) for prefix in blocked_prefixes):
+                continue
+            if "bareme" in normalized or "elements attendus" in normalized or "question_type" in normalized:
+                continue
+            sentences.append(clean)
+    return _unique_items(sentences)[:6]
 
+
+def _clean_source_sentence(value: str) -> str:
+    clean = " ".join(str(value or "").split()).strip(" -;:")
+    clean = re.sub(r"\b0\s*\.\s*25\b", "0,25", clean)
+    clean = re.sub(r"\b1\s*\.\s*0\b", "1", clean)
+    if clean and clean[-1] not in ".!?":
+        clean += "."
+    return clean
 
 def _unique_items(items: list[str]) -> list[str]:
     seen: set[str] = set()
@@ -1047,10 +1433,60 @@ def _unique_items(items: list[str]) -> list[str]:
     return unique
 
 
+def _format_chat_sources(results: list[dict]) -> list[dict]:
+    grouped: dict[tuple[str, str, str, str], dict] = {}
+    for result in results:
+        source = _format_chat_source(result)
+        key = (
+            str(result.get("source_name") or source.get("file_name") or ""),
+            str(result.get("work") or source.get("work") or ""),
+            str(result.get("document_type") or ""),
+            str(result.get("document_id") or ""),
+        )
+        if key not in grouped:
+            grouped[key] = source
+            continue
+        existing = grouped[key]
+        pages = [
+            value
+            for value in (
+                existing.get("page_start"),
+                existing.get("page_end"),
+                source.get("page_start"),
+                source.get("page_end"),
+            )
+            if value
+        ]
+        if pages:
+            existing["page_start"] = min(pages)
+            existing["page_end"] = max(pages)
+            existing["page_number"] = existing["page_start"]
+        existing["display_source"] = _merged_source_label(result, existing)
+        existing["source_label"] = existing["display_source"]
+    return list(grouped.values())
+
+
+def _merged_source_label(result: dict, source: dict) -> str:
+    source_name = result.get("source_name")
+    work = result.get("work")
+    page_start = source.get("page_start")
+    page_end = source.get("page_end") or page_start
+    if source_name and work and page_start:
+        page_label = f"p. {page_start}" if page_start == page_end else f"p. {page_start}–{page_end}"
+        return f"{source_name} — {work}, {page_label}"
+    return source.get("display_source") or source.get("source_label") or source.get("file_name") or "Source pédagogique"
+
+
 def _format_chat_source(result: dict) -> dict:
     page_start = result.get("page_start") or result.get("page_number")
     page_end = result.get("page_end") or page_start
-    display_source = result.get("display_source") or result.get("source_label")
+    display_source = _merged_source_label(result, {
+        "display_source": result.get("display_source"),
+        "source_label": result.get("source_label"),
+        "file_name": result.get("file_name") or result.get("pdf_name"),
+        "page_start": page_start,
+        "page_end": page_end,
+    }) if result.get("source_name") and result.get("work") else result.get("display_source") or result.get("source_label")
     return {
         "chunk_id": result.get("chunk_id"),
         "course_id": result.get("course_id"),
@@ -1414,4 +1850,3 @@ def _out_of_scope_answer(language: str) -> str:
         "Je suis spécialisé dans la préparation au régional de français de 1ère Bac. "
         "Posez-moi une question sur une œuvre au programme, un exercice de langue, une figure de style, la méthodologie ou une production écrite."
     )
-

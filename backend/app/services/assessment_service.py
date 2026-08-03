@@ -7,6 +7,7 @@ from statistics import median
 import re
 import urllib.error
 import urllib.request
+import unicodedata
 from uuid import uuid4
 
 from fastapi import HTTPException, status
@@ -27,6 +28,7 @@ from app.models.persistence import (
     ClassroomMembership,
     Course,
     CourseChapter,
+    DiagnosticResult,
     MasteryThreshold,
     Notification,
     PersonalizedLesson,
@@ -173,6 +175,20 @@ def get_student_dashboard(db: Session, user: UserProfile) -> dict:
         )
         .order_by(AssessmentAttempt.submitted_at.desc())
     ).all()
+    diagnostic_results = db.scalars(
+        select(DiagnosticResult)
+        .where(DiagnosticResult.user_id == user.id)
+        .options(selectinload(DiagnosticResult.subject))
+        .order_by(DiagnosticResult.created_at.desc(), DiagnosticResult.id.desc())
+    ).all()
+    latest_diagnostic = next(
+        (
+            result
+            for result in diagnostic_results
+            if is_french_subject(result.subject)
+        ),
+        None,
+    )
     active_plans = db.scalars(
         select(RemediationPlan)
         .where(RemediationPlan.student_id == user.id, RemediationPlan.status == "active")
@@ -193,6 +209,8 @@ def get_student_dashboard(db: Session, user: UserProfile) -> dict:
         skill_rows = aggregate_by_dimension(db, list(latest_attempt.answers), "skill")
         weak_rows = [row for row in skill_rows if row["id"] is not None]
         weakest_skill = sorted(weak_rows, key=lambda row: row["percentage"])[0] if weak_rows else None
+    if weakest_skill is None and latest_diagnostic:
+        weakest_skill = weakest_diagnostic_competence(latest_diagnostic)
     active_plan = active_plans[0] if active_plans else None
     active_study_path = study_path_service.get_active_path_summary(db, user)
     personalized_available = [
@@ -206,12 +224,68 @@ def get_student_dashboard(db: Session, user: UserProfile) -> dict:
         "upcoming_assessments": [serialize_assessment(item, include_answers=False) for item in upcoming[:5]],
         "upcoming_count": len(upcoming),
         "near_deadlines": [serialize_assessment(item, include_answers=False) for item in sorted(due_soon, key=lambda item: item.expires_at)[:5]],
-        "latest_result": serialize_attempt_report(db, latest_attempt, include_answers=False) if latest_attempt else None,
+        "latest_result": serialize_attempt_report(db, latest_attempt, include_answers=False) if latest_attempt else serialize_diagnostic_dashboard_result(latest_diagnostic),
         "weakest_skill": weakest_skill,
         "active_remediation": serialize_remediation_plan(active_plan) if active_plan else None,
         "active_study_path": active_study_path,
         "personalized_assessment_available": serialize_assessment(personalized_available[0], include_answers=False) if personalized_available else None,
         "next_action": next_action,
+    }
+
+
+def is_french_subject(subject) -> bool:
+    if subject is None:
+        return False
+    value = f"{getattr(subject, 'slug', '')} {getattr(subject, 'name', '')}"
+    normalized = unicodedata.normalize("NFKD", value)
+    normalized = "".join(
+        character
+        for character in normalized
+        if not unicodedata.combining(character)
+    ).lower()
+    return "francais" in normalized
+
+
+DIAGNOSTIC_COMPETENCE_LABELS = {
+    "comprehension": "Compréhension",
+    "langue_grammaire": "Langue et grammaire",
+    "connaissance_oeuvres": "Connaissance des œuvres",
+    "figures_procedes": "Figures de style et procédés",
+    "interpretation_justification": "Interprétation et justification",
+}
+
+
+def weakest_diagnostic_competence(result: DiagnosticResult) -> dict | None:
+    rows = [
+        row for row in (result.results_by_topic or [])
+        if isinstance(row, dict) and row.get("name") is not None
+    ]
+    if not rows:
+        return None
+    weakest = min(rows, key=lambda row: float(row.get("percentage") or 0))
+    raw_name = str(weakest.get("name") or "")
+    return {
+        "id": None,
+        "name": DIAGNOSTIC_COMPETENCE_LABELS.get(
+            raw_name,
+            raw_name.replace("_", " ").title(),
+        ),
+        "percentage": float(weakest.get("percentage") or 0),
+        "source": "diagnostic",
+    }
+
+
+def serialize_diagnostic_dashboard_result(result: DiagnosticResult | None) -> dict | None:
+    if result is None:
+        return None
+    return {
+        "id": result.id,
+        "percentage": float(result.score or 0),
+        "score": float(result.score or 0),
+        "level": result.level,
+        "subject_id": result.subject_id,
+        "source": "diagnostic",
+        "created_at": result.created_at.isoformat() if result.created_at else None,
     }
 
 

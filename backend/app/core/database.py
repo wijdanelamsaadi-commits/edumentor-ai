@@ -11,6 +11,7 @@ from app.core.catalog_migration import apply_catalog_migration
 from app.core.assessment_migration import apply_assessment_migration
 from app.core.automatic_generation_migration import apply_automatic_generation_migration
 from app.core.professor_migration import apply_professor_migration
+from app.core.positioning_path_migration import apply_positioning_path_migration
 from app.core.rag_migration import apply_rag_migration
 from app.core.role_migration import apply_role_migration
 
@@ -88,6 +89,7 @@ def init_db() -> None:
 
     migrate_persistence_schema()
     Base.metadata.create_all(bind=engine)
+    apply_positioning_path_migration(engine)
     apply_catalog_migration(engine)
     apply_professor_migration(engine)
     apply_rag_migration(engine)

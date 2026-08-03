@@ -46,7 +46,13 @@ function CourseDetailPage() {
   const [selectedExample, setSelectedExample] = useState(null)
   const [notice, setNotice] = useState('')
   const [chapterProgressMap, setChapterProgressMap] = useState({})
-  const ollamaTestMode = String(id) === '23' && new URLSearchParams(location.search).get('ollamaTest') === '1'
+  const searchParams = useMemo(
+    () => new URLSearchParams(location.search),
+    [location.search],
+  )
+  const requestedChapterId = Number(searchParams.get('chapter_id') || 0)
+  const requestedMode = searchParams.get('mode') || 'review'
+  const ollamaTestMode = String(id) === '23' && searchParams.get('ollamaTest') === '1'
 
   useEffect(() => {
     try {
@@ -111,16 +117,33 @@ function CourseDetailPage() {
       return
     }
 
+    const requestedChapter = requestedChapterId
+      ? courseContent.chapters.find(
+        (chapter) => Number(chapter.id) === Number(requestedChapterId),
+      )
+      : null
+
+    if (
+      requestedChapter
+      && Number(selectedChapter?.id) !== Number(requestedChapter.id)
+    ) {
+      setSelectedChapter(requestedChapter)
+      return
+    }
+
     if (!selectedChapter) {
       setSelectedChapter(getInitialSelectedChapter(courseContent.chapters))
       return
     }
 
-    const syncedChapter = courseContent.chapters.find((chapter) => chapter.title === selectedChapter.title)
+    const syncedChapter = courseContent.chapters.find(
+      (chapter) => Number(chapter.id) === Number(selectedChapter.id)
+        || chapter.title === selectedChapter.title,
+    )
     if (syncedChapter && syncedChapter !== selectedChapter) {
       setSelectedChapter(syncedChapter)
     }
-  }, [courseContent.chapters, selectedChapter])
+  }, [courseContent.chapters, requestedChapterId, selectedChapter])
 
   useEffect(() => {
     if (!selectedExample && courseContent.examples.length > 0) {
@@ -222,6 +245,7 @@ function CourseDetailPage() {
             learnerLevel={learnerLevel}
             notice={notice}
             ollamaTestMode={ollamaTestMode}
+            requestedMode={requestedMode}
             onSelectExample={setSelectedExample}
             onSelectChapter={(chapter) => {
               setSelectedChapter(chapter)
@@ -338,6 +362,7 @@ function ContentPanel({
   learnerLevel,
   notice,
   ollamaTestMode,
+  requestedMode,
   onSelectChapter,
   onSelectExample,
   onSelectNextChapter,
@@ -475,6 +500,7 @@ function ContentPanel({
           chapter={selectedChapter}
           courseId={courseId}
           hasNext={courseContent.chapters.findIndex((chapter) => chapter.title === selectedChapter.title) < courseContent.chapters.length - 1}
+          initialMode={requestedMode}
           learnerLevel={learnerLevel}
           ollamaTestMode={ollamaTestMode}
           onNext={onSelectNextChapter}
@@ -484,18 +510,20 @@ function ContentPanel({
   )
 }
 
-function ChapterLesson({ chapter, courseId, hasNext, learnerLevel, ollamaTestMode, onNext }) {
+function ChapterLesson({ chapter, courseId, hasNext, initialMode, learnerLevel, ollamaTestMode, onNext }) {
   const normalizedLevel = normalizeLevel(learnerLevel)
-  const [activeChapterTab, setActiveChapterTab] = useState('resume')
+  const initialChapterTab = initialMode === 'exercise' ? 'training_exams' : 'resume'
+  const [activeChapterTab, setActiveChapterTab] = useState(initialChapterTab)
   const [ollamaPreviewView, setOllamaPreviewView] = useState('current')
   const [ollamaPreview, setOllamaPreview] = useState(null)
   const [ollamaPreviewError, setOllamaPreviewError] = useState('')
   const [isGeneratingOllamaPreview, setIsGeneratingOllamaPreview] = useState(false)
-  const [exerciseState, setExerciseState] = useState({ loading: false, message: '', exercises: [], progress: null })
+  const [exerciseState, setExerciseState] = useState({ loading: false, message: '', exercises: [], progress: null, bankTotal: 0, bankVersion: null })
   const [exerciseAnswers, setExerciseAnswers] = useState({})
   const [exerciseResults, setExerciseResults] = useState({})
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0)
   const [validatingExerciseId, setValidatingExerciseId] = useState('')
+  const [studyPathSync, setStudyPathSync] = useState(null)
   const rawBlocks = selectChapterBlocks(chapter, learnerLevel)
   const normalizedBlocks = normalizeRawChapterBlocks(rawBlocks, chapter)
   const blocks = sanitizeRenderableBlocks(normalizedBlocks, chapter, normalizedLevel)
@@ -503,22 +531,25 @@ function ChapterLesson({ chapter, courseId, hasNext, learnerLevel, ollamaTestMod
   const displayBlocks = prepareChapterDisplayBlocks(blocks, chapter)
   const chapterSections = useMemo(() => classifyChapterBlocks(displayBlocks), [displayBlocks])
   const visibleChapterTabs = useMemo(
-    () => CHAPTER_TABS.filter((tab) => chapterSections[tab.id]?.length > 0),
+    () => CHAPTER_TABS.filter(
+      (tab) => tab.id === 'training_exams' || chapterSections[tab.id]?.length > 0,
+    ),
     [chapterSections],
   )
   const useChapterTabs = visibleChapterTabs.length > 1
 
   useEffect(() => {
-    setActiveChapterTab('resume')
+    setActiveChapterTab(initialChapterTab)
     setOllamaPreviewView('current')
     setOllamaPreview(null)
     setOllamaPreviewError('')
-    setExerciseState({ loading: false, message: '', exercises: [], progress: null })
+    setExerciseState({ loading: false, message: '', exercises: [], progress: null, bankTotal: 0, bankVersion: null })
     setExerciseAnswers(loadChapterExerciseDrafts(courseId, chapter?.id))
     setExerciseResults({})
     setCurrentExerciseIndex(0)
     setValidatingExerciseId('')
-  }, [chapter?.id, chapter?.title, courseId])
+    setStudyPathSync(null)
+  }, [chapter?.id, chapter?.title, courseId, initialChapterTab])
 
   useEffect(() => {
     if (!useChapterTabs) return
@@ -548,12 +579,22 @@ function ChapterLesson({ chapter, courseId, hasNext, learnerLevel, ollamaTestMod
     getChapterExercises(courseId, chapter.id)
       .then((data) => {
         if (cancelled) return
+        const progress = data.progress || null
+        const restoredResults = Object.fromEntries(
+          (Array.isArray(progress?.latest_results) ? progress.latest_results : [])
+            .filter((item) => item?.question_id)
+            .map((item) => [item.question_id, item]),
+        )
+
         setExerciseState({
           loading: false,
           message: '',
           exercises: Array.isArray(data.exercises) ? data.exercises : [],
-          progress: data.progress || null,
+          progress,
+          bankTotal: Number(data.bank_total || data.exercises?.length || 0),
+          bankVersion: data.bank_version || null,
         })
+        setExerciseResults(restoredResults)
       })
       .catch((error) => {
         if (cancelled) return
@@ -562,6 +603,8 @@ function ChapterLesson({ chapter, courseId, hasNext, learnerLevel, ollamaTestMod
           message: error?.message || 'Exercices indisponibles pour ce chapitre.',
           exercises: [],
           progress: null,
+          bankTotal: 0,
+          bankVersion: null,
         })
       })
 
@@ -609,6 +652,7 @@ function ChapterLesson({ chapter, courseId, hasNext, learnerLevel, ollamaTestMod
       const result = await submitChapterExercise(courseId, chapter.id, currentExercise.id, { answer })
       setExerciseResults((current) => ({ ...current, [currentExercise.id]: result }))
       setExerciseState((current) => ({ ...current, progress: result.progress || current.progress }))
+      setStudyPathSync(result.study_path_sync || null)
     } catch (error) {
       setExerciseState((current) => ({
         ...current,
@@ -689,7 +733,7 @@ function ChapterLesson({ chapter, courseId, hasNext, learnerLevel, ollamaTestMod
               type="button"
             >
               {tab.label}
-              <span>{chapterSections[tab.id].length}</span>
+              <span>{tab.id === 'training_exams' ? exerciseState.exercises.length : chapterSections[tab.id].length}</span>
             </button>
           ))}
         </nav>
@@ -702,6 +746,8 @@ function ChapterLesson({ chapter, courseId, hasNext, learnerLevel, ollamaTestMod
               <ChapterExercisesPanel
                 answeredCount={answeredExerciseCount}
                 answer={currentExercise ? exerciseAnswers[currentExercise.id] || '' : ''}
+                bankTotal={exerciseState.bankTotal}
+                bankVersion={exerciseState.bankVersion}
                 currentIndex={currentExerciseIndex}
                 exercise={currentExercise}
                 fallbackBlocks={renderedActiveBlocks}
@@ -714,6 +760,7 @@ function ChapterLesson({ chapter, courseId, hasNext, learnerLevel, ollamaTestMod
                 progress={exerciseState.progress}
                 result={currentExercise ? exerciseResults[currentExercise.id] : null}
                 seriesScore={seriesScore}
+                studyPathSync={studyPathSync}
                 total={exerciseState.exercises.length}
                 validating={validatingExerciseId === currentExercise?.id}
                 validatedCount={validatedExerciseCount}
@@ -750,6 +797,8 @@ function ChapterLesson({ chapter, courseId, hasNext, learnerLevel, ollamaTestMod
 function ChapterExercisesPanel({
   answeredCount,
   answer,
+  bankTotal,
+  bankVersion,
   currentIndex,
   exercise,
   fallbackBlocks,
@@ -762,6 +811,7 @@ function ChapterExercisesPanel({
   progress,
   result,
   seriesScore,
+  studyPathSync,
   total,
   validating,
   validatedCount,
@@ -788,6 +838,13 @@ function ChapterExercisesPanel({
         <strong>{validatedCount}/{total} validée(s)</strong>
       </div>
 
+      {bankTotal > total && (
+        <p className="admin-empty">
+          Série adaptée de {total} questions sélectionnées parmi {bankTotal} questions disponibles dans ce chapitre.
+          {bankVersion ? ` Banque : ${bankVersion}.` : ''}
+        </p>
+      )}
+
       <article className="question-card quiz-card">
         <p>{exercise.competence || 'Compétence'}</p>
         <h2>Question {currentIndex + 1}</h2>
@@ -805,14 +862,56 @@ function ChapterExercisesPanel({
 
       {result && <ChapterExerciseResult result={result} />}
 
+      {studyPathSync && (
+        <article className={studyPathSync.item_completed ? 'panel-card correction-card' : 'panel-card'}>
+          <div className="panel-title">
+            <h2>
+              {studyPathSync.item_completed
+                ? 'Étape du parcours terminée automatiquement'
+                : 'Progression du parcours'}
+            </h2>
+            <p>{Math.round(Number(studyPathSync.path_progress_percentage || 0))}%</p>
+          </div>
+
+          <p>{studyPathSync.message}</p>
+
+          {!studyPathSync.item_completed && (
+            <div className="profile-detail-list">
+              <div>
+                <span>Questions répondues</span>
+                <strong>{studyPathSync.validated_questions}/{studyPathSync.total_questions}</strong>
+              </div>
+              <div>
+                <span>Score de maîtrise</span>
+                <strong>{Math.round(Number(studyPathSync.mastery_score || 0))}%</strong>
+              </div>
+              <div>
+                <span>Score minimum</span>
+                <strong>{studyPathSync.minimum_score}%</strong>
+              </div>
+            </div>
+          )}
+
+          {studyPathSync.path_id && (
+            <button
+              className="outline-button"
+              onClick={() => window.location.assign(`/study-paths/${studyPathSync.path_id}`)}
+              type="button"
+            >
+              Retour à mon parcours
+            </button>
+          )}
+        </article>
+      )}
+
       <article className="panel-card">
         <div className="panel-title">
           <h2>Résumé de la série</h2>
-          <p>{seriesScore}%</p>
+          <p>{Math.round(Number(progress?.mastery_score ?? seriesScore))}%</p>
         </div>
         <div className="profile-detail-list">
           <div><span>Questions validées</span><strong>{validatedCount}/{total}</strong></div>
-          <div><span>Score actuel</span><strong>{seriesScore}%</strong></div>
+          <div><span>Score de maîtrise</span><strong>{Math.round(Number(progress?.mastery_score ?? seriesScore))}%</strong></div>
           <div><span>Historique enregistré</span><strong>{progress?.attempts_count || 0} tentative(s)</strong></div>
           <div><span>Meilleur score</span><strong>{progress?.best_score || 0}%</strong></div>
         </div>
@@ -860,6 +959,19 @@ function ChapterExerciseResult({ result }) {
         <div><span>Réponse donnée</span><strong>{result.answer || result.user_answer || '-'}</strong></div>
         <div><span>Compétence</span><strong>{result.competence || '-'}</strong></div>
         <div><span>Statut</span><strong>{result.status || 'validated'}</strong></div>
+        <div><span>Moteur de correction</span><strong>{result.evaluator_version || 'legacy'}</strong></div>
+        <div><span>Méthode</span><strong>{formatEvaluationMethod(result.evaluation_method)}</strong></div>
+        {result.model_label && (
+          <div>
+            <span>Décision du modèle</span>
+            <strong>
+              {formatModelLabel(result.model_label)}
+              {Number.isFinite(Number(result.model_confidence))
+                ? ` (${Math.round(Number(result.model_confidence) * 100)}%)`
+                : ''}
+            </strong>
+          </div>
+        )}
       </div>
       {result.correct_answer && <p><strong>Correction attendue :</strong> {result.correct_answer}</p>}
       {result.correction && <p>{result.correction}</p>}
@@ -868,6 +980,22 @@ function ChapterExerciseResult({ result }) {
     </article>
   )
 }
+
+
+function formatEvaluationMethod(value) {
+  if (value === 'hybrid_rules_model') return 'Règles + modèle NLP'
+  if (value === 'teacher_review') return 'Validation enseignante'
+  if (value === 'rules') return 'Règles pédagogiques'
+  return value || 'Règles pédagogiques'
+}
+
+function formatModelLabel(value) {
+  if (value === 'correct') return 'Correcte'
+  if (value === 'partiel') return 'Partielle'
+  if (value === 'incorrect') return 'Incorrecte'
+  return value || '-'
+}
+
 
 function calculateExerciseSeriesScore(results) {
   const values = Object.values(results || {})

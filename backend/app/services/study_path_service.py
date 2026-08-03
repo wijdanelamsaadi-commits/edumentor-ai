@@ -120,6 +120,118 @@ def complete_item(db: Session, user: UserProfile, path_id: int, item_id: int) ->
     return serialize_path(db, path, detail=True)
 
 
+def sync_chapter_exercise_item(
+    db: Session,
+    user: UserProfile,
+    *,
+    course_id: int,
+    chapter_id: int,
+    progress: dict,
+    minimum_score: int = 60,
+) -> dict | None:
+    paths = db.scalars(
+        select(StudyPath)
+        .where(
+            StudyPath.student_id == user.id,
+            StudyPath.course_id == course_id,
+            StudyPath.active.is_(True),
+            StudyPath.status.in_(["active", "completed"]),
+        )
+        .options(*path_options())
+        .order_by(StudyPath.updated_at.desc(), StudyPath.id.desc())
+    ).all()
+
+    path = None
+    item = None
+    for candidate in paths:
+        candidate_item = next(
+            (
+                row
+                for row in candidate.items
+                if row.item_type == "exercise"
+                and (
+                    int(row.entity_id or 0) == int(chapter_id)
+                    or int((row.metadata_json or {}).get("chapter_id") or 0) == int(chapter_id)
+                )
+            ),
+            None,
+        )
+        if candidate_item is not None:
+            path = candidate
+            item = candidate_item
+            break
+
+    if path is None or item is None:
+        return None
+
+    if item.status == "locked":
+        return {
+            "path_id": path.id,
+            "item_id": item.id,
+            "item_status": item.status,
+            "item_completed": False,
+            "completion_ready": False,
+            "blocked": True,
+            "message": "L'étape d'exercices est encore verrouillée.",
+        }
+
+    was_completed = item.status == "completed"
+    if item.status == "available":
+        item.status = "in_progress"
+
+    total_questions = int(progress.get("total_questions") or 0)
+    validated_questions = int(progress.get("validated_questions") or 0)
+    mastery_score = float(progress.get("mastery_score") or 0)
+    pending_review_questions = int(progress.get("pending_review_questions") or 0)
+    all_questions_submitted = (
+        total_questions > 0 and validated_questions >= total_questions
+    )
+    completion_ready = (
+        all_questions_submitted
+        and (
+            mastery_score >= minimum_score
+            or pending_review_questions == validated_questions
+        )
+    )
+
+    if completion_ready:
+        item.status = "completed"
+        item.completed_at = item.completed_at or datetime.utcnow()
+
+    apply_unlocking_rules(db, path)
+    update_path_progress(path)
+
+    if completion_ready and not was_completed:
+        maybe_notify_available_item(db, path)
+
+    db.flush()
+
+    current_item = path_progress(path).get("current_item")
+    return {
+        "path_id": path.id,
+        "item_id": item.id,
+        "item_status": item.status,
+        "item_completed": item.status == "completed",
+        "newly_completed": completion_ready and not was_completed,
+        "completion_ready": completion_ready,
+        "blocked": False,
+        "total_questions": total_questions,
+        "validated_questions": validated_questions,
+        "mastery_score": mastery_score,
+        "minimum_score": minimum_score,
+        "pending_review_questions": pending_review_questions,
+        "path_progress_percentage": path.progress_percentage,
+        "next_item": current_item,
+        "message": (
+            "Étape terminée automatiquement et prochaine étape déverrouillée."
+            if item.status == "completed"
+            else (
+                f"Répondez à toutes les questions et obtenez au moins {minimum_score} %."
+            )
+        ),
+    }
+
+
 def skip_item(db: Session, user: UserProfile, path_id: int, item_id: int) -> dict:
     path = get_path_for_student(db, user, path_id)
     refresh_existing_path(db, path)

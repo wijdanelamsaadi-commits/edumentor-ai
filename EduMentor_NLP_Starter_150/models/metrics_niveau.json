@@ -1,0 +1,69 @@
+{
+  "target": "niveau",
+  "samples_total": 150,
+  "samples_train": 112,
+  "samples_test": 38,
+  "class_distribution": {
+    "debutant": 50,
+    "intermediaire": 50,
+    "avance": 50
+  },
+  "accuracy": 0.5263157894736842,
+  "macro_f1": 0.5333333333333333,
+  "classification_report": {
+    "avance": {
+      "precision": 0.75,
+      "recall": 0.5,
+      "f1-score": 0.6,
+      "support": 12.0
+    },
+    "debutant": {
+      "precision": 0.5333333333333333,
+      "recall": 0.6153846153846154,
+      "f1-score": 0.5714285714285714,
+      "support": 13.0
+    },
+    "intermediaire": {
+      "precision": 0.4,
+      "recall": 0.46153846153846156,
+      "f1-score": 0.42857142857142855,
+      "support": 13.0
+    },
+    "accuracy": 0.5263157894736842,
+    "macro avg": {
+      "precision": 0.561111111111111,
+      "recall": 0.5256410256410257,
+      "f1-score": 0.5333333333333333,
+      "support": 38.0
+    },
+    "weighted avg": {
+      "precision": 0.5561403508771929,
+      "recall": 0.5263157894736842,
+      "f1-score": 0.5315789473684209,
+      "support": 38.0
+    }
+  },
+  "labels": [
+    "avance",
+    "debutant",
+    "intermediaire"
+  ],
+  "confusion_matrix": [
+    [
+      6,
+      2,
+      4
+    ],
+    [
+      0,
+      8,
+      5
+    ],
+    [
+      2,
+      5,
+      6
+    ]
+  ],
+  "warning": "Résultats de smoke test uniquement : dataset trop petit pour une conclusion scientifique."
+}

@@ -1,0 +1,77 @@
+{
+  "model_version": "student-weakness-v1-20260802",
+  "dataset_version": "synthetic-controlled-v1-20260802",
+  "dataset_type": "synthetic_controlled",
+  "dataset_rows": 6000,
+  "synthetic_students": 1200,
+  "features": [
+    "average_score",
+    "correct_rate",
+    "average_time_norm",
+    "attempts_norm",
+    "difficulty_mean",
+    "trend",
+    "retry_rate",
+    "coverage"
+  ],
+  "labels": [
+    "faible",
+    "a_renforcer",
+    "maitrise"
+  ],
+  "accuracy": 0.818939,
+  "macro_f1": 0.81901,
+  "weighted_f1": 0.81901,
+  "confusion_matrix": [
+    [
+      385,
+      55,
+      0
+    ],
+    [
+      68,
+      321,
+      51
+    ],
+    [
+      0,
+      65,
+      375
+    ]
+  ],
+  "classification_report": {
+    "faible": {
+      "precision": 0.8498896247240618,
+      "recall": 0.875,
+      "f1-score": 0.8622620380739082,
+      "support": 440.0
+    },
+    "a_renforcer": {
+      "precision": 0.7278911564625851,
+      "recall": 0.7295454545454545,
+      "f1-score": 0.7287173666288309,
+      "support": 440.0
+    },
+    "maitrise": {
+      "precision": 0.8802816901408451,
+      "recall": 0.8522727272727273,
+      "f1-score": 0.8660508083140878,
+      "support": 440.0
+    },
+    "accuracy": 0.818939393939394,
+    "macro avg": {
+      "precision": 0.819354157109164,
+      "recall": 0.818939393939394,
+      "f1-score": 0.819010071005609,
+      "support": 1320.0
+    },
+    "weighted avg": {
+      "precision": 0.8193541571091638,
+      "recall": 0.818939393939394,
+      "f1-score": 0.819010071005609,
+      "support": 1320.0
+    }
+  },
+  "trained_at": "2026-08-02T12:18:52.683761Z",
+  "scientific_note": "Prototype entraîné sur données synthétiques contrôlées. Les métriques ne constituent pas une validation sur de vrais élèves."
+}

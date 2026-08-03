@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import random
+import logging
 from collections import Counter, defaultdict
 from datetime import datetime
 from typing import Any
@@ -45,6 +46,8 @@ POSITIONING_QUOTAS_20 = [
     {"debutant": 1, "intermediaire": 2, "avance": 1},
     {"debutant": 1, "intermediaire": 1, "avance": 2},
 ]
+logger = logging.getLogger(__name__)
+
 LEVEL_RULES = [
     (40, "Débutant", "debutant"),
     (70, "Intermédiaire", "intermediaire"),
@@ -228,7 +231,34 @@ def submit_positioning_test(db: Session, student: UserProfile, payload: dict[str
     db.refresh(diagnostic_result)
     db.refresh(session)
 
-    return serialize_result(diagnostic_result, subject, recommendations, strengths, gaps)
+    response_payload = serialize_result(
+        diagnostic_result,
+        subject,
+        recommendations,
+        strengths,
+        gaps,
+    )
+    try:
+        from app.services import positioning_path_service
+
+        study_path = positioning_path_service.create_or_refresh_from_diagnostic(
+            db,
+            student,
+            diagnostic_result,
+            recommendations=recommendations,
+            results_by_topic=results_by_topic,
+        )
+        db.commit()
+        response_payload["study_path"] = study_path
+    except Exception:
+        db.rollback()
+        logger.exception(
+            "Le résultat diagnostique %s a été sauvegardé, mais le parcours personnalisé n'a pas pu être créé.",
+            diagnostic_result.id,
+        )
+        response_payload["study_path"] = None
+
+    return response_payload
 
 
 def get_latest_results_by_subject(db: Session, student: UserProfile) -> list[dict[str, Any]]:

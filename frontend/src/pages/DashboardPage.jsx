@@ -20,12 +20,19 @@ function DashboardPage() {
   useEffect(() => {
     let isMounted = true
 
-    Promise.allSettled([fetchCourses(), getStudentAdaptiveDashboard(), fetchSubjects()])
+    Promise.allSettled([fetchCourses({ subject_slug: 'francais' }), getStudentAdaptiveDashboard(), fetchSubjects()])
       .then(([coursesResult, adaptiveResult, subjectsResult]) => {
         if (isMounted) {
-          setCourses(coursesResult.status === 'fulfilled' && Array.isArray(coursesResult.value) ? coursesResult.value : [])
+          const loadedCourses = coursesResult.status === 'fulfilled' && Array.isArray(coursesResult.value)
+            ? coursesResult.value
+            : []
+          const loadedSubjects = subjectsResult.status === 'fulfilled' && Array.isArray(subjectsResult.value)
+            ? subjectsResult.value
+            : []
+
+          setCourses(loadedCourses)
           setAdaptiveDashboard(adaptiveResult.status === 'fulfilled' ? adaptiveResult.value : null)
-          setSubjects(subjectsResult.status === 'fulfilled' && Array.isArray(subjectsResult.value) ? subjectsResult.value : [])
+          setSubjects(loadedSubjects.filter(isFrenchSubject))
         }
       })
 
@@ -97,9 +104,15 @@ function DashboardPage() {
           <strong>{adaptiveDashboard?.weakest_skill ? `À renforcer : ${adaptiveDashboard.weakest_skill.name}` : 'Aucune compétence faible détectée'}</strong>
         </article>
         <article className="metric-card">
-          <p>Remédiation active</p>
-          <h2>{adaptiveDashboard?.active_remediation ? `${Math.round(adaptiveDashboard.active_remediation.progress)}%` : '--'}</h2>
-          <strong>{adaptiveDashboard?.personalized_assessment_available ? 'Test personnalisé disponible' : 'Parcours ciblé'}</strong>
+          <p>Parcours personnalisé</p>
+          <h2>{getAdaptiveProgress(adaptiveDashboard)}</h2>
+          <strong>
+            {adaptiveDashboard?.active_study_path
+              ? 'Parcours actif'
+              : adaptiveDashboard?.personalized_assessment_available
+                ? 'Test personnalisé disponible'
+                : 'Aucun parcours actif'}
+          </strong>
         </article>
       </div>
 
@@ -201,10 +214,15 @@ function DashboardPage() {
         <span><ClipboardIcon /></span>
         <div>
           <h2>Prochaine action recommandée</h2>
-          <h3>{adaptiveDashboard?.next_action?.title || 'Continuer le parcours'}</h3>
-          <p>{adaptiveDashboard?.next_action?.description || 'Aucune évaluation prioritaire pour le moment.'}</p>
+          <h3>{getDashboardNextAction(adaptiveDashboard).title}</h3>
+          <p>{getDashboardNextAction(adaptiveDashboard).description}</p>
         </div>
-        <button className="primary-button" onClick={() => navigate(adaptiveDashboard?.next_action?.path || '/courses')}>Ouvrir</button>
+        <button
+          className="primary-button"
+          onClick={() => navigate(getDashboardNextAction(adaptiveDashboard).path)}
+        >
+          Ouvrir
+        </button>
       </article>
     </section>
   )
@@ -269,13 +287,52 @@ function buildRecommendations(courses, localData, diagnosticResult, dashboardDat
   }
 
   if (Array.isArray(diagnosticResult.recommendations) && diagnosticResult.recommendations.length > 0) {
-    return diagnosticResult.recommendations.slice(0, 2).map((course) => ({
-      icon: Star,
+    const courseById = new Map(
+      courses.map((course) => [Number(course.id), course]),
+    )
+
+    const currentRecommendations = diagnosticResult.recommendations
+      .map((recommendation) => {
+        const currentCourse = courseById.get(Number(recommendation.course_id))
+
+        if (!currentCourse) {
+          return null
+        }
+
+        return {
+          ...recommendation,
+          course_id: currentCourse.id,
+          title: currentCourse.title,
+          reason:
+            recommendation.reason
+            || currentCourse.summary
+            || 'Cours recommandé selon votre test de positionnement.',
+          path: `/courses/${currentCourse.id}`,
+        }
+      })
+      .filter(Boolean)
+
+    const fallbackCourses = courses.map((course) => ({
+      course_id: course.id,
       title: course.title,
-      subtitle: course.reason || 'Cours recommande selon votre test de positionnement.',
-      action: 'Commencer',
-      path: course.path || `/courses/${course.course_id}`,
+      reason: course.summary || 'Cours complémentaire adapté à votre parcours.',
+      path: `/courses/${course.id}`,
     }))
+
+    const recommendations = dedupeRecommendations([
+      ...currentRecommendations,
+      ...fallbackCourses,
+    ]).slice(0, 2)
+
+    if (recommendations.length > 0) {
+      return recommendations.map((course) => ({
+        icon: Star,
+        title: course.title,
+        subtitle: course.reason,
+        action: 'Commencer',
+        path: course.path,
+      }))
+    }
   }
 
   const level = dashboardData.diagnosticLevel
@@ -392,6 +449,75 @@ function getActiveChapter(progress) {
     || [...progress.chapters].reverse().find((chapter) => chapter.completed === true)
     || null
   )
+}
+
+
+function normalizeText(value) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+}
+
+function isFrenchSubject(subject) {
+  return normalizeText(`${subject?.slug || ''} ${subject?.name || ''}`).includes('francais')
+}
+
+function isFrenchCourse(course) {
+  return isFrenchSubject(course?.subject)
+}
+
+function dedupeRecommendations(recommendations) {
+  const seenTitles = new Set()
+
+  return recommendations.filter((item) => {
+    const normalizedTitle = normalizeText(item?.title)
+
+    if (!normalizedTitle || seenTitles.has(normalizedTitle)) {
+      return false
+    }
+
+    seenTitles.add(normalizedTitle)
+    return true
+  })
+}
+
+
+function getAdaptiveProgress(dashboard) {
+  if (dashboard?.active_remediation && Number.isFinite(Number(dashboard.active_remediation.progress))) {
+    return `${Math.round(Number(dashboard.active_remediation.progress))}%`
+  }
+
+  if (dashboard?.active_study_path && Number.isFinite(Number(dashboard.active_study_path.progress_percentage))) {
+    return `${Math.round(Number(dashboard.active_study_path.progress_percentage))}%`
+  }
+
+  return '--'
+}
+
+function getDashboardNextAction(dashboard) {
+  const pathAction = dashboard?.active_study_path?.next_action
+  if (pathAction) {
+    return {
+      title: pathAction.label || 'Continuer le parcours personnalisé',
+      description: 'Poursuivez la prochaine étape de votre parcours personnalisé.',
+      path: pathAction.route || `/study-paths/${dashboard.active_study_path.id}`,
+    }
+  }
+
+  if (dashboard?.next_action) {
+    return {
+      title: dashboard.next_action.title || 'Continuer le parcours',
+      description: dashboard.next_action.description || 'Poursuivez la prochaine étape recommandée.',
+      path: dashboard.next_action.path || '/courses',
+    }
+  }
+
+  return {
+    title: 'Commencer un cours',
+    description: 'Ouvrez vos cours de français pour commencer votre progression.',
+    path: '/courses',
+  }
 }
 
 function normalizeLevel(level) {

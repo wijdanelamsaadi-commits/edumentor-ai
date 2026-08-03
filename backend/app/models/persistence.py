@@ -776,7 +776,8 @@ class StudyPath(Base):
     subject_id: Mapped[int] = mapped_column(ForeignKey("subjects.id"), index=True)
     course_id: Mapped[int] = mapped_column(ForeignKey("courses.id"), index=True)
     remediation_plan_id: Mapped[int | None] = mapped_column(ForeignKey("remediation_plans.id"), nullable=True, index=True)
-    source_attempt_id: Mapped[int] = mapped_column(ForeignKey("assessment_attempts.id"), index=True)
+    source_attempt_id: Mapped[int | None] = mapped_column(ForeignKey("assessment_attempts.id"), nullable=True, index=True)
+    source_diagnostic_result_id: Mapped[int | None] = mapped_column(ForeignKey("diagnostic_results.id"), nullable=True, index=True)
     title: Mapped[str] = mapped_column(String(260))
     reason: Mapped[str] = mapped_column(Text, default="")
     status: Mapped[str] = mapped_column(String(40), default="active", index=True)
@@ -790,7 +791,8 @@ class StudyPath(Base):
     subject: Mapped["Subject"] = relationship()
     course: Mapped["Course"] = relationship()
     remediation_plan: Mapped["RemediationPlan | None"] = relationship()
-    source_attempt: Mapped["AssessmentAttempt"] = relationship()
+    source_attempt: Mapped["AssessmentAttempt | None"] = relationship()
+    source_diagnostic_result: Mapped["DiagnosticResult | None"] = relationship()
     items: Mapped[list["StudyPathItem"]] = relationship(back_populates="study_path", cascade="all, delete-orphan", order_by="StudyPathItem.order_index")
 
 

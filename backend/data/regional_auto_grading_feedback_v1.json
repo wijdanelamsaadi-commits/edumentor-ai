@@ -1,0 +1,570 @@
+{
+  "4": {
+    "grader_version": "regional-auto-grader-v1.2-20260802",
+    "provider": "ollama",
+    "model": "qwen3:1.7b",
+    "questions": {
+      "409": {
+        "correct": true,
+        "points_awarded": 0.25,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 0.25,
+            "max_score": 0.25
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "410": {
+        "correct": true,
+        "points_awarded": 0.25,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 0.25,
+            "max_score": 0.25
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "411": {
+        "correct": true,
+        "points_awarded": 0.25,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 0.25,
+            "max_score": 0.25
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "412": {
+        "correct": false,
+        "points_awarded": 0.0,
+        "feedback": "Réponse incorrecte. Éléments attendus : 1954",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 0.0,
+            "max_score": 0.25
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "413": {
+        "correct": true,
+        "points_awarded": 1.0,
+        "feedback": "Réponse correcte.",
+        "grading_method": "automatic_exact",
+        "grading_details": [],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "414": {
+        "correct": true,
+        "points_awarded": 0.5,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 0.5,
+            "max_score": 0.5
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "415": {
+        "correct": true,
+        "points_awarded": 0.5,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 0.5,
+            "max_score": 0.5
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "416": {
+        "correct": false,
+        "points_awarded": 0.0,
+        "feedback": "Réponse incorrecte. La réponse attendue est : Sidi Mohamed et son père.",
+        "grading_method": "automatic_exact",
+        "grading_details": [],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "417": {
+        "correct": true,
+        "points_awarded": 1.0,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 1.0,
+            "max_score": 1.0
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "418": {
+        "correct": true,
+        "points_awarded": 0.5,
+        "feedback": "Réponse correcte.",
+        "grading_method": "automatic_exact",
+        "grading_details": [],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "419": {
+        "correct": true,
+        "points_awarded": 0.5,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 0.5,
+            "max_score": 0.5
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "420": {
+        "correct": true,
+        "points_awarded": 1.0,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 1.0,
+            "max_score": 1.0
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "421": {
+        "correct": false,
+        "points_awarded": 0.0,
+        "feedback": "Réponse incorrecte. Éléments attendus : Métaphore",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 0.0,
+            "max_score": 0.5
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "422": {
+        "correct": true,
+        "points_awarded": 0.5,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 0.5,
+            "max_score": 0.5
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "423": {
+        "correct": false,
+        "points_awarded": 0.25,
+        "feedback": "La position est identifiable, mais la justification reste insuffisante.",
+        "grading_method": "automatic_rules_calibrated",
+        "grading_details": [
+          {
+            "criterion": "Prise de position",
+            "score": 0.17,
+            "max_score": 0.25
+          },
+          {
+            "criterion": "Justification",
+            "score": 0.0,
+            "max_score": 0.3
+          },
+          {
+            "criterion": "Pertinence",
+            "score": 0.02,
+            "max_score": 0.2
+          },
+          {
+            "criterion": "Développement et langue",
+            "score": 0.06,
+            "max_score": 0.25
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "424": {
+        "correct": true,
+        "points_awarded": 1.0,
+        "feedback": "Réponse pertinente, clairement justifiée et bien liée à la question.",
+        "grading_method": "automatic_rules_calibrated",
+        "grading_details": [
+          {
+            "criterion": "Prise de position",
+            "score": 0.25,
+            "max_score": 0.25
+          },
+          {
+            "criterion": "Justification",
+            "score": 0.3,
+            "max_score": 0.3
+          },
+          {
+            "criterion": "Pertinence",
+            "score": 0.2,
+            "max_score": 0.2
+          },
+          {
+            "criterion": "Développement et langue",
+            "score": 0.25,
+            "max_score": 0.25
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "425": {
+        "correct": true,
+        "points_awarded": 9.5,
+        "feedback": "Très bonne production : consigne respectée, argumentation solide et langue maîtrisée. Quelques améliorations mineures restent possibles.",
+        "grading_method": "automatic_rules_calibrated",
+        "grading_details": [
+          {
+            "criterion": "Respect de la consigne",
+            "score": 0.88,
+            "max_score": 1.0
+          },
+          {
+            "criterion": "Texte argumentatif cohérent et bien structuré",
+            "score": 3.83,
+            "max_score": 4.0
+          },
+          {
+            "criterion": "Langue : vocabulaire, syntaxe, orthographe, conjugaison et ponctuation",
+            "score": 4.79,
+            "max_score": 5.0
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      }
+    }
+  },
+  "5": {
+    "grader_version": "regional-auto-grader-v1.2-20260802",
+    "provider": "ollama",
+    "model": "qwen3:1.7b",
+    "questions": {
+      "409": {
+        "correct": true,
+        "points_awarded": 0.25,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 0.25,
+            "max_score": 0.25
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "410": {
+        "correct": true,
+        "points_awarded": 0.25,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 0.25,
+            "max_score": 0.25
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "411": {
+        "correct": true,
+        "points_awarded": 0.25,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 0.25,
+            "max_score": 0.25
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "412": {
+        "correct": true,
+        "points_awarded": 0.25,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 0.25,
+            "max_score": 0.25
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "413": {
+        "correct": true,
+        "points_awarded": 1.0,
+        "feedback": "Réponse correcte.",
+        "grading_method": "automatic_exact",
+        "grading_details": [],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "414": {
+        "correct": true,
+        "points_awarded": 0.5,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 0.5,
+            "max_score": 0.5
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "415": {
+        "correct": true,
+        "points_awarded": 0.5,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 0.5,
+            "max_score": 0.5
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "416": {
+        "correct": true,
+        "points_awarded": 1.0,
+        "feedback": "Réponse correcte.",
+        "grading_method": "automatic_exact",
+        "grading_details": [],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "417": {
+        "correct": true,
+        "points_awarded": 1.0,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 1.0,
+            "max_score": 1.0
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "418": {
+        "correct": true,
+        "points_awarded": 0.5,
+        "feedback": "Réponse correcte.",
+        "grading_method": "automatic_exact",
+        "grading_details": [],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "419": {
+        "correct": true,
+        "points_awarded": 0.5,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 0.5,
+            "max_score": 0.5
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "420": {
+        "correct": true,
+        "points_awarded": 1.0,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 1.0,
+            "max_score": 1.0
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "421": {
+        "correct": true,
+        "points_awarded": 0.5,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 0.5,
+            "max_score": 0.5
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "422": {
+        "correct": true,
+        "points_awarded": 0.5,
+        "feedback": "Réponse correcte : tous les éléments attendus sont présents.",
+        "grading_method": "automatic_keyword_similarity",
+        "grading_details": [
+          {
+            "criterion": "Éléments attendus",
+            "score": 0.5,
+            "max_score": 0.5
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "423": {
+        "correct": true,
+        "points_awarded": 1.0,
+        "feedback": "Réponse pertinente, clairement justifiée et bien liée à la question.",
+        "grading_method": "automatic_rules_calibrated",
+        "grading_details": [
+          {
+            "criterion": "Prise de position",
+            "score": 0.25,
+            "max_score": 0.25
+          },
+          {
+            "criterion": "Justification",
+            "score": 0.3,
+            "max_score": 0.3
+          },
+          {
+            "criterion": "Pertinence",
+            "score": 0.17,
+            "max_score": 0.2
+          },
+          {
+            "criterion": "Développement et langue",
+            "score": 0.25,
+            "max_score": 0.25
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "424": {
+        "correct": true,
+        "points_awarded": 1.0,
+        "feedback": "Réponse pertinente, clairement justifiée et bien liée à la question.",
+        "grading_method": "automatic_rules_calibrated",
+        "grading_details": [
+          {
+            "criterion": "Prise de position",
+            "score": 0.25,
+            "max_score": 0.25
+          },
+          {
+            "criterion": "Justification",
+            "score": 0.3,
+            "max_score": 0.3
+          },
+          {
+            "criterion": "Pertinence",
+            "score": 0.2,
+            "max_score": 0.2
+          },
+          {
+            "criterion": "Développement et langue",
+            "score": 0.25,
+            "max_score": 0.25
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      },
+      "425": {
+        "correct": true,
+        "points_awarded": 9.5,
+        "feedback": "Très bonne production : consigne respectée, argumentation solide et langue maîtrisée. Quelques améliorations mineures restent possibles.",
+        "grading_method": "automatic_rules_calibrated",
+        "grading_details": [
+          {
+            "criterion": "Respect de la consigne",
+            "score": 0.88,
+            "max_score": 1.0
+          },
+          {
+            "criterion": "Texte argumentatif cohérent et bien structuré",
+            "score": 3.83,
+            "max_score": 4.0
+          },
+          {
+            "criterion": "Langue : vocabulaire, syntaxe, orthographe, conjugaison et ponctuation",
+            "score": 4.79,
+            "max_score": 5.0
+          }
+        ],
+        "automatic": true,
+        "grader_version": "regional-auto-grader-v1.2-20260802"
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+status => {'level_classifier': 'v13', 'content_router': 'v16 + fallback v15', 'adaptation': 'v17', 'questions_corrections': 'v18', 'figures_competences': 'v20', 'chapters_loaded': 73, 'exact_qa_pairs_loaded': 450, 'holdout_loaded': False}
+level => {'predicted_level': 'avance', 'decision_scores': {'avance': 1.854589549888614, 'debutant': -1.5533399533645227, 'intermediaire': -1.3633825990643038}, 'decision_margin': 3.217972148952918, 'confidence_kind': 'uncalibrated_svm_margin', 'model_version': 'v13', 'requires_human_validation': True}
+content_type => {'mode': 'metadata_instruction_router', 'content_type': 'question_comprehension', 'model_version': 'v16', 'requires_human_validation': True}
+adaptation => {'adapted_text': 'Le condamné réfléchit aux conséquences sociales et morales de l’exécution. La construction du passage articule progression narrative, caractérisation et réflexion sur les thèmes centraux de l’œuvre.', 'source_level': 'intermediaire', 'target_level': 'avance', 'operation': 'approfondissement', 'content_type': 'explication_detaillee', 'style_reference': {'similarity': 0.10065047992291283, 'adaptation_id': 'ANT_SEQ09::explication_detaillee::intermediaire_vers_avance', 'style_example': 'La construction de cette unité ne se limite pas au résumé des faits. Le passage de créon tente de sauver sa nièce en démontant les raisons de son geste au débat oppose les lois de la cité aux valeurs morales et individuelles produit une évolution narrative et transforme le bonheur en enjeu symbolique ou argumentatif.'}, 'model_version': 'v17', 'requires_human_validation': True, 'warning': "La référence retrieval sert uniquement d'exemple de style; elle ne remplace jamais les faits du texte source."}
+qa => {'unit_id': 'LBM_CH01', 'task': 'comprehension', 'level': 'debutant', 'question': 'Quel est l’événement principal de « Solitude, Dar Chouafa et monde merveilleux » et quel personnage est directement concerné ?', 'correction': 'L’événement principal est le suivant : Le narrateur adulte revient sur son enfance. Le personnage le plus directement concerné est Sidi Mohammed, dans le cadre de le Msid.', 'answer_elements': 'événement | personnage | conséquence | thème', 'bareme': '2', 'generation_mode': 'structured_comprehension', 'requires_human_validation': True}
+figure => {'contains_figure': True, 'figure_type': 'personnification', 'mode': 'linguistic_rule', 'model_version': 'v20', 'requires_human_validation': True}
+exam => {'competence': 'interpretation', 'mode': 'linguistic_rule', 'model_version': 'v20', 'requires_human_validation': True}
+NLP RUNTIME V22 OK
+
+Spreadsheet runtime warmup failed during python startup
+Traceback (most recent call last):
+  File "/tmp/tmp.yTcnQsZYiA/artifact_tool_v2-2.8.4/artifact_tool/patches/warm_spreadsheet_runtime_on_startup.py", line 26, in warm_spreadsheet_runtime_on_startup
+  File "/tmp/tmp.yTcnQsZYiA/artifact_tool_v2-2.8.4/artifact_tool/spreadsheet_warmup.py", line 785, in warm_spreadsheet_runtime
+  File "/tmp/tmp.yTcnQsZYiA/artifact_tool_v2-2.8.4/artifact_tool/spreadsheet_warmup.py", line 720, in _warm_feature_flows
+  File "/tmp/tmp.yTcnQsZYiA/artifact_tool_v2-2.8.4/artifact_tool/spreadsheet_warmup.py", line 704, in _warm_collaboration_flows
+  File "/tmp/tmp.yTcnQsZYiA/artifact_tool_v2-2.8.4/artifact_tool/generated/interface/models.py", line 30820, in hydrate_crdt_from_proto
+  File "/tmp/tmp.yTcnQsZYiA/artifact_tool_v2-2.8.4/artifact_tool/rpc/remote.py", line 749, in __call__
+  File "/tmp/tmp.yTcnQsZYiA/artifact_tool_v2-2.8.4/artifact_tool/rpc/client.py", line 150, in call
+artifact_tool.rpc.client.RemoteError: hydrateCrdtFromProto requires an empty collaborative document.

@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import {
   BarChart3,
   BookOpen,
@@ -68,7 +68,9 @@ const parentItems = [
 
 function Sidebar() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { isAdmin, isProfessor, isStudent, isParent, logout } = useAuth()
+  const showRegionalHelp = isStudent && location.pathname.startsWith('/regional-exam-preparation')
 
   async function handleLogout() {
     try {
@@ -143,6 +145,14 @@ function Sidebar() {
           )
         })}
       </nav>
+      {showRegionalHelp && (
+        <aside className="sidebar-help-card" aria-label="Aide personnalisée">
+          <span><GraduationCap size={42} /></span>
+          <h2>Besoin d'un coup de pouce ?</h2>
+          <p>Discutez avec le Chatbot IA pour des conseils personnalisés.</p>
+          <Link to="/chatbot">Ouvrir le Chatbot</Link>
+        </aside>
+      )}
       <button className="logout-button" onClick={handleLogout} type="button">
         <LogOut size={22} />
         Se déconnecter

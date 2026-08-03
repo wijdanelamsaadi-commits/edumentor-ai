@@ -26,6 +26,8 @@ from app.models.persistence import (
     Quiz,
     QuizQuestion,
     Subject,
+    StudyPath,
+    StudyPathItem,
     UserProfile,
 )
 from app.schemas.lesson_content import validate_structured_blocks
@@ -321,6 +323,13 @@ def can_access_course(db: Session, course: Course, user: UserProfile | None) -> 
     if not course.published or course.status not in {"published", "active"}:
         return False
 
+    if (
+        user is not None
+        and user.role == "student"
+        and has_active_study_path_course_access(db, user.id, course.id)
+    ):
+        return True
+
     assignments = active_classroom_course_assignments(db, course.id)
     if not assignments:
         return True
@@ -345,6 +354,65 @@ def can_access_course(db: Session, course: Course, user: UserProfile | None) -> 
             .limit(1)
         ) is not None
     return False
+
+
+def has_active_study_path_course_access(
+    db: Session,
+    student_id: int,
+    course_id: int,
+) -> bool:
+    direct_path = db.scalar(
+        select(StudyPath.id)
+        .where(
+            StudyPath.student_id == student_id,
+            StudyPath.course_id == course_id,
+            StudyPath.active.is_(True),
+            StudyPath.status.in_(["active", "completed"]),
+        )
+        .limit(1)
+    )
+    if direct_path is not None:
+        return True
+
+    recommended_item = db.scalar(
+        select(StudyPathItem.id)
+        .join(StudyPath, StudyPath.id == StudyPathItem.study_path_id)
+        .where(
+            StudyPath.student_id == student_id,
+            StudyPath.active.is_(True),
+            StudyPath.status.in_(["active", "completed"]),
+            StudyPathItem.item_type == "start_recommended_course",
+            StudyPathItem.entity_id == course_id,
+            StudyPathItem.status.in_(["available", "in_progress", "completed"]),
+        )
+        .limit(1)
+    )
+    return recommended_item is not None
+
+
+def study_path_openable_chapter_ids(
+    db: Session,
+    student_id: int,
+    course_id: int,
+) -> set[int]:
+    rows = db.scalars(
+        select(StudyPathItem)
+        .join(StudyPath, StudyPath.id == StudyPathItem.study_path_id)
+        .where(
+            StudyPath.student_id == student_id,
+            StudyPath.course_id == course_id,
+            StudyPath.active.is_(True),
+            StudyPath.status.in_(["active", "completed"]),
+            StudyPathItem.item_type.in_(["review_chapter", "exercise"]),
+            StudyPathItem.status.in_(["available", "in_progress", "completed"]),
+        )
+    ).all()
+
+    return {
+        int(item.entity_id)
+        for item in rows
+        if item.entity_id is not None
+    }
 
 
 def active_classroom_course_assignments(db: Session, course_id: int) -> list[ClassroomCourseAssignment]:
@@ -548,6 +616,22 @@ def serialize_course(course: Course, detail: bool = False, db: Session | None = 
         "created_at": course.created_at.isoformat() if course.created_at else None,
         "updated_at": course.updated_at.isoformat() if course.updated_at else None,
     }
+    if (
+        db is not None
+        and current_user is not None
+        and current_user.role == "student"
+    ):
+        openable_chapter_ids = study_path_openable_chapter_ids(
+            db,
+            current_user.id,
+            course.id,
+        )
+        for chapter in data["chapters"]:
+            if int(chapter["id"]) in openable_chapter_ids:
+                chapter["openable"] = True
+                if chapter["status"] == "locked":
+                    chapter["status"] = "active"
+
     data["information"] = {
         "level": data["information"].get("level", course.level),
         "duration": data["information"].get("duration", course.duration),

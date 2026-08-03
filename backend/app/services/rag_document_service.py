@@ -340,6 +340,12 @@ def build_structured_text_document_chunks(course: Course, document: RagDocument)
                 continue
             chunk_key = str(raw_chunk.get("chunk_key") or index)
             metadata = dict(raw_chunk.get("metadata") or {})
+            page_number = metadata.get("page_number", metadata.get("page_start", -1))
+            page_start = metadata.get("page_start", page_number)
+            page_end = metadata.get("page_end", page_number)
+            chapter_title = metadata.get("chapter_title", "")
+            display_source = metadata.get("display_source", "")
+            source_label = metadata.get("source_label", "")
             metadata.update({
                 "document_id": document.id,
                 "course_id": course.id,
@@ -354,15 +360,18 @@ def build_structured_text_document_chunks(course: Course, document: RagDocument)
                 "file_name": document.original_filename,
                 "pdf_name": document.original_filename,
                 "file_url": "",
-                "page_number": -1,
-                "page_start": -1,
-                "page_end": -1,
+                "page_number": page_number,
+                "page_start": page_start,
+                "page_end": page_end,
+                "chapter_title": chapter_title,
                 "chunk_index": index,
                 "checksum_sha256": document.checksum_sha256,
                 "published": bool(course.published),
                 "active": bool(document.active),
                 "index_status": "ready",
                 "character_count": len(text),
+                "display_source": display_source,
+                "source_label": source_label,
             })
             if not metadata.get("source_label"):
                 metadata["source_label"] = metadata.get("display_source") or document.original_filename

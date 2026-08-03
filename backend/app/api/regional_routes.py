@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.api.auth_dependencies import get_current_student
 from app.core.database import get_db
 from app.models.persistence import UserProfile
-from app.services import chapter_exercise_service, regional_exam_service
+from app.services import chapter_exercise_service, regional_exam_service, student_weakness_model_service
 
 router = APIRouter(tags=["Regional exam"])
 
@@ -88,6 +88,24 @@ def get_regional_attempt(
     current_student: UserProfile = Depends(get_current_student),
 ) -> dict:
     return regional_exam_service.get_regional_attempt(db, current_student, attempt_id)
+
+
+@router.get("/student-weakness-prediction")
+def student_weakness_prediction(
+    db: Session = Depends(get_db),
+    current_student: UserProfile = Depends(get_current_student),
+) -> dict:
+    return student_weakness_model_service.predict_student_weaknesses(db, current_student)
+
+
+@router.get("/debug/student-weakness-model")
+def debug_student_weakness_model() -> dict:
+    return student_weakness_model_service.get_model_debug()
+
+
+@router.get("/debug/exercise-evaluator")
+def debug_exercise_evaluator() -> dict:
+    return chapter_exercise_service.get_evaluator_debug()
 
 
 @router.get("/courses/{course_id}/chapters/{chapter_id}/exercises")
