@@ -1011,6 +1011,63 @@ export function getProfessorCoursePackageImportStatus(jobId) {
   return authenticatedRequest(`/api/professor/courses/automatic-import/${jobId}`)
 }
 
+export function analyzeProfessorCourseImport({
+  jsonFile,
+  latexFile,
+  classroomId,
+  subjectId = '',
+  educationLevelId = '',
+  adaptationMode = 'automatic_class',
+}) {
+  const formData = new FormData()
+  formData.append('json_file', jsonFile)
+  if (latexFile) formData.append('latex_file', latexFile)
+  formData.append('classroom_id', classroomId)
+  if (subjectId) formData.append('subject_id', subjectId)
+  if (educationLevelId) formData.append('education_level_id', educationLevelId)
+  formData.append('adaptation_mode', adaptationMode)
+  return authenticatedRequest('/api/professor/course-imports/analyze', {
+    method: 'POST',
+    body: formData,
+  })
+}
+
+export function getProfessorCourseImportWorkflow(jobId) {
+  return authenticatedRequest(`/api/professor/course-imports/${jobId}`)
+}
+
+export function adaptProfessorCourseImport(jobId, data) {
+  return authenticatedRequest(`/api/professor/course-imports/${jobId}/adapt`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+}
+
+export function getProfessorCourseImportPreview(jobId) {
+  return authenticatedRequest(`/api/professor/course-imports/${jobId}/preview`)
+}
+
+export function updateProfessorCourseImportSection(jobId, sectionId, data) {
+  return authenticatedRequest(`/api/professor/course-imports/${jobId}/sections/${encodeURIComponent(sectionId)}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+}
+
+export function validateProfessorCourseImport(jobId) {
+  return authenticatedRequest(`/api/professor/course-imports/${jobId}/validate`, { method: 'POST' })
+}
+
+export function publishProfessorCourseImport(jobId, data) {
+  return authenticatedRequest(`/api/professor/course-imports/${jobId}/publish`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+}
+
 export function getParentDashboard() {
   return authenticatedRequest('/api/parent/dashboard')
 }

@@ -880,6 +880,65 @@ class CourseLevelVariant(Base):
     course: Mapped["Course"] = relationship()
 
 
+class CourseAdaptation(Base):
+    __tablename__ = "course_adaptations"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    import_job_id: Mapped[int] = mapped_column(ForeignKey("pedagogical_package_import_jobs.id"), index=True)
+    source_course_id: Mapped[int | None] = mapped_column(ForeignKey("courses.id"), nullable=True, index=True)
+    classroom_id: Mapped[int] = mapped_column(ForeignKey("classrooms.id"), index=True)
+    target_level: Mapped[str] = mapped_column(String(40), index=True)
+    adaptation_mode: Mapped[str] = mapped_column(String(80), default="automatic_class", index=True)
+    original_content: Mapped[list | dict | None] = mapped_column(JSON, nullable=True)
+    adapted_content: Mapped[list | dict | None] = mapped_column(JSON, nullable=True)
+    analysis_summary: Mapped[list | dict | None] = mapped_column(JSON, nullable=True)
+    class_level_summary: Mapped[list | dict | None] = mapped_column(JSON, nullable=True)
+    model_name: Mapped[str] = mapped_column(String(180), default="EduMentor NLP local")
+    model_version: Mapped[str] = mapped_column(String(120), default="v13/v15/v17")
+    status: Mapped[str] = mapped_column(String(40), default="draft", index=True)
+    created_by: Mapped[int] = mapped_column(ForeignKey("user_profiles.id"), index=True)
+    validated_by: Mapped[int | None] = mapped_column(ForeignKey("user_profiles.id"), nullable=True, index=True)
+    validated_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    published_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    import_job: Mapped["PedagogicalPackageImportJob"] = relationship()
+    classroom: Mapped["Classroom"] = relationship()
+    source_course: Mapped["Course | None"] = relationship()
+    creator: Mapped["UserProfile"] = relationship(foreign_keys=[created_by])
+    validator: Mapped["UserProfile | None"] = relationship(foreign_keys=[validated_by])
+    sections: Mapped[list["CourseAdaptedSection"]] = relationship(
+        back_populates="adaptation",
+        cascade="all, delete-orphan",
+        order_by="CourseAdaptedSection.position",
+    )
+
+
+class CourseAdaptedSection(Base):
+    __tablename__ = "course_adapted_sections"
+    __table_args__ = (
+        UniqueConstraint("adaptation_id", "section_id", name="uq_course_adapted_section"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    adaptation_id: Mapped[int] = mapped_column(ForeignKey("course_adaptations.id"), index=True)
+    section_id: Mapped[str] = mapped_column(String(180), index=True)
+    source_chapter_id: Mapped[str | None] = mapped_column(String(160), nullable=True, index=True)
+    source_block_id: Mapped[str | None] = mapped_column(String(160), nullable=True, index=True)
+    section_type: Mapped[str] = mapped_column(String(80), default="autre", index=True)
+    source_level: Mapped[str] = mapped_column(String(40), default="intermediaire", index=True)
+    target_level: Mapped[str] = mapped_column(String(40), default="intermediaire", index=True)
+    original_content: Mapped[str] = mapped_column(Text, default="")
+    adapted_content: Mapped[str] = mapped_column(Text, default="")
+    metadata_json: Mapped[list | dict | None] = mapped_column(JSON, nullable=True)
+    position: Mapped[int] = mapped_column(Integer, default=0, index=True)
+    status: Mapped[str] = mapped_column(String(40), default="draft", index=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    adaptation: Mapped["CourseAdaptation"] = relationship(back_populates="sections")
+
+
 class AIGenerationRecord(Base):
     __tablename__ = "ai_generation_records"
 

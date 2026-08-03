@@ -35,6 +35,8 @@ def _add_user_profile_columns(engine: Engine) -> None:
 def _create_new_tables(engine: Engine) -> None:
     from app.core.database import Base
     from app.models.persistence import (
+        CourseAdaptation,
+        CourseAdaptedSection,
         CourseLevelVariant,
         LiteraryWork,
         NotificationDelivery,
@@ -50,6 +52,8 @@ def _create_new_tables(engine: Engine) -> None:
         tables=[
             PedagogicalPackageImportJob.__table__,
             CourseLevelVariant.__table__,
+            CourseAdaptation.__table__,
+            CourseAdaptedSection.__table__,
             RegionalExamProfile.__table__,
             LiteraryWork.__table__,
             ParentStudentLink.__table__,

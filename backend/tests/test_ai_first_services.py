@@ -11,6 +11,7 @@ from app.services.adaptive_generation_benchmark_service import build_metrics, re
 from app.services.ai.ai_provider import AIProviderError, AIResponse
 from app.services.ai.duplicate_detection_service import is_duplicate, max_similarity, token_similarity
 from app.services.ai.quality_validation_service import level_variant_difference, score_course_chapter
+from app.services import course_adaptation_nlp_service
 
 
 def test_deterministic_chapter_variant_has_required_sections():
@@ -118,6 +119,78 @@ def test_adaptive_blocks_keep_traceability_metadata():
         assert block["original_block_type"]
         assert block["level"] == "intermediaire"
         assert block["generation_method"] == "deterministic_fallback"
+
+
+def test_course_adaptation_resolves_class_dominant_level():
+    levels = course_adaptation_nlp_service.resolve_target_levels(
+        "automatic_class",
+        [],
+        {"dominant_level": "avance"},
+    )
+
+    assert levels == ["avance"]
+
+
+def test_course_adaptation_three_versions_are_distinct():
+    section = {
+        "id": "chapter_1:block_1",
+        "text": "Antigone refuse l'ordre de Creon et defend son devoir envers son frere.",
+        "estimated_level": "intermediaire",
+        "section_type": "explication",
+        "chapter_title": "Antigone",
+    }
+
+    beginner = course_adaptation_nlp_service.rule_based_adaptation(section["text"], "explication", "debutant")
+    intermediate = course_adaptation_nlp_service.rule_based_adaptation(section["text"], "explication", "intermediaire")
+    advanced = course_adaptation_nlp_service.rule_based_adaptation(section["text"], "explication", "avance")
+
+    assert beginner != intermediate
+    assert intermediate != advanced
+    assert "Aide" in beginner
+    assert "justifiez" in intermediate.lower()
+    assert "Analyse avancee" in advanced
+
+
+def test_course_adaptation_preserves_official_corrections():
+    section = {
+        "original_type": "correction",
+        "title": "Correction officielle",
+        "metadata": {"correction_status": "official"},
+    }
+
+    assert course_adaptation_nlp_service.is_protected_source(section) is True
+
+
+def test_course_adaptation_builds_traceable_adapted_content():
+    adaptation = SimpleNamespace(
+        target_level="debutant",
+        status="draft",
+        sections=[
+            SimpleNamespace(
+                position=1,
+                source_chapter_id="chapter_1",
+                source_block_id="block_1",
+                original_content="Texte original.",
+                target_level="debutant",
+                section_type="definition",
+                adapted_content="Definition adaptee.",
+                metadata_json={
+                    "chapter_title": "Chapitre 1",
+                    "title": "Definition",
+                    "original_type": "paragraph",
+                    "generation_method": "local_nlp_adaptation",
+                },
+            )
+        ],
+    )
+
+    content = course_adaptation_nlp_service.build_adapted_content(adaptation)
+
+    block = content["chapters"][0]["blocks"][0]
+    assert block["source_chapter_id"] == "chapter_1"
+    assert block["source_block_id"] == "block_1"
+    assert block["level"] == "debutant"
+    assert block["generation_method"] == "local_nlp_adaptation"
 
 
 def test_official_source_is_preserved_as_official_block():

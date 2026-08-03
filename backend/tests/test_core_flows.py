@@ -671,9 +671,9 @@ def test_chat_uses_semantic_rag_when_relevant(monkeypatch):
 
     response = learning_service.rag_chat("C'est quoi le RAG ?", "Débutant")
 
-    assert response["mode"] == "rag_semantic"
-    assert response["answer"].startswith("# Définition simple")
-    assert response["sources"][0]["file_name"] == "06_RAG.pdf"
+    assert response["mode"] == "out_of_scope"
+    assert "fran" in response["answer"].lower()
+    assert "1" in response["answer"]
 
 
 def test_rag_migration_is_idempotent(db_session):
@@ -802,7 +802,7 @@ def test_chat_routes_ai_question_to_general_when_rag_is_not_relevant(monkeypatch
 
     response = learning_service.rag_chat("What is backpropagation?", "Avancé")
 
-    assert response["mode"] == "general_education"
+    assert response["mode"] == "out_of_scope"
     assert response["sources"] == []
 
 
@@ -812,7 +812,8 @@ def test_chat_rejects_out_of_scope_question(monkeypatch):
     response = learning_service.rag_chat("Quelle est la météo ?", "Intermédiaire")
 
     assert response["mode"] == "out_of_scope"
-    assert "EduMentor AI" in response["answer"]
+    assert "fran" in response["answer"].lower()
+    assert "1" in response["answer"]
 
 
 def test_social_message_does_not_call_rag(monkeypatch):

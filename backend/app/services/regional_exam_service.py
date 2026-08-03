@@ -717,7 +717,7 @@ def calculate_readiness(progress_rows: list[CourseProgress], attempts: list[Asse
         "progress_component": progress_score,
         "assessment_component": assessment_score,
         "study_path_component": path_score,
-        "certainty": "Non prédictif",
+        "certainty": "Non predictif",
     }
 
 
