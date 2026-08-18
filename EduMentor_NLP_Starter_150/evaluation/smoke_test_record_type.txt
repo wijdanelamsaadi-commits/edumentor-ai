@@ -1,8 +1,0 @@
-{
-  "model": "models/tfidf_logreg_record_type.joblib",
-  "metrics": "models/metrics_record_type.json",
-  "predictions": "models/predictions_record_type.csv",
-  "accuracy": 0.5454545454545454,
-  "macro_f1": 0.26666666666666666,
-  "warning": "Résultats de smoke test uniquement : dataset trop petit pour une conclusion scientifique."
-}
