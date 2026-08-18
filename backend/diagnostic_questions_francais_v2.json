@@ -1,0 +1,1622 @@
+[
+  {
+    "code": "POS-COMP-D-01",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "comprehension",
+    "topic": "Comprendre une information explicite",
+    "work_id": "LBM",
+    "work_title": "La Boîte à merveilles",
+    "question": "Pourquoi Sidi Mohammed se réfugie-t-il dans sa boîte à merveilles ?",
+    "choices": [
+      "Pour échapper à son sentiment de solitude",
+      "Pour cacher l’argent de son père",
+      "Pour préparer une fête au Msid",
+      "Pour punir Zineb"
+    ],
+    "correct_answer": "Pour échapper à son sentiment de solitude",
+    "explanation": "La boîte représente pour l’enfant un refuge imaginaire face à la solitude.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LBM_CH01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-COMP-D-02",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "comprehension",
+    "topic": "Identifier une opposition entre personnages",
+    "work_id": "ANT",
+    "work_title": "Antigone",
+    "question": "Dans le dialogue entre Antigone et Ismène, quelle attitude Ismène défend-elle ?",
+    "choices": [
+      "La prudence et le respect de l’interdiction",
+      "La révolte immédiate contre Créon",
+      "Le départ définitif de Thèbes",
+      "Le refus de parler à sa sœur"
+    ],
+    "correct_answer": "La prudence et le respect de l’interdiction",
+    "explanation": "Ismène invoque la peur de la mort et la puissance du roi pour convaincre Antigone de renoncer.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "ANT_SEQ03",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-COMP-D-03",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "comprehension",
+    "topic": "Comprendre la situation du narrateur",
+    "work_id": "LDC",
+    "work_title": "Le Dernier Jour d’un condamné",
+    "question": "Quelle pensée domine l’esprit du condamné au début de l’œuvre ?",
+    "choices": [
+      "Sa mort prochaine",
+      "Son retour au travail",
+      "Un voyage à l’étranger",
+      "La réussite de son procès"
+    ],
+    "correct_answer": "Sa mort prochaine",
+    "explanation": "La mort prochaine envahit son esprit et transforme l’attente en souffrance.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LDC_CH01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-COMP-D-04",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "comprehension",
+    "topic": "Repérer une conséquence",
+    "work_id": "LBM",
+    "work_title": "La Boîte à merveilles",
+    "question": "Quelle conséquence suit la disparition de Zineb ?",
+    "choices": [
+      "Les habitants s’inquiètent et la recherchent",
+      "Le Msid ferme définitivement",
+      "Maalem Abdeslam quitte Fès",
+      "Sidi Mohammed détruit sa boîte"
+    ],
+    "correct_answer": "Les habitants s’inquiètent et la recherchent",
+    "explanation": "La disparition provoque l’inquiétude collective, puis un grand soulagement lorsqu’elle est retrouvée.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LBM_CH03",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-COMP-I-01",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "comprehension",
+    "topic": "Relier un événement à sa fonction",
+    "work_id": "ANT",
+    "work_title": "Antigone",
+    "question": "Pourquoi le Prologue annonce-t-il dès le début l’issue tragique ?",
+    "choices": [
+      "Pour installer la fatalité et la convention tragique",
+      "Pour créer une enquête policière",
+      "Pour cacher l’identité des personnages",
+      "Pour transformer la pièce en comédie"
+    ],
+    "correct_answer": "Pour installer la fatalité et la convention tragique",
+    "explanation": "Le Prologue présente les personnages comme déjà engagés dans un destin inévitable.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "ANT_SEQ01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-COMP-I-02",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "comprehension",
+    "topic": "Comprendre un contraste",
+    "work_id": "LDC",
+    "work_title": "Le Dernier Jour d’un condamné",
+    "question": "Que souligne le retour du condamné dans son cachot après l’infirmerie ?",
+    "choices": [
+      "Le contraste entre une brève sensation de liberté et l’enfermement",
+      "La disparition définitive de son angoisse",
+      "Le début d’une vie confortable",
+      "La certitude d’une grâce immédiate"
+    ],
+    "correct_answer": "Le contraste entre une brève sensation de liberté et l’enfermement",
+    "explanation": "Le retour au cachot annule la courte impression de liberté vécue à l’infirmerie.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LDC_CH15",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-COMP-I-03",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "comprehension",
+    "topic": "Identifier une cause et une conséquence",
+    "work_id": "LBM",
+    "work_title": "La Boîte à merveilles",
+    "question": "Pourquoi Rahma organise-t-elle un repas pour les pauvres après le retour de Zineb ?",
+    "choices": [
+      "Pour exprimer sa reconnaissance après avoir retrouvé sa fille",
+      "Pour célébrer le départ de Maalem Abdeslam",
+      "Pour financer les travaux du Msid",
+      "Pour annoncer un mariage"
+    ],
+    "correct_answer": "Pour exprimer sa reconnaissance après avoir retrouvé sa fille",
+    "explanation": "Le repas constitue un geste de gratitude et de solidarité après les retrouvailles.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LBM_CH03",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-COMP-I-04",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "comprehension",
+    "topic": "Comprendre l’enjeu d’un débat",
+    "work_id": "ANT",
+    "work_title": "Antigone",
+    "question": "Quel est l’enjeu principal de l’affrontement entre Antigone et Créon ?",
+    "choices": [
+      "L’opposition entre les lois de la cité et l’exigence morale individuelle",
+      "Le choix du prochain garde du palais",
+      "La répartition d’un héritage familial",
+      "La préparation d’une cérémonie"
+    ],
+    "correct_answer": "L’opposition entre les lois de la cité et l’exigence morale individuelle",
+    "explanation": "Le débat confronte le pouvoir politique de Créon au refus des compromis défendu par Antigone.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "ANT_SEQ09",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-COMP-A-01",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "comprehension",
+    "topic": "Formuler une inférence",
+    "work_id": "LDC",
+    "work_title": "Le Dernier Jour d’un condamné",
+    "question": "Le condamné demande quelques minutes supplémentaires en attendant une grâce. Quelle inférence est la plus justifiée ?",
+    "choices": [
+      "L’espoir subsiste malgré l’imminence de l’exécution",
+      "Il ne comprend pas pourquoi il est en prison",
+      "Il a déjà obtenu sa libération",
+      "Il souhaite prolonger volontairement son procès"
+    ],
+    "correct_answer": "L’espoir subsiste malgré l’imminence de l’exécution",
+    "explanation": "Sa demande révèle un dernier attachement à la possibilité d’être sauvé, même lorsque le temps est presque écoulé.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LDC_CH49",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-COMP-A-02",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "comprehension",
+    "topic": "Analyser une évolution",
+    "work_id": "ANT",
+    "work_title": "Antigone",
+    "question": "Quand Antigone révèle qu’elle a déjà tenté d’enterrer Polynice, que change cette révélation dans l’action ?",
+    "choices": [
+      "Le conflit devient irréversible car l’interdit a déjà été transgressé",
+      "Le conflit disparaît car Créon retire son décret",
+      "Ismène devient reine de Thèbes",
+      "La pièce revient au Prologue"
+    ],
+    "correct_answer": "Le conflit devient irréversible car l’interdit a déjà été transgressé",
+    "explanation": "La révélation montre que la décision d’Antigone n’est plus une intention : l’acte est accompli.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "ANT_SEQ06",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-COMP-A-03",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "comprehension",
+    "topic": "Interpréter une réaction collective",
+    "work_id": "LBM",
+    "work_title": "La Boîte à merveilles",
+    "question": "Que révèle la mobilisation du voisinage lors de la disparition de Zineb ?",
+    "choices": [
+      "La solidarité qui unit les habitants malgré leurs conflits quotidiens",
+      "L’absence totale de relations entre les familles",
+      "La volonté des habitants de quitter la médina",
+      "La supériorité du monde scolaire sur la vie familiale"
+    ],
+    "correct_answer": "La solidarité qui unit les habitants malgré leurs conflits quotidiens",
+    "explanation": "La recherche collective montre que la communauté peut dépasser ses tensions lorsqu’un enfant est en danger.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LBM_CH03",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-COMP-A-04",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "comprehension",
+    "topic": "Analyser une clôture tragique",
+    "work_id": "ANT",
+    "work_title": "Antigone",
+    "question": "Pourquoi le retour des gardes à leurs occupations ordinaires renforce-t-il la fin tragique ?",
+    "choices": [
+      "Il oppose l’indifférence du quotidien à l’ampleur des morts",
+      "Il prouve que les morts vont revenir",
+      "Il transforme Créon en personnage comique",
+      "Il annonce une fête publique"
+    ],
+    "correct_answer": "Il oppose l’indifférence du quotidien à l’ampleur des morts",
+    "explanation": "Le contraste entre la catastrophe et la routine des gardes accentue la solitude de Créon et la froideur du monde.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "ANT_SEQ12",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-LANG-D-01",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "langue_grammaire",
+    "topic": "Identifier un temps verbal",
+    "work_id": "TRANSVERSAL",
+    "work_title": "Français 1ère Bac",
+    "question": "Dans « Sidi Mohammed se sentait seul », à quel temps est conjugué le verbe ?",
+    "choices": [
+      "À l’imparfait",
+      "Au futur simple",
+      "Au passé composé",
+      "Au présent"
+    ],
+    "correct_answer": "À l’imparfait",
+    "explanation": "« Se sentait » est une forme de l’imparfait de l’indicatif.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-LANG-D-02",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "langue_grammaire",
+    "topic": "Identifier la nature d’un mot",
+    "work_id": "TRANSVERSAL",
+    "work_title": "Français 1ère Bac",
+    "question": "Dans « Antigone refuse cette prudence », quelle est la nature du mot « prudence » ?",
+    "choices": [
+      "Un nom commun",
+      "Un verbe",
+      "Un adverbe",
+      "Une préposition"
+    ],
+    "correct_answer": "Un nom commun",
+    "explanation": "« Prudence » désigne une attitude : c’est un nom commun.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-LANG-D-03",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "langue_grammaire",
+    "topic": "Repérer un connecteur logique",
+    "work_id": "TRANSVERSAL",
+    "work_title": "Français 1ère Bac",
+    "question": "Quel mot exprime la cause dans « Le condamné souffre parce qu’il attend son exécution » ?",
+    "choices": [
+      "parce que",
+      "souffre",
+      "attend",
+      "exécution"
+    ],
+    "correct_answer": "parce que",
+    "explanation": "La locution « parce que » introduit la cause.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-LANG-D-04",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "langue_grammaire",
+    "topic": "Accorder un adjectif",
+    "work_id": "TRANSVERSAL",
+    "work_title": "Français 1ère Bac",
+    "question": "Complétez correctement : « Les voisines sont très … par la disparition de Zineb. »",
+    "choices": [
+      "inquiètes",
+      "inquiet",
+      "inquiété",
+      "inquiétant"
+    ],
+    "correct_answer": "inquiètes",
+    "explanation": "L’adjectif s’accorde au féminin pluriel avec « les voisines ».",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-LANG-I-01",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "langue_grammaire",
+    "topic": "Transformer au discours indirect",
+    "work_id": "ANT",
+    "work_title": "Antigone",
+    "question": "Transformez au discours indirect : Antigone dit : « Je ne renoncerai pas. »",
+    "choices": [
+      "Antigone dit qu’elle ne renoncera pas.",
+      "Antigone dit que je ne renoncerai pas.",
+      "Antigone disait : elle ne renonce pas.",
+      "Antigone dit qu’elle ne renonçait jamais hier."
+    ],
+    "correct_answer": "Antigone dit qu’elle ne renoncera pas.",
+    "explanation": "Avec un verbe introducteur au présent, le futur et le pronom sont adaptés au discours indirect.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-LANG-I-02",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "langue_grammaire",
+    "topic": "Identifier une proposition subordonnée",
+    "work_id": "LDC",
+    "work_title": "Le Dernier Jour d’un condamné",
+    "question": "Dans « Il espère qu’une grâce arrivera », quelle est la fonction de « qu’une grâce arrivera » ?",
+    "choices": [
+      "Complément d’objet direct du verbe « espère »",
+      "Complément circonstanciel de lieu",
+      "Sujet du verbe « espère »",
+      "Épithète du nom « grâce »"
+    ],
+    "correct_answer": "Complément d’objet direct du verbe « espère »",
+    "explanation": "La proposition complète le verbe « espère » et répond à la question « il espère quoi ? ».",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-LANG-I-03",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "langue_grammaire",
+    "topic": "Exprimer la concession",
+    "work_id": "TRANSVERSAL",
+    "work_title": "Français 1ère Bac",
+    "question": "Quel connecteur complète correctement : « … elle a peur, Ismène essaie de protéger sa sœur. »",
+    "choices": [
+      "Bien qu’",
+      "Parce qu’",
+      "Afin qu’",
+      "Donc"
+    ],
+    "correct_answer": "Bien qu’",
+    "explanation": "« Bien que » introduit une concession et exige ici le subjonctif : « Bien qu’elle ait peur ».",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-LANG-I-04",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "langue_grammaire",
+    "topic": "Reconnaître une valeur de l’imparfait",
+    "work_id": "LBM",
+    "work_title": "La Boîte à merveilles",
+    "question": "Dans « Chaque matin, Sidi Mohammed allait au Msid », quelle valeur a l’imparfait ?",
+    "choices": [
+      "Une habitude dans le passé",
+      "Une action future",
+      "Un ordre",
+      "Une action unique et brève"
+    ],
+    "correct_answer": "Une habitude dans le passé",
+    "explanation": "Le groupe « chaque matin » montre une action répétée dans le passé.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-LANG-A-01",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "langue_grammaire",
+    "topic": "Analyser la modalisation",
+    "work_id": "LDC",
+    "work_title": "Le Dernier Jour d’un condamné",
+    "question": "Dans « Il est peut-être encore possible d’obtenir une grâce », quel élément marque l’incertitude ?",
+    "choices": [
+      "peut-être",
+      "encore",
+      "obtenir",
+      "grâce"
+    ],
+    "correct_answer": "peut-être",
+    "explanation": "L’adverbe « peut-être » modalise l’énoncé en exprimant une possibilité incertaine.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-LANG-A-02",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "langue_grammaire",
+    "topic": "Transformer par nominalisation",
+    "work_id": "TRANSVERSAL",
+    "work_title": "Français 1ère Bac",
+    "question": "Quelle nominalisation correspond à « Créon interdit d’enterrer Polynice » ?",
+    "choices": [
+      "L’interdiction par Créon d’enterrer Polynice",
+      "Créon est interdit par Polynice",
+      "L’enterrement interdit Créon",
+      "Créon, parce qu’il enterre Polynice"
+    ],
+    "correct_answer": "L’interdiction par Créon d’enterrer Polynice",
+    "explanation": "Le verbe « interdire » est transformé en nom « interdiction » sans changer le sens essentiel.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-LANG-A-03",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "langue_grammaire",
+    "topic": "Identifier un rapport logique implicite",
+    "work_id": "TRANSVERSAL",
+    "work_title": "Français 1ère Bac",
+    "question": "Quel rapport logique unit les deux propositions : « Le condamné est enfermé ; il continue pourtant d’espérer » ?",
+    "choices": [
+      "La concession",
+      "La cause",
+      "Le but",
+      "La comparaison"
+    ],
+    "correct_answer": "La concession",
+    "explanation": "« Pourtant » oppose l’espoir à une situation qui devrait normalement le supprimer.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-LANG-A-04",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "langue_grammaire",
+    "topic": "Choisir le mode verbal",
+    "work_id": "ANT",
+    "work_title": "Antigone",
+    "question": "Complétez : « Créon veut qu’Antigone … à son projet. »",
+    "choices": [
+      "renonce",
+      "renoncera",
+      "renonçait",
+      "a renoncé"
+    ],
+    "correct_answer": "renonce",
+    "explanation": "Après « vouloir que », le verbe se met au subjonctif présent : « qu’elle renonce ».",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-OEUV-D-01",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "connaissance_oeuvres",
+    "topic": "Identifier le genre d’une œuvre",
+    "work_id": "LBM",
+    "work_title": "La Boîte à merveilles",
+    "question": "À quel genre appartient principalement « La Boîte à merveilles » ?",
+    "choices": [
+      "Roman autobiographique",
+      "Tragédie moderne",
+      "Roman policier",
+      "Conte fantastique"
+    ],
+    "correct_answer": "Roman autobiographique",
+    "explanation": "L’œuvre raconte une enfance à travers le regard rétrospectif d’un narrateur adulte.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LBM_CH01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-OEUV-D-02",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "connaissance_oeuvres",
+    "topic": "Identifier un personnage",
+    "work_id": "ANT",
+    "work_title": "Antigone",
+    "question": "Quel personnage interdit l’enterrement de Polynice ?",
+    "choices": [
+      "Créon",
+      "Hémon",
+      "Le Messager",
+      "Le Garde"
+    ],
+    "correct_answer": "Créon",
+    "explanation": "Créon représente le pouvoir politique et impose le décret.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "ANT_SEQ03",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-OEUV-D-03",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "connaissance_oeuvres",
+    "topic": "Identifier le cadre principal",
+    "work_id": "LDC",
+    "work_title": "Le Dernier Jour d’un condamné",
+    "question": "Dans quel cadre le condamné passe-t-il l’essentiel de l’œuvre ?",
+    "choices": [
+      "La prison",
+      "Une école",
+      "Un palais",
+      "Un bateau"
+    ],
+    "correct_answer": "La prison",
+    "explanation": "La cellule, le cachot et Bicêtre structurent l’expérience de l’enfermement.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LDC_CH01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-OEUV-D-04",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "connaissance_oeuvres",
+    "topic": "Associer personnage et œuvre",
+    "work_id": "TRANSVERSAL",
+    "work_title": "Les trois œuvres",
+    "question": "Dans quelle œuvre trouve-t-on le personnage de Sidi Mohammed ?",
+    "choices": [
+      "La Boîte à merveilles",
+      "Antigone",
+      "Le Dernier Jour d’un condamné",
+      "Aucune des trois"
+    ],
+    "correct_answer": "La Boîte à merveilles",
+    "explanation": "Sidi Mohammed est l’enfant au centre du récit autobiographique.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LBM_CH01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-OEUV-I-01",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "connaissance_oeuvres",
+    "topic": "Comprendre la fonction d’un personnage collectif",
+    "work_id": "ANT",
+    "work_title": "Antigone",
+    "question": "Quelle fonction remplit principalement le Chœur dans « Antigone » ?",
+    "choices": [
+      "Commenter l’action et rappeler les règles de la tragédie",
+      "Diriger les gardes du palais",
+      "Organiser le mariage d’Antigone",
+      "Raconter l’enfance de Créon"
+    ],
+    "correct_answer": "Commenter l’action et rappeler les règles de la tragédie",
+    "explanation": "Le Chœur éclaire la portée de l’action et intervient comme voix de la tragédie.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "ANT_SEQ01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-OEUV-I-02",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "connaissance_oeuvres",
+    "topic": "Identifier une caractéristique narrative",
+    "work_id": "LBM",
+    "work_title": "La Boîte à merveilles",
+    "question": "Quelle caractéristique narrative est essentielle dans « La Boîte à merveilles » ?",
+    "choices": [
+      "Un narrateur adulte se souvient de son enfance",
+      "Un narrateur extérieur mène une enquête criminelle",
+      "Plusieurs rois racontent la guerre",
+      "Le récit est uniquement composé de lettres"
+    ],
+    "correct_answer": "Un narrateur adulte se souvient de son enfance",
+    "explanation": "Le récit combine le regard de l’enfant vécu et la mémoire rétrospective de l’adulte.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LBM_CH01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-OEUV-I-03",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "connaissance_oeuvres",
+    "topic": "Identifier la visée d’une œuvre",
+    "work_id": "LDC",
+    "work_title": "Le Dernier Jour d’un condamné",
+    "question": "Quelle est la visée dominante du « Dernier Jour d’un condamné » ?",
+    "choices": [
+      "Dénoncer la peine de mort à travers l’expérience d’un condamné",
+      "Faire l’éloge de la vie carcérale",
+      "Raconter une aventure comique",
+      "Défendre l’autorité absolue du juge"
+    ],
+    "correct_answer": "Dénoncer la peine de mort à travers l’expérience d’un condamné",
+    "explanation": "La souffrance intérieure du narrateur sert une critique de la peine capitale.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LDC_CH01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-OEUV-I-04",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "connaissance_oeuvres",
+    "topic": "Comparer les conflits centraux",
+    "work_id": "TRANSVERSAL",
+    "work_title": "Les trois œuvres",
+    "question": "Quel conflit est au centre d’« Antigone » ?",
+    "choices": [
+      "La loi politique contre la conscience individuelle",
+      "L’enfant contre son maître du Msid",
+      "Le prisonnier contre l’apprentissage de l’argot",
+      "Deux familles à propos d’une lampe"
+    ],
+    "correct_answer": "La loi politique contre la conscience individuelle",
+    "explanation": "Antigone défend son devoir envers son frère, tandis que Créon défend l’ordre de la cité.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "ANT_SEQ09",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-OEUV-A-01",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "connaissance_oeuvres",
+    "topic": "Analyser une structure narrative",
+    "work_id": "LBM",
+    "work_title": "La Boîte à merveilles",
+    "question": "Quel effet produit l’alternance entre le regard de l’enfant et la mémoire du narrateur adulte ?",
+    "choices": [
+      "Elle associe l’émotion vécue à une interprétation rétrospective",
+      "Elle supprime toute subjectivité du récit",
+      "Elle transforme le roman en pièce de théâtre",
+      "Elle empêche le lecteur de connaître les sentiments de l’enfant"
+    ],
+    "correct_answer": "Elle associe l’émotion vécue à une interprétation rétrospective",
+    "explanation": "La double perspective permet de restituer l’expérience enfantine tout en lui donnant un sens après coup.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LBM_CH01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-OEUV-A-02",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "connaissance_oeuvres",
+    "topic": "Analyser la modernisation d’un mythe",
+    "work_id": "ANT",
+    "work_title": "Antigone",
+    "question": "En quoi la pièce de Jean Anouilh modernise-t-elle la tragédie antique ?",
+    "choices": [
+      "Elle reprend le mythe tout en utilisant un langage et des préoccupations modernes",
+      "Elle remplace tous les personnages par des animaux",
+      "Elle supprime entièrement le conflit avec Créon",
+      "Elle transforme l’histoire en récit autobiographique"
+    ],
+    "correct_answer": "Elle reprend le mythe tout en utilisant un langage et des préoccupations modernes",
+    "explanation": "La pièce conserve le destin tragique mais rapproche les dialogues et les enjeux du monde contemporain.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "ANT_SEQ01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-OEUV-A-03",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "connaissance_oeuvres",
+    "topic": "Analyser un choix narratif",
+    "work_id": "LDC",
+    "work_title": "Le Dernier Jour d’un condamné",
+    "question": "Pourquoi l’identité précise du condamné reste-t-elle secondaire dans l’œuvre ?",
+    "choices": [
+      "Pour donner une portée universelle à la dénonciation de la peine de mort",
+      "Parce que le narrateur oublie son propre nom",
+      "Pour préparer une suite policière",
+      "Parce que le personnage n’est jamais emprisonné"
+    ],
+    "correct_answer": "Pour donner une portée universelle à la dénonciation de la peine de mort",
+    "explanation": "L’effacement des détails individuels invite le lecteur à considérer la condition de tout condamné.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LDC_CH01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-OEUV-A-04",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "connaissance_oeuvres",
+    "topic": "Comparer les formes d’enfermement",
+    "work_id": "TRANSVERSAL",
+    "work_title": "Les trois œuvres",
+    "question": "Quelle comparaison est la plus pertinente entre Antigone et le condamné ?",
+    "choices": [
+      "Tous deux sont enfermés dans une issue presque inévitable, politique pour l’une et judiciaire pour l’autre",
+      "Tous deux cherchent à devenir rois",
+      "Tous deux vivent leur enfance à Dar Chouafa",
+      "Tous deux acceptent facilement les compromis proposés"
+    ],
+    "correct_answer": "Tous deux sont enfermés dans une issue presque inévitable, politique pour l’une et judiciaire pour l’autre",
+    "explanation": "La fatalité tragique et la condamnation judiciaire réduisent fortement les possibilités d’échapper à la mort.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "ANT_SEQ09 + LDC_CH49",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-FIG-D-01",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "figures_procedes",
+    "topic": "Identifier une comparaison",
+    "work_id": "TRANSVERSAL",
+    "work_title": "Français 1ère Bac",
+    "question": "Quelle figure de style apparaît dans « La cellule est froide comme un tombeau » ?",
+    "choices": [
+      "Une comparaison",
+      "Une personnification",
+      "Une litote",
+      "Une anaphore"
+    ],
+    "correct_answer": "Une comparaison",
+    "explanation": "Le rapprochement est introduit par l’outil comparatif « comme ».",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-FIG-D-02",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "figures_procedes",
+    "topic": "Identifier une personnification",
+    "work_id": "TRANSVERSAL",
+    "work_title": "Français 1ère Bac",
+    "question": "Quelle figure de style apparaît dans « La peur serre la gorge du condamné » ?",
+    "choices": [
+      "Une personnification",
+      "Une comparaison",
+      "Une gradation",
+      "Une métonymie"
+    ],
+    "correct_answer": "Une personnification",
+    "explanation": "Une action humaine, « serrer », est attribuée à une notion abstraite, la peur.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-FIG-D-03",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "figures_procedes",
+    "topic": "Identifier une accumulation",
+    "work_id": "TRANSVERSAL",
+    "work_title": "Français 1ère Bac",
+    "question": "Quelle figure domine dans « Des cris, des pas, des chaînes et des prières remplissent le couloir » ?",
+    "choices": [
+      "Une accumulation",
+      "Une litote",
+      "Une comparaison",
+      "Une antiphrase"
+    ],
+    "correct_answer": "Une accumulation",
+    "explanation": "Plusieurs éléments sont juxtaposés pour créer un effet d’abondance.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-FIG-D-04",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "figures_procedes",
+    "topic": "Identifier une antithèse",
+    "work_id": "ANT",
+    "work_title": "Antigone",
+    "question": "Quelle figure oppose directement deux idées dans « Créon choisit le compromis, Antigone exige l’absolu » ?",
+    "choices": [
+      "Une antithèse",
+      "Une hyperbole",
+      "Une comparaison",
+      "Une périphrase"
+    ],
+    "correct_answer": "Une antithèse",
+    "explanation": "Les termes « compromis » et « absolu » construisent une opposition nette.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-FIG-I-01",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "figures_procedes",
+    "topic": "Interpréter une métaphore",
+    "work_id": "LDC",
+    "work_title": "Le Dernier Jour d’un condamné",
+    "question": "Dans « La mort est une ombre qui ne le quitte plus », quel effet produit la métaphore ?",
+    "choices": [
+      "Elle rend sensible la présence constante et menaçante de la mort",
+      "Elle indique que la cellule est bien éclairée",
+      "Elle décrit un personnage nommé Ombre",
+      "Elle prouve que le condamné dort"
+    ],
+    "correct_answer": "Elle rend sensible la présence constante et menaçante de la mort",
+    "explanation": "La mort est assimilée à une ombre persistante sans outil de comparaison.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-FIG-I-02",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "figures_procedes",
+    "topic": "Identifier une anaphore",
+    "work_id": "ANT",
+    "work_title": "Antigone",
+    "question": "Quel procédé apparaît dans « Je veux choisir, je veux agir, je veux rester fidèle à moi-même » ?",
+    "choices": [
+      "Une anaphore",
+      "Une ellipse",
+      "Une litote",
+      "Une métonymie"
+    ],
+    "correct_answer": "Une anaphore",
+    "explanation": "Le groupe « je veux » est répété au début de plusieurs segments.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-FIG-I-03",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "figures_procedes",
+    "topic": "Identifier une gradation",
+    "work_id": "TRANSVERSAL",
+    "work_title": "Français 1ère Bac",
+    "question": "Quelle figure apparaît dans « Il murmure, il crie, il hurle » ?",
+    "choices": [
+      "Une gradation",
+      "Une comparaison",
+      "Une antiphrase",
+      "Une litote"
+    ],
+    "correct_answer": "Une gradation",
+    "explanation": "Les verbes suivent une progression croissante d’intensité.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-FIG-I-04",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "figures_procedes",
+    "topic": "Reconnaître la focalisation interne",
+    "work_id": "LDC",
+    "work_title": "Le Dernier Jour d’un condamné",
+    "question": "Quel procédé narratif domine lorsque le lecteur découvre uniquement les pensées et les sensations du condamné ?",
+    "choices": [
+      "La focalisation interne",
+      "La focalisation externe",
+      "Le discours historique",
+      "Le récit omniscient neutre"
+    ],
+    "correct_answer": "La focalisation interne",
+    "explanation": "Le récit est centré sur la conscience et la perception du personnage.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LDC_CH01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-FIG-A-01",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "figures_procedes",
+    "topic": "Analyser une ironie tragique",
+    "work_id": "ANT",
+    "work_title": "Antigone",
+    "question": "Le public connaît dès le Prologue le destin d’Antigone, alors que certains personnages agissent encore comme s’il pouvait être évité. Quel procédé cela produit-il ?",
+    "choices": [
+      "Une ironie tragique",
+      "Une simple comparaison",
+      "Une description réaliste",
+      "Une ellipse temporelle"
+    ],
+    "correct_answer": "Une ironie tragique",
+    "explanation": "Le décalage entre ce que sait le public et ce qu’espèrent les personnages renforce la fatalité.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "ANT_SEQ01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-FIG-A-02",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "figures_procedes",
+    "topic": "Analyser une opposition symbolique",
+    "work_id": "LBM",
+    "work_title": "La Boîte à merveilles",
+    "question": "Quel procédé structure l’opposition entre la dureté du quotidien et l’univers protecteur de la boîte ?",
+    "choices": [
+      "Une antithèse symbolique entre réel et imaginaire",
+      "Une simple énumération chronologique",
+      "Une ellipse sans signification",
+      "Une définition scientifique"
+    ],
+    "correct_answer": "Une antithèse symbolique entre réel et imaginaire",
+    "explanation": "La boîte concentre l’imaginaire protecteur, opposé à un monde quotidien vécu comme hostile.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LBM_CH01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-FIG-A-03",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "figures_procedes",
+    "topic": "Analyser un rythme syntaxique",
+    "work_id": "LDC",
+    "work_title": "Le Dernier Jour d’un condamné",
+    "question": "Quel effet produit une succession de phrases très courtes au moment où l’exécution approche ?",
+    "choices": [
+      "Elle accélère le rythme et traduit l’angoisse",
+      "Elle ralentit nécessairement l’action",
+      "Elle crée une description paisible",
+      "Elle supprime toute émotion"
+    ],
+    "correct_answer": "Elle accélère le rythme et traduit l’angoisse",
+    "explanation": "Le découpage bref mime la précipitation des pensées et la pression du temps.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LDC_CH49",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-FIG-A-04",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "figures_procedes",
+    "topic": "Distinguer litote et hyperbole",
+    "work_id": "TRANSVERSAL",
+    "work_title": "Français 1ère Bac",
+    "question": "Dans « Ce n’est pas un petit malheur » pour évoquer une catastrophe, quel procédé est utilisé ?",
+    "choices": [
+      "Une litote",
+      "Une comparaison",
+      "Une onomatopée",
+      "Une anaphore"
+    ],
+    "correct_answer": "Une litote",
+    "explanation": "L’idée forte est exprimée de manière atténuée par la négation du contraire.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "pedagogical_creation",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-INT-D-01",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "interpretation_justification",
+    "topic": "Choisir une justification textuelle",
+    "work_id": "LBM",
+    "work_title": "La Boîte à merveilles",
+    "question": "Quel élément justifie le mieux que Sidi Mohammed est un enfant solitaire ?",
+    "choices": [
+      "Il cherche refuge dans son imagination et dans sa boîte",
+      "Il devient chef des gardes de Thèbes",
+      "Il écrit un jugement de tribunal",
+      "Il interdit l’enterrement de Polynice"
+    ],
+    "correct_answer": "Il cherche refuge dans son imagination et dans sa boîte",
+    "explanation": "Le recours à un univers personnel et imaginaire est directement lié à son sentiment de solitude.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LBM_CH01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-INT-D-02",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "interpretation_justification",
+    "topic": "Identifier une valeur défendue",
+    "work_id": "ANT",
+    "work_title": "Antigone",
+    "question": "Quelle valeur Antigone défend-elle principalement lorsqu’elle refuse d’obéir à Créon ?",
+    "choices": [
+      "La fidélité à sa conscience",
+      "La richesse matérielle",
+      "Le confort quotidien",
+      "La réussite scolaire"
+    ],
+    "correct_answer": "La fidélité à sa conscience",
+    "explanation": "Elle place son devoir moral et son choix personnel au-dessus de l’ordre politique.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "ANT_SEQ09",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-INT-D-03",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "interpretation_justification",
+    "topic": "Identifier un sentiment dominant",
+    "work_id": "LDC",
+    "work_title": "Le Dernier Jour d’un condamné",
+    "question": "Quel sentiment domine lorsque le condamné pense sans cesse à l’heure de son exécution ?",
+    "choices": [
+      "L’angoisse",
+      "La fierté",
+      "L’amusement",
+      "L’indifférence"
+    ],
+    "correct_answer": "L’angoisse",
+    "explanation": "L’attente de la mort occupe son esprit et transforme chaque moment en souffrance.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LDC_CH01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-INT-D-04",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "debutant",
+    "competence": "interpretation_justification",
+    "topic": "Relier événement et thème",
+    "work_id": "LBM",
+    "work_title": "La Boîte à merveilles",
+    "question": "Le repas organisé après le retour de Zineb illustre surtout quel thème ?",
+    "choices": [
+      "La solidarité",
+      "La vengeance",
+      "La guerre",
+      "La jalousie politique"
+    ],
+    "correct_answer": "La solidarité",
+    "explanation": "Le repas destiné aux pauvres exprime la gratitude et l’entraide communautaire.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LBM_CH03",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-INT-I-01",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "interpretation_justification",
+    "topic": "Interpréter un symbole",
+    "work_id": "LBM",
+    "work_title": "La Boîte à merveilles",
+    "question": "Que symbolise principalement la boîte à merveilles pour Sidi Mohammed ?",
+    "choices": [
+      "Un refuge intérieur contre la solitude et la dureté du réel",
+      "Une preuve de richesse familiale",
+      "Un instrument de pouvoir politique",
+      "Un manuel scolaire du Msid"
+    ],
+    "correct_answer": "Un refuge intérieur contre la solitude et la dureté du réel",
+    "explanation": "Les objets de la boîte alimentent son imaginaire et lui permettent de supporter le quotidien.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LBM_CH01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-INT-I-02",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "interpretation_justification",
+    "topic": "Analyser une conception du bonheur",
+    "work_id": "ANT",
+    "work_title": "Antigone",
+    "question": "Pourquoi Antigone refuse-t-elle le bonheur raisonnable proposé par Créon ?",
+    "choices": [
+      "Parce qu’elle le considère comme un compromis contraire à son exigence d’absolu",
+      "Parce qu’elle souhaite devenir garde",
+      "Parce qu’elle ne connaît pas Créon",
+      "Parce qu’elle veut quitter Thèbes pour étudier"
+    ],
+    "correct_answer": "Parce qu’elle le considère comme un compromis contraire à son exigence d’absolu",
+    "explanation": "Antigone refuse une vie obtenue au prix du renoncement à ce qu’elle juge juste.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "ANT_SEQ09",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-INT-I-03",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "interpretation_justification",
+    "topic": "Comprendre une stratégie argumentative",
+    "work_id": "LDC",
+    "work_title": "Le Dernier Jour d’un condamné",
+    "question": "Pourquoi le récit insiste-t-il sur les sensations et les pensées du condamné ?",
+    "choices": [
+      "Pour susciter l’empathie et rendre concrète la violence de la peine de mort",
+      "Pour présenter la prison comme un lieu touristique",
+      "Pour expliquer le fonctionnement d’une école",
+      "Pour cacher toute critique sociale"
+    ],
+    "correct_answer": "Pour susciter l’empathie et rendre concrète la violence de la peine de mort",
+    "explanation": "L’accès à la conscience du personnage humanise le condamné et soutient la dénonciation.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LDC_CH01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-INT-I-04",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "intermediaire",
+    "competence": "interpretation_justification",
+    "topic": "Comparer deux positions",
+    "work_id": "ANT",
+    "work_title": "Antigone",
+    "question": "Quelle formulation résume le mieux l’opposition entre Créon et Antigone ?",
+    "choices": [
+      "Créon défend l’ordre et le compromis, Antigone défend la conscience et l’absolu",
+      "Créon défend l’imagination, Antigone défend le Msid",
+      "Créon veut abolir la loi, Antigone veut gouverner",
+      "Ils défendent exactement la même position"
+    ],
+    "correct_answer": "Créon défend l’ordre et le compromis, Antigone défend la conscience et l’absolu",
+    "explanation": "Leur affrontement oppose une logique politique pragmatique à une exigence morale radicale.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "ANT_SEQ09",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-INT-A-01",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "interpretation_justification",
+    "topic": "Évaluer une interprétation",
+    "work_id": "LDC",
+    "work_title": "Le Dernier Jour d’un condamné",
+    "question": "Quelle interprétation explique le mieux l’importance de l’heure dans les derniers chapitres ?",
+    "choices": [
+      "Le temps mesuré rend l’exécution concrète et intensifie l’angoisse",
+      "L’heure sert uniquement à décrire la météo",
+      "Elle montre que le condamné ne sait pas lire",
+      "Elle annonce une fête familiale"
+    ],
+    "correct_answer": "Le temps mesuré rend l’exécution concrète et intensifie l’angoisse",
+    "explanation": "Le compte à rebours transforme le temps en menace et rapproche irréversiblement la mort.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LDC_CH49",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-INT-A-02",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "interpretation_justification",
+    "topic": "Interpréter la solitude finale",
+    "work_id": "ANT",
+    "work_title": "Antigone",
+    "question": "Quelle idée la solitude finale de Créon met-elle le mieux en valeur ?",
+    "choices": [
+      "Le pouvoir peut survivre à la catastrophe tout en laissant celui qui l’exerce moralement isolé",
+      "Créon a obtenu un bonheur complet",
+      "La tragédie se termine sans conséquence",
+      "Les gardes prennent le pouvoir"
+    ],
+    "correct_answer": "Le pouvoir peut survivre à la catastrophe tout en laissant celui qui l’exerce moralement isolé",
+    "explanation": "Créon reprend sa fonction, mais il reste seul après la mort de ses proches.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "ANT_SEQ12",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-INT-A-03",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "interpretation_justification",
+    "topic": "Construire une comparaison thématique",
+    "work_id": "TRANSVERSAL",
+    "work_title": "Les trois œuvres",
+    "question": "Quel rapprochement entre Sidi Mohammed et le condamné est le plus pertinent ?",
+    "choices": [
+      "Tous deux utilisent un espace intérieur ou l’écriture pour résister à une réalité oppressante",
+      "Tous deux gouvernent une cité",
+      "Tous deux sont condamnés pour avoir enterré Polynice",
+      "Tous deux vivent au palais de Thèbes"
+    ],
+    "correct_answer": "Tous deux utilisent un espace intérieur ou l’écriture pour résister à une réalité oppressante",
+    "explanation": "L’imaginaire de l’enfant et l’écriture du condamné constituent deux formes de résistance intérieure.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LBM_CH01 + LDC_CH25",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  },
+  {
+    "code": "POS-INT-A-04",
+    "subject_id": 1534,
+    "subject_slug": "francais",
+    "education_level": "1ere_bac",
+    "difficulty": "avance",
+    "competence": "interpretation_justification",
+    "topic": "Choisir une thèse argumentée",
+    "work_id": "TRANSVERSAL",
+    "work_title": "Les trois œuvres",
+    "question": "Quelle thèse comparative est la plus solide ?",
+    "choices": [
+      "Les trois œuvres montrent des individus confrontés à des forces qui limitent leur liberté",
+      "Les trois œuvres racontent exactement la même intrigue",
+      "Les trois œuvres sont des romans autobiographiques",
+      "Les trois œuvres défendent l’obéissance sans réflexion"
+    ],
+    "correct_answer": "Les trois œuvres montrent des individus confrontés à des forces qui limitent leur liberté",
+    "explanation": "La solitude sociale, la loi politique et la condamnation judiciaire représentent des contraintes différentes sur l’individu.",
+    "active": true,
+    "generation_method": "curated_positioning_v2",
+    "source_snapshot": {
+      "source_type": "edumentor_chapter_index_v8_or_pedagogical_creation",
+      "source_ref": "LBM_CH01 + ANT_SEQ09 + LDC_CH01",
+      "validation_status": "curated_for_positioning_v2"
+    }
+  }
+]

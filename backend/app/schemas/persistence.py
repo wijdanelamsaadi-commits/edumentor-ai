@@ -5,6 +5,8 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.core.roles import DEFAULT_ROLE
+
 
 class OrmModel(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -13,7 +15,7 @@ class OrmModel(BaseModel):
 class UserProfileBase(BaseModel):
     full_name: str = "Wijdane Lamsadi"
     email: str = "wijdane@edumentor.ai"
-    role: str = "user"
+    role: str = DEFAULT_ROLE
     status: str = "active"
     level: str = "Intermediaire"
     registration_date: str = "Mai 2024"
@@ -40,11 +42,18 @@ class UserProfileRead(UserProfileBase, OrmModel):
 
 
 class DiagnosticResultCreate(BaseModel):
+    subject_id: int | None = None
+    education_level_id: int | None = None
+    detected_difficulty_level_id: int | None = None
     score: int = 0
     level: str = "Intermediaire"
     total: int = 0
     correct_count: int = 0
     corrections: Any = None
+    results_by_topic: Any = None
+    results_by_difficulty: Any = None
+    recommendations: Any = None
+    justification: str | None = None
 
 
 class DiagnosticResultUpdate(DiagnosticResultCreate):

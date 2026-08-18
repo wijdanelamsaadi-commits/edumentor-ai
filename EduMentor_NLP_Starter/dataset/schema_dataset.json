@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EduMentor AI — Dataset NLP littérature",
+  "type": "object",
+  "required": [
+    "id",
+    "record_type",
+    "validation_status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "record_type": {
+      "enum": [
+        "content_annotation",
+        "vocabulary",
+        "figure_de_style",
+        "regional_exam_question",
+        "ingestion_rule"
+      ]
+    },
+    "roman": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "chapitre": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "niveau": {
+      "enum": [
+        "debutant",
+        "intermediaire",
+        "avance",
+        null
+      ]
+    },
+    "source_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "validation_status": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

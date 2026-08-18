@@ -71,13 +71,13 @@ export async function generateCertificatePdf({
 
   doc.setFontSize(14)
   doc.text(
-    "Pour avoir termine l'ensemble du parcours EduMentor AI et reussi le quiz final.",
+    "Pour avoir terminé l'ensemble du parcours de préparation au régional de français et réussi le quiz final.",
     width / 2,
     116,
     { align: 'center' },
   )
   doc.text(
-    "Felicitations pour votre progression, votre perseverance et vos competences acquises en intelligence artificielle.",
+    "Félicitations pour votre progression, votre persévérance et vos compétences en français de 1ère Bac.",
     width / 2,
     126,
     { align: 'center' },

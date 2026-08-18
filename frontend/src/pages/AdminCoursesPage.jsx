@@ -2,10 +2,15 @@ import { useEffect, useState } from 'react'
 import { FileText, Plus, Save, Trash2 } from 'lucide-react'
 import { AdminLoading, AdminMessage } from '../components/admin/AdminShared.jsx'
 import {
+  assignAdminCourseProfessor,
   createAdminCourse,
   deleteAdminCourse,
   deleteAdminCoursePdf,
   fetchAdminCourses,
+  fetchAdminDifficultyLevels,
+  fetchAdminEducationLevels,
+  fetchAdminSubjects,
+  fetchAdminUsers,
   updateAdminCourse,
   uploadAdminCoursePdf,
 } from '../services/api.js'
@@ -18,6 +23,10 @@ import {
 
 function AdminCoursesPage() {
   const [courses, setCourses] = useState([])
+  const [subjects, setSubjects] = useState([])
+  const [educationLevels, setEducationLevels] = useState([])
+  const [difficultyLevels, setDifficultyLevels] = useState([])
+  const [professors, setProfessors] = useState([])
   const [courseDraft, setCourseDraft] = useState(() => createEmptyCourseDraft())
   const [editingCourseId, setEditingCourseId] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -32,8 +41,18 @@ function AdminCoursesPage() {
     setLoading(true)
     setMessage('')
     try {
-      const coursesData = await fetchAdminCourses()
+      const [coursesData, subjectsData, educationData, difficultyData, usersData] = await Promise.all([
+        fetchAdminCourses(),
+        fetchAdminSubjects(),
+        fetchAdminEducationLevels(),
+        fetchAdminDifficultyLevels(),
+        fetchAdminUsers(),
+      ])
       setCourses(Array.isArray(coursesData) ? coursesData : [])
+      setSubjects(Array.isArray(subjectsData) ? subjectsData : [])
+      setEducationLevels(Array.isArray(educationData) ? educationData : [])
+      setDifficultyLevels(Array.isArray(difficultyData) ? difficultyData : [])
+      setProfessors(Array.isArray(usersData) ? usersData.filter((user) => user.role === 'professor') : [])
     } catch {
       setMessage('Impossible de charger les cours.')
     } finally {
@@ -109,6 +128,16 @@ function AdminCoursesPage() {
     }
   }
 
+  async function handleAssignProfessor(course, professorId) {
+    try {
+      await assignAdminCourseProfessor(course.id, professorId || null)
+      await loadCourses()
+      setMessage('Affectation professeur mise a jour.')
+    } catch (error) {
+      setMessage(error.message || "Affectation du professeur impossible.")
+    }
+  }
+
   if (loading) return <AdminLoading text="Chargement des cours..." />
 
   return (
@@ -135,9 +164,11 @@ function AdminCoursesPage() {
               <thead>
                 <tr>
                   <th>Cours</th>
+                  <th>Matiere</th>
                   <th>Niveau</th>
                   <th>Ordre</th>
                   <th>Publication</th>
+                  <th>Professeur</th>
                   <th>PDF</th>
                   <th>Actions</th>
                 </tr>
@@ -146,9 +177,16 @@ function AdminCoursesPage() {
                 {courses.map((course) => (
                   <tr key={course.id}>
                     <td><strong>{course.title}</strong><span>{course.summary}</span></td>
+                    <td>{course.subject?.name || '--'}</td>
                     <td>{course.level}</td>
                     <td>{course.display_order}</td>
                     <td><em className={course.published ? 'admin-pill' : 'admin-pill muted'}>{course.published ? 'publie' : 'brouillon'}</em></td>
+                    <td>
+                      <select onChange={(event) => handleAssignProfessor(course, event.target.value)} value={course.professor_id || ''}>
+                        <option value="">Aucun</option>
+                        {professors.map((professor) => <option key={professor.id} value={professor.id}>{professor.full_name}</option>)}
+                      </select>
+                    </td>
                     <td>{course.pdf_url ? <a href={course.pdf_url} rel="noreferrer" target="_blank">Ouvrir PDF</a> : '--'}</td>
                     <td>
                       <div className="admin-actions">
@@ -173,9 +211,39 @@ function AdminCoursesPage() {
             <h3>{editingCourseId ? 'Modifier le cours' : 'Ajouter un cours'}</h3>
             <label>Titre<input onChange={(event) => updateCourseDraft('title', event.target.value)} value={courseDraft.title} /></label>
             <div className="admin-form-row">
+              <label>Matiere
+                <select required onChange={(event) => updateCourseDraft('subject_id', event.target.value)} value={courseDraft.subject_id}>
+                  <option value="">Selectionner</option>
+                  {subjects.map((subject) => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
+                </select>
+              </label>
+              <label>Niveau d'etudes
+                <select onChange={(event) => updateCourseDraft('education_level_id', event.target.value)} value={courseDraft.education_level_id}>
+                  <option value="">Non defini</option>
+                  {educationLevels.map((level) => <option key={level.id} value={level.id}>{level.name}</option>)}
+                </select>
+              </label>
+              <label>Difficulte
+                <select onChange={(event) => updateCourseDraft('difficulty_level_id', event.target.value)} value={courseDraft.difficulty_level_id}>
+                  <option value="">Non definie</option>
+                  {difficultyLevels.map((level) => <option key={level.id} value={level.id}>{level.name}</option>)}
+                </select>
+              </label>
+            </div>
+            <div className="admin-form-row">
               <label>Niveau<input onChange={(event) => updateCourseDraft('level', event.target.value)} value={courseDraft.level} /></label>
               <label>Duree<input onChange={(event) => updateCourseDraft('duration', event.target.value)} value={courseDraft.duration} /></label>
               <label>Ordre<input onChange={(event) => updateCourseDraft('display_order', event.target.value)} type="number" value={courseDraft.display_order} /></label>
+            </div>
+            <div className="admin-form-row">
+              <label>Duree estimee<input onChange={(event) => updateCourseDraft('estimated_duration', event.target.value)} value={courseDraft.estimated_duration} /></label>
+              <label>Professeur
+                <select onChange={(event) => updateCourseDraft('professor_id', event.target.value)} value={courseDraft.professor_id}>
+                  <option value="">Aucun</option>
+                  {professors.map((professor) => <option key={professor.id} value={professor.id}>{professor.full_name} ({professor.role})</option>)}
+                </select>
+              </label>
+              <label>Prerequis<input onChange={(event) => updateCourseDraft('prerequisites', event.target.value)} value={courseDraft.prerequisites} /></label>
             </div>
             <label>Resume<textarea onChange={(event) => updateCourseDraft('summary', event.target.value)} value={courseDraft.summary} /></label>
             <label>Description<textarea onChange={(event) => updateCourseDraft('description', event.target.value)} value={courseDraft.description} /></label>

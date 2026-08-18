@@ -5,7 +5,9 @@ import unicodedata
 
 from pypdf import PdfReader
 
-COURSES_DOCS_DIR = Path(__file__).resolve().parents[3] / "docs" / "courses"
+from app.core.config import get_settings
+
+COURSES_DOCS_DIR = Path(get_settings().get("docs_dir") or Path(__file__).resolve().parents[3] / "docs") / "courses"
 CHUNK_SIZE = 800
 CHUNK_OVERLAP = 150
 MIN_TOKEN_LENGTH = 2

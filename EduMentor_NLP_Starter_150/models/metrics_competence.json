@@ -1,0 +1,126 @@
+{
+  "target": "competence",
+  "samples_total": 30,
+  "samples_train": 22,
+  "samples_test": 8,
+  "class_distribution": {
+    "contextualisation": 5,
+    "comprehension": 5,
+    "justification": 5,
+    "langue": 5,
+    "analyse_stylistique": 5,
+    "interpretation": 5
+  },
+  "accuracy": 0.5,
+  "macro_f1": 0.47222222222222215,
+  "classification_report": {
+    "analyse_stylistique": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1-score": 0.6666666666666666,
+      "support": 1.0
+    },
+    "comprehension": {
+      "precision": 0.3333333333333333,
+      "recall": 1.0,
+      "f1-score": 0.5,
+      "support": 1.0
+    },
+    "contextualisation": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1.0
+    },
+    "interpretation": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 2.0
+    },
+    "justification": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1-score": 0.6666666666666666,
+      "support": 2.0
+    },
+    "langue": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 1.0
+    },
+    "accuracy": 0.5,
+    "macro avg": {
+      "precision": 0.47222222222222215,
+      "recall": 0.5833333333333334,
+      "f1-score": 0.47222222222222215,
+      "support": 8.0
+    },
+    "weighted avg": {
+      "precision": 0.47916666666666663,
+      "recall": 0.5,
+      "f1-score": 0.4375,
+      "support": 8.0
+    }
+  },
+  "labels": [
+    "analyse_stylistique",
+    "comprehension",
+    "contextualisation",
+    "interpretation",
+    "justification",
+    "langue"
+  ],
+  "confusion_matrix": [
+    [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "warning": "Résultats de smoke test uniquement : dataset trop petit pour une conclusion scientifique."
+}

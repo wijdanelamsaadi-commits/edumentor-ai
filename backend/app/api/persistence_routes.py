@@ -44,10 +44,19 @@ def get_profile(current_user: UserProfile = Depends(get_current_user)):
 
 @router.get("/diagnostic/result", response_model=DiagnosticResultRead | None)
 def get_diagnostic_result(
+    subject_id: int | None = None,
     db: Session = Depends(get_db),
     current_user: UserProfile = Depends(get_current_user),
 ):
-    return persistence_service.get_latest_diagnostic(db, current_user)
+    return persistence_service.get_latest_diagnostic(db, current_user, subject_id)
+
+
+@router.get("/diagnostic/results")
+def get_diagnostic_results(
+    db: Session = Depends(get_db),
+    current_user: UserProfile = Depends(get_current_user),
+):
+    return persistence_service.get_diagnostic_results_by_subject(db, current_user)
 
 
 @router.post("/diagnostic/result", response_model=DiagnosticResultRead)

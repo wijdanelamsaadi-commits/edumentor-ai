@@ -12,7 +12,7 @@ import { getUserProfile } from '../services/api.js'
 import { auth, googleProvider } from '../services/firebase.js'
 import { AuthContext } from './authContext.js'
 
-const DEFAULT_ROLE = 'user'
+const DEFAULT_ROLE = 'student'
 const AUTH_UID_STORAGE_KEY = 'edumentor:authUid'
 const USER_CACHE_KEYS = [
   'edumentor:userProfile',
@@ -103,7 +103,10 @@ export function AuthProvider({ children }) {
     currentUser,
     authReady,
     isAdmin: role === 'admin',
-    isUser: role === 'user',
+    isProfessor: role === 'professor',
+    isStudent: role === 'student',
+    isParent: role === 'parent',
+    isUser: role === 'student',
     loading,
     login,
     loginWithGoogle,
@@ -131,7 +134,14 @@ async function loadPostgresProfile() {
 }
 
 function normalizeRole(value) {
-  return String(value || '').toLowerCase() === 'admin' ? 'admin' : DEFAULT_ROLE
+  const cleanRole = String(value || '').toLowerCase()
+  if (cleanRole === 'admin' || cleanRole === 'professor' || cleanRole === 'student' || cleanRole === 'parent') {
+    return cleanRole
+  }
+  if (cleanRole === 'user') {
+    return 'student'
+  }
+  return DEFAULT_ROLE
 }
 
 function syncUserCacheOwner(firebaseUser) {

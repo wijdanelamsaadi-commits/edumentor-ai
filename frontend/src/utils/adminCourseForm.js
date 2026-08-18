@@ -7,6 +7,12 @@ export function createEmptyCourseDraft() {
     title: '',
     level: 'Debutant',
     duration: '2h',
+    estimated_duration: '2h',
+    subject_id: '',
+    education_level_id: '',
+    difficulty_level_id: '',
+    professor_id: '',
+    prerequisites: '',
     display_order: 99,
     summary: '',
     description: '',
@@ -24,6 +30,12 @@ export function courseToDraft(course) {
     title: course.title || '',
     level: course.level || 'Debutant',
     duration: course.duration || '2h',
+    estimated_duration: course.estimated_duration || course.duration || '2h',
+    subject_id: course.subject_id || '',
+    education_level_id: course.education_level_id || '',
+    difficulty_level_id: course.difficulty_level_id || '',
+    professor_id: course.professor_id || '',
+    prerequisites: course.prerequisites || '',
     display_order: course.display_order || course.id,
     summary: course.summary || '',
     description: course.description || '',
@@ -55,6 +67,12 @@ export function draftToCoursePayload(draft) {
     title: draft.title,
     level: draft.level,
     duration: draft.duration,
+    estimated_duration: draft.estimated_duration || draft.duration,
+    subject_id: toOptionalNumber(draft.subject_id),
+    education_level_id: toOptionalNumber(draft.education_level_id),
+    difficulty_level_id: toOptionalNumber(draft.difficulty_level_id),
+    professor_id: toOptionalNumber(draft.professor_id),
+    prerequisites: draft.prerequisites,
     display_order: Number(draft.display_order || 99),
     summary: draft.summary,
     description: draft.description,
@@ -79,6 +97,12 @@ export function draftToCoursePayload(draft) {
       questions: quizQuestions,
     },
   }
+}
+
+function toOptionalNumber(value) {
+  if (value === '' || value === undefined || value === null) return null
+  const number = Number(value)
+  return Number.isFinite(number) ? number : null
 }
 
 function parseLines(value) {

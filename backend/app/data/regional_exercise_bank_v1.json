@@ -1,0 +1,2337 @@
+{
+  "schema": "edumentor_regional_exercise_bank_v1",
+  "version": "regional-bank-v1-20260801",
+  "course_id": 12,
+  "title": "Banque d’exercices — Français 1ère Bac Maroc",
+  "selection_policy": {
+    "visible_questions_per_chapter": 10,
+    "debutant": {
+      "debutant": 6,
+      "intermediaire": 4,
+      "avance": 0
+    },
+    "intermediaire": {
+      "debutant": 3,
+      "intermediaire": 5,
+      "avance": 2
+    },
+    "avance": {
+      "debutant": 2,
+      "intermediaire": 4,
+      "avance": 4
+    }
+  },
+  "chapter_counts": {
+    "94": 15,
+    "95": 20,
+    "96": 20,
+    "97": 20,
+    "98": 20,
+    "99": 15
+  },
+  "total_questions": 110,
+  "questions": [
+    {
+      "id": "reg-94-q001",
+      "chapter_id": 94,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Repères des œuvres",
+      "question": "Qui a écrit « La Boîte à merveilles » ?",
+      "choices": [
+        "Ahmed Sefrioui",
+        "Jean Anouilh",
+        "Victor Hugo",
+        "Molière"
+      ],
+      "correct_answer": "Ahmed Sefrioui",
+      "expected_elements": [
+        "Ahmed Sefrioui"
+      ],
+      "points": 1,
+      "correction": "Ahmed Sefrioui",
+      "explanation": "« La Boîte à merveilles » est une œuvre d’Ahmed Sefrioui.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-94-q002",
+      "chapter_id": 94,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Repères des œuvres",
+      "question": "Qui est l’auteur d’« Antigone » étudiée au programme ?",
+      "choices": [
+        "Jean Anouilh",
+        "Ahmed Sefrioui",
+        "Victor Hugo",
+        "Émile Zola"
+      ],
+      "correct_answer": "Jean Anouilh",
+      "expected_elements": [
+        "Jean Anouilh"
+      ],
+      "points": 1,
+      "correction": "Jean Anouilh",
+      "explanation": "La pièce étudiée est l’« Antigone » de Jean Anouilh.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-94-q003",
+      "chapter_id": 94,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Repères des œuvres",
+      "question": "Qui a écrit « Le Dernier Jour d’un condamné » ?",
+      "choices": [
+        "Victor Hugo",
+        "Jean Anouilh",
+        "Ahmed Sefrioui",
+        "Albert Camus"
+      ],
+      "correct_answer": "Victor Hugo",
+      "expected_elements": [
+        "Victor Hugo"
+      ],
+      "points": 1,
+      "correction": "Victor Hugo",
+      "explanation": "Victor Hugo",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-94-q004",
+      "chapter_id": 94,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Genres littéraires",
+      "question": "Quel est le genre de « La Boîte à merveilles » ?",
+      "choices": [
+        "Roman autobiographique",
+        "Tragédie moderne",
+        "Roman à thèse",
+        "Recueil de poésie"
+      ],
+      "correct_answer": "Roman autobiographique",
+      "expected_elements": [
+        "Roman autobiographique"
+      ],
+      "points": 1,
+      "correction": "Roman autobiographique",
+      "explanation": "Roman autobiographique",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-94-q005",
+      "chapter_id": 94,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Genres littéraires",
+      "question": "Quel est le genre d’« Antigone » de Jean Anouilh ?",
+      "choices": [
+        "Tragédie moderne",
+        "Roman autobiographique",
+        "Roman à thèse",
+        "Conte merveilleux"
+      ],
+      "correct_answer": "Tragédie moderne",
+      "expected_elements": [
+        "Tragédie moderne"
+      ],
+      "points": 1,
+      "correction": "Tragédie moderne",
+      "explanation": "Tragédie moderne",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-94-q006",
+      "chapter_id": 94,
+      "difficulty": "intermediaire",
+      "type": "qcm",
+      "competence": "Genres littéraires",
+      "question": "Quel est le genre du « Dernier Jour d’un condamné » ?",
+      "choices": [
+        "Roman à thèse",
+        "Tragédie moderne",
+        "Roman autobiographique",
+        "Comédie"
+      ],
+      "correct_answer": "Roman à thèse",
+      "expected_elements": [
+        "Roman à thèse"
+      ],
+      "points": 1,
+      "correction": "Roman à thèse",
+      "explanation": "Roman à thèse",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-94-q007",
+      "chapter_id": 94,
+      "difficulty": "intermediaire",
+      "type": "true_false",
+      "competence": "Genres littéraires",
+      "question": "Les trois œuvres appartiennent au même genre littéraire.",
+      "choices": [
+        "Vrai",
+        "Faux"
+      ],
+      "correct_answer": "Faux",
+      "expected_elements": [
+        "Faux"
+      ],
+      "points": 1,
+      "correction": "Faux : elles relèvent respectivement du roman autobiographique, de la tragédie moderne et du roman à thèse.",
+      "explanation": "Faux : elles relèvent respectivement du roman autobiographique, de la tragédie moderne et du roman à thèse.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-94-q008",
+      "chapter_id": 94,
+      "difficulty": "intermediaire",
+      "type": "response_short",
+      "competence": "Repères des œuvres",
+      "question": "Associez chaque œuvre à son auteur et à son genre.",
+      "choices": [],
+      "correct_answer": "La Boîte à merveilles — Ahmed Sefrioui — roman autobiographique ; Antigone — Jean Anouilh — tragédie moderne ; Le Dernier Jour d’un condamné — Victor Hugo — roman à thèse",
+      "expected_elements": [
+        "La Boîte à merveilles — Ahmed Sefrioui — roman autobiographique",
+        "Antigone — Jean Anouilh — tragédie moderne",
+        "Le Dernier Jour d’un condamné — Victor Hugo — roman à thèse"
+      ],
+      "points": 3,
+      "correction": "La Boîte à merveilles — Ahmed Sefrioui — roman autobiographique ; Antigone — Jean Anouilh — tragédie moderne ; Le Dernier Jour d’un condamné — Victor Hugo — roman à thèse",
+      "explanation": "Chaque œuvre doit être associée à son auteur et à son genre.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-94-q009",
+      "chapter_id": 94,
+      "difficulty": "intermediaire",
+      "type": "qcm",
+      "competence": "Thèmes",
+      "question": "Quelle œuvre met principalement en avant l’enfance, la solitude et la vie traditionnelle ?",
+      "choices": [
+        "La Boîte à merveilles",
+        "Antigone",
+        "Le Dernier Jour d’un condamné",
+        "Aucune des trois"
+      ],
+      "correct_answer": "La Boîte à merveilles",
+      "expected_elements": [
+        "La Boîte à merveilles"
+      ],
+      "points": 1,
+      "correction": "La Boîte à merveilles",
+      "explanation": "La Boîte à merveilles",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-94-q010",
+      "chapter_id": 94,
+      "difficulty": "intermediaire",
+      "type": "qcm",
+      "competence": "Thèmes",
+      "question": "Quelle œuvre oppose surtout la conscience individuelle à la raison d’État ?",
+      "choices": [
+        "Antigone",
+        "La Boîte à merveilles",
+        "Le Dernier Jour d’un condamné",
+        "Les trois de la même manière"
+      ],
+      "correct_answer": "Antigone",
+      "expected_elements": [
+        "Antigone"
+      ],
+      "points": 1,
+      "correction": "Antigone",
+      "explanation": "Antigone",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-94-q011",
+      "chapter_id": 94,
+      "difficulty": "intermediaire",
+      "type": "qcm",
+      "competence": "Thèmes",
+      "question": "Quelle œuvre dénonce principalement la peine de mort ?",
+      "choices": [
+        "Le Dernier Jour d’un condamné",
+        "Antigone",
+        "La Boîte à merveilles",
+        "Aucune des trois"
+      ],
+      "correct_answer": "Le Dernier Jour d’un condamné",
+      "expected_elements": [
+        "Le Dernier Jour d’un condamné"
+      ],
+      "points": 1,
+      "correction": "Le Dernier Jour d’un condamné",
+      "explanation": "Le Dernier Jour d’un condamné",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-94-q012",
+      "chapter_id": 94,
+      "difficulty": "avance",
+      "type": "justification",
+      "competence": "Comparaison des œuvres",
+      "question": "Donnez un point commun entre les trois œuvres et justifiez brièvement.",
+      "choices": [],
+      "correct_answer": "Les trois œuvres présentent un individu confronté à une difficulté ou à une pression sociale : Sidi Mohammed affronte la solitude, Antigone s’oppose au pouvoir, et le condamné subit la peine capitale.",
+      "expected_elements": [
+        "un individu confronté à une difficulté ou à une pression",
+        "Sidi Mohammed et la solitude",
+        "Antigone et le pouvoir",
+        "le condamné et la peine capitale"
+      ],
+      "points": 2,
+      "correction": "Les trois œuvres présentent un individu confronté à une difficulté ou à une pression sociale : Sidi Mohammed affronte la solitude, Antigone s’oppose au pouvoir, et le condamné subit la peine capitale.",
+      "explanation": "Les trois œuvres présentent un individu confronté à une difficulté ou à une pression sociale : Sidi Mohammed affronte la solitude, Antigone s’oppose au pouvoir, et le condamné subit la peine capitale.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-94-q013",
+      "chapter_id": 94,
+      "difficulty": "avance",
+      "type": "interpretation",
+      "competence": "Organisation du cours",
+      "question": "Pourquoi commencer le parcours par une vue d’ensemble des trois œuvres ?",
+      "choices": [],
+      "correct_answer": "Cette vue d’ensemble permet de fixer les auteurs, les genres et les thèmes majeurs avant l’étude détaillée de chaque œuvre.",
+      "expected_elements": [
+        "auteurs",
+        "genres",
+        "thèmes",
+        "préparer l’étude détaillée"
+      ],
+      "points": 2,
+      "correction": "Cette vue d’ensemble permet de fixer les auteurs, les genres et les thèmes majeurs avant l’étude détaillée de chaque œuvre.",
+      "explanation": "Cette vue d’ensemble permet de fixer les auteurs, les genres et les thèmes majeurs avant l’étude détaillée de chaque œuvre.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-94-q014",
+      "chapter_id": 94,
+      "difficulty": "avance",
+      "type": "response_short",
+      "competence": "Personnages et voix narratives",
+      "question": "Nommez la figure centrale de chacune des trois œuvres.",
+      "choices": [],
+      "correct_answer": "Sidi Mohammed ; Antigone ; le condamné anonyme",
+      "expected_elements": [
+        "Sidi Mohammed",
+        "Antigone",
+        "le condamné anonyme"
+      ],
+      "points": 3,
+      "correction": "Sidi Mohammed ; Antigone ; le condamné anonyme",
+      "explanation": "Sidi Mohammed ; Antigone ; le condamné anonyme",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-94-q015",
+      "chapter_id": 94,
+      "difficulty": "avance",
+      "type": "qcm",
+      "competence": "Formes littéraires",
+      "question": "Laquelle des trois œuvres est une pièce de théâtre ?",
+      "choices": [
+        "Antigone",
+        "La Boîte à merveilles",
+        "Le Dernier Jour d’un condamné",
+        "Toutes les trois"
+      ],
+      "correct_answer": "Antigone",
+      "expected_elements": [
+        "Antigone"
+      ],
+      "points": 1,
+      "correction": "Antigone",
+      "explanation": "Antigone",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q001",
+      "chapter_id": 95,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Repères de l’œuvre",
+      "question": "Qui est l’auteur de « La Boîte à merveilles » ?",
+      "choices": [
+        "Ahmed Sefrioui",
+        "Jean Anouilh",
+        "Victor Hugo",
+        "Tahar Ben Jelloun"
+      ],
+      "correct_answer": "Ahmed Sefrioui",
+      "expected_elements": [
+        "Ahmed Sefrioui"
+      ],
+      "points": 1,
+      "correction": "Ahmed Sefrioui",
+      "explanation": "Ahmed Sefrioui",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q002",
+      "chapter_id": 95,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Genre littéraire",
+      "question": "« La Boîte à merveilles » est principalement un…",
+      "choices": [
+        "Roman autobiographique",
+        "Roman policier",
+        "Roman à thèse",
+        "Drame historique"
+      ],
+      "correct_answer": "Roman autobiographique",
+      "expected_elements": [
+        "Roman autobiographique"
+      ],
+      "points": 1,
+      "correction": "Roman autobiographique",
+      "explanation": "Roman autobiographique",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q003",
+      "chapter_id": 95,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Personnages",
+      "question": "Qui raconte principalement son enfance dans l’œuvre ?",
+      "choices": [
+        "Sidi Mohammed",
+        "Créon",
+        "Le condamné",
+        "Polynice"
+      ],
+      "correct_answer": "Sidi Mohammed",
+      "expected_elements": [
+        "Sidi Mohammed"
+      ],
+      "points": 1,
+      "correction": "Sidi Mohammed",
+      "explanation": "Sidi Mohammed",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q004",
+      "chapter_id": 95,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Cadre spatial",
+      "question": "Dans quelle ville se déroule principalement le récit ?",
+      "choices": [
+        "Fès",
+        "Rabat",
+        "Paris",
+        "Thèbes"
+      ],
+      "correct_answer": "Fès",
+      "expected_elements": [
+        "Fès"
+      ],
+      "points": 1,
+      "correction": "Fès",
+      "explanation": "Fès",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q005",
+      "chapter_id": 95,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Objet symbolique",
+      "question": "Quel rôle joue surtout la boîte à merveilles pour Sidi Mohammed ?",
+      "choices": [
+        "Elle lui sert de refuge contre la solitude",
+        "Elle lui permet de devenir riche",
+        "Elle remplace son école",
+        "Elle appartient à Créon"
+      ],
+      "correct_answer": "Elle lui sert de refuge contre la solitude",
+      "expected_elements": [
+        "Elle lui sert de refuge contre la solitude"
+      ],
+      "points": 1,
+      "correction": "Elle lui sert de refuge contre la solitude",
+      "explanation": "Elle lui sert de refuge contre la solitude",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q006",
+      "chapter_id": 95,
+      "difficulty": "debutant",
+      "type": "true_false",
+      "competence": "Compréhension",
+      "question": "La boîte à merveilles représente seulement une richesse matérielle.",
+      "choices": [
+        "Vrai",
+        "Faux"
+      ],
+      "correct_answer": "Faux",
+      "expected_elements": [
+        "Faux"
+      ],
+      "points": 1,
+      "correction": "Faux : elle représente surtout l’imagination, le réconfort et le refuge intérieur.",
+      "explanation": "Faux : elle représente surtout l’imagination, le réconfort et le refuge intérieur.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q007",
+      "chapter_id": 95,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Personnages",
+      "question": "Comment s’appelle la mère de Sidi Mohammed ?",
+      "choices": [
+        "Lalla Zoubida",
+        "Ismène",
+        "Marie",
+        "Antigone"
+      ],
+      "correct_answer": "Lalla Zoubida",
+      "expected_elements": [
+        "Lalla Zoubida"
+      ],
+      "points": 1,
+      "correction": "Lalla Zoubida",
+      "explanation": "Lalla Zoubida",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q008",
+      "chapter_id": 95,
+      "difficulty": "intermediaire",
+      "type": "qcm",
+      "competence": "Personnages",
+      "question": "Comment s’appelle le père de Sidi Mohammed ?",
+      "choices": [
+        "Maalem Abdeslam",
+        "Créon",
+        "Hémon",
+        "Victor Hugo"
+      ],
+      "correct_answer": "Maalem Abdeslam",
+      "expected_elements": [
+        "Maalem Abdeslam"
+      ],
+      "points": 1,
+      "correction": "Maalem Abdeslam",
+      "explanation": "Maalem Abdeslam",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q009",
+      "chapter_id": 95,
+      "difficulty": "intermediaire",
+      "type": "qcm",
+      "competence": "Narration",
+      "question": "Quelle voix narrative domine dans le récit autobiographique ?",
+      "choices": [
+        "La première personne",
+        "La deuxième personne",
+        "Une voix théâtrale uniquement",
+        "Aucun narrateur"
+      ],
+      "correct_answer": "La première personne",
+      "expected_elements": [
+        "La première personne"
+      ],
+      "points": 1,
+      "correction": "La première personne",
+      "explanation": "La première personne",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q010",
+      "chapter_id": 95,
+      "difficulty": "intermediaire",
+      "type": "response_short",
+      "competence": "Thèmes",
+      "question": "Citez deux thèmes importants de « La Boîte à merveilles ».",
+      "choices": [],
+      "correct_answer": "L’enfance et la solitude",
+      "expected_elements": [
+        "enfance",
+        "solitude"
+      ],
+      "points": 2,
+      "correction": "On peut citer notamment l’enfance, la solitude, la famille, l’imagination et la vie traditionnelle.",
+      "explanation": "On peut citer notamment l’enfance, la solitude, la famille, l’imagination et la vie traditionnelle.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q011",
+      "chapter_id": 95,
+      "difficulty": "intermediaire",
+      "type": "interpretation",
+      "competence": "Objet symbolique",
+      "question": "Expliquez la valeur symbolique de la boîte à merveilles.",
+      "choices": [],
+      "correct_answer": "Elle symbolise le refuge intérieur de Sidi Mohammed : grâce à l’imagination, il se console et échappe momentanément à la solitude.",
+      "expected_elements": [
+        "refuge intérieur",
+        "imagination",
+        "se consoler",
+        "échapper à la solitude"
+      ],
+      "points": 2,
+      "correction": "Elle symbolise le refuge intérieur de Sidi Mohammed : grâce à l’imagination, il se console et échappe momentanément à la solitude.",
+      "explanation": "Elle symbolise le refuge intérieur de Sidi Mohammed : grâce à l’imagination, il se console et échappe momentanément à la solitude.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q012",
+      "chapter_id": 95,
+      "difficulty": "intermediaire",
+      "type": "qcm",
+      "competence": "Genre autobiographique",
+      "question": "Qu’est-ce qui caractérise un roman autobiographique ?",
+      "choices": [
+        "Il s’inspire de la vie et des souvenirs de l’auteur",
+        "Il raconte uniquement des faits scientifiques",
+        "Il est toujours écrit sous forme de dialogue",
+        "Il défend nécessairement une thèse politique"
+      ],
+      "correct_answer": "Il s’inspire de la vie et des souvenirs de l’auteur",
+      "expected_elements": [
+        "Il s’inspire de la vie et des souvenirs de l’auteur"
+      ],
+      "points": 1,
+      "correction": "Il s’inspire de la vie et des souvenirs de l’auteur",
+      "explanation": "Il s’inspire de la vie et des souvenirs de l’auteur",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q013",
+      "chapter_id": 95,
+      "difficulty": "intermediaire",
+      "type": "justification",
+      "competence": "Genre autobiographique",
+      "question": "Pourquoi peut-on parler de récit d’enfance ?",
+      "choices": [],
+      "correct_answer": "Le narrateur adulte revient sur les souvenirs, les émotions et le milieu de son enfance à travers Sidi Mohammed.",
+      "expected_elements": [
+        "souvenirs",
+        "enfance",
+        "narrateur",
+        "Sidi Mohammed"
+      ],
+      "points": 2,
+      "correction": "Le narrateur adulte revient sur les souvenirs, les émotions et le milieu de son enfance à travers Sidi Mohammed.",
+      "explanation": "Le narrateur adulte revient sur les souvenirs, les émotions et le milieu de son enfance à travers Sidi Mohammed.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q014",
+      "chapter_id": 95,
+      "difficulty": "intermediaire",
+      "type": "qcm",
+      "competence": "Cadre de vie",
+      "question": "Quel lieu collectif est associé au cadre de vie de Sidi Mohammed ?",
+      "choices": [
+        "Dar Chouafa",
+        "Le palais de Créon",
+        "La Conciergerie",
+        "Notre-Dame"
+      ],
+      "correct_answer": "Dar Chouafa",
+      "expected_elements": [
+        "Dar Chouafa"
+      ],
+      "points": 1,
+      "correction": "Dar Chouafa",
+      "explanation": "Dar Chouafa",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q015",
+      "chapter_id": 95,
+      "difficulty": "intermediaire",
+      "type": "response_short",
+      "competence": "Réalité et imagination",
+      "question": "Comment le récit associe-t-il réalité quotidienne et imagination ?",
+      "choices": [],
+      "correct_answer": "Le récit présente la vie familiale et traditionnelle de Sidi Mohammed, tandis que sa boîte à merveilles ouvre un espace de rêve et de consolation.",
+      "expected_elements": [
+        "vie quotidienne ou familiale",
+        "vie traditionnelle",
+        "boîte à merveilles",
+        "rêve ou imagination"
+      ],
+      "points": 2,
+      "correction": "Le récit présente la vie familiale et traditionnelle de Sidi Mohammed, tandis que sa boîte à merveilles ouvre un espace de rêve et de consolation.",
+      "explanation": "Le récit présente la vie familiale et traditionnelle de Sidi Mohammed, tandis que sa boîte à merveilles ouvre un espace de rêve et de consolation.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q016",
+      "chapter_id": 95,
+      "difficulty": "avance",
+      "type": "interpretation",
+      "competence": "Narration",
+      "question": "Quel effet produit le point de vue de Sidi Mohammed sur le lecteur ?",
+      "choices": [],
+      "correct_answer": "Le point de vue de l’enfant rapproche le lecteur de ses émotions et donne au monde quotidien une dimension sensible et parfois merveilleuse.",
+      "expected_elements": [
+        "point de vue de l’enfant",
+        "émotions",
+        "proximité avec le lecteur",
+        "dimension merveilleuse"
+      ],
+      "points": 2,
+      "correction": "Le point de vue de l’enfant rapproche le lecteur de ses émotions et donne au monde quotidien une dimension sensible et parfois merveilleuse.",
+      "explanation": "Le point de vue de l’enfant rapproche le lecteur de ses émotions et donne au monde quotidien une dimension sensible et parfois merveilleuse.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q017",
+      "chapter_id": 95,
+      "difficulty": "avance",
+      "type": "justification",
+      "competence": "Personnage et thème",
+      "question": "Montrez que la solitude est importante dans la construction de Sidi Mohammed.",
+      "choices": [],
+      "correct_answer": "La solitude pousse Sidi Mohammed à se replier sur lui-même et à chercher du réconfort dans l’imagination et dans sa boîte à merveilles.",
+      "expected_elements": [
+        "solitude",
+        "repli sur soi",
+        "imagination",
+        "boîte à merveilles"
+      ],
+      "points": 2,
+      "correction": "La solitude pousse Sidi Mohammed à se replier sur lui-même et à chercher du réconfort dans l’imagination et dans sa boîte à merveilles.",
+      "explanation": "La solitude pousse Sidi Mohammed à se replier sur lui-même et à chercher du réconfort dans l’imagination et dans sa boîte à merveilles.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q018",
+      "chapter_id": 95,
+      "difficulty": "avance",
+      "type": "interpretation",
+      "competence": "Dimension culturelle",
+      "question": "Que permet de découvrir le cadre traditionnel du récit ?",
+      "choices": [],
+      "correct_answer": "Il permet de découvrir la vie familiale, les habitudes collectives et certains aspects de la société marocaine traditionnelle.",
+      "expected_elements": [
+        "vie familiale",
+        "habitudes collectives",
+        "société marocaine traditionnelle"
+      ],
+      "points": 2,
+      "correction": "Il permet de découvrir la vie familiale, les habitudes collectives et certains aspects de la société marocaine traditionnelle.",
+      "explanation": "Il permet de découvrir la vie familiale, les habitudes collectives et certains aspects de la société marocaine traditionnelle.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q019",
+      "chapter_id": 95,
+      "difficulty": "avance",
+      "type": "qcm",
+      "competence": "Titre de l’œuvre",
+      "question": "À quoi le titre « La Boîte à merveilles » renvoie-t-il directement ?",
+      "choices": [
+        "À l’objet-refuge de Sidi Mohammed",
+        "À une prison",
+        "À une loi de Créon",
+        "À un tribunal"
+      ],
+      "correct_answer": "À l’objet-refuge de Sidi Mohammed",
+      "expected_elements": [
+        "À l’objet-refuge de Sidi Mohammed"
+      ],
+      "points": 1,
+      "correction": "À l’objet-refuge de Sidi Mohammed",
+      "explanation": "À l’objet-refuge de Sidi Mohammed",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-95-q020",
+      "chapter_id": 95,
+      "difficulty": "avance",
+      "type": "justification",
+      "competence": "Méthodologie",
+      "question": "Construisez une réponse brève sur le rôle de la boîte à merveilles en donnant une idée, un indice et une explication.",
+      "choices": [],
+      "correct_answer": "La boîte à merveilles sert de refuge à Sidi Mohammed ; lorsqu’il se sent seul, il se tourne vers elle ; elle lui permet donc de rêver et de se consoler.",
+      "expected_elements": [
+        "refuge",
+        "solitude",
+        "rêver ou imagination",
+        "se consoler"
+      ],
+      "points": 3,
+      "correction": "La boîte à merveilles sert de refuge à Sidi Mohammed ; lorsqu’il se sent seul, il se tourne vers elle ; elle lui permet donc de rêver et de se consoler.",
+      "explanation": "La boîte à merveilles sert de refuge à Sidi Mohammed ; lorsqu’il se sent seul, il se tourne vers elle ; elle lui permet donc de rêver et de se consoler.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q001",
+      "chapter_id": 96,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Repères de l’œuvre",
+      "question": "Qui a écrit « Antigone » étudiée dans ce cours ?",
+      "choices": [
+        "Jean Anouilh",
+        "Sophocle uniquement",
+        "Ahmed Sefrioui",
+        "Victor Hugo"
+      ],
+      "correct_answer": "Jean Anouilh",
+      "expected_elements": [
+        "Jean Anouilh"
+      ],
+      "points": 1,
+      "correction": "Jean Anouilh",
+      "explanation": "Jean Anouilh",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q002",
+      "chapter_id": 96,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Genre littéraire",
+      "question": "« Antigone » de Jean Anouilh est une…",
+      "choices": [
+        "Tragédie moderne",
+        "Comédie classique",
+        "Roman autobiographique",
+        "Nouvelle fantastique"
+      ],
+      "correct_answer": "Tragédie moderne",
+      "expected_elements": [
+        "Tragédie moderne"
+      ],
+      "points": 1,
+      "correction": "Tragédie moderne",
+      "explanation": "Tragédie moderne",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q003",
+      "chapter_id": 96,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Conflit central",
+      "question": "Quels personnages s’opposent principalement dans la pièce ?",
+      "choices": [
+        "Antigone et Créon",
+        "Sidi Mohammed et sa mère",
+        "Le condamné et Victor Hugo",
+        "Hémon et Polynice seulement"
+      ],
+      "correct_answer": "Antigone et Créon",
+      "expected_elements": [
+        "Antigone et Créon"
+      ],
+      "points": 1,
+      "correction": "Antigone et Créon",
+      "explanation": "Antigone et Créon",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q004",
+      "chapter_id": 96,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Action dramatique",
+      "question": "Quel devoir Antigone veut-elle accomplir envers Polynice ?",
+      "choices": [
+        "L’ensevelir",
+        "Le juger",
+        "Le bannir",
+        "Le couronner"
+      ],
+      "correct_answer": "L’ensevelir",
+      "expected_elements": [
+        "L’ensevelir"
+      ],
+      "points": 1,
+      "correction": "L’ensevelir",
+      "explanation": "L’ensevelir",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q005",
+      "chapter_id": 96,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Valeurs des personnages",
+      "question": "Que défend principalement Créon ?",
+      "choices": [
+        "La loi et l’ordre de la cité",
+        "La boîte à merveilles",
+        "La suppression de toute règle",
+        "La fuite hors de Thèbes"
+      ],
+      "correct_answer": "La loi et l’ordre de la cité",
+      "expected_elements": [
+        "La loi et l’ordre de la cité"
+      ],
+      "points": 1,
+      "correction": "La loi et l’ordre de la cité",
+      "explanation": "La loi et l’ordre de la cité",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q006",
+      "chapter_id": 96,
+      "difficulty": "debutant",
+      "type": "true_false",
+      "competence": "Compréhension",
+      "question": "Antigone accepte facilement le compromis proposé par Créon.",
+      "choices": [
+        "Vrai",
+        "Faux"
+      ],
+      "correct_answer": "Faux",
+      "expected_elements": [
+        "Faux"
+      ],
+      "points": 1,
+      "correction": "Faux : elle refuse le compromis et reste fidèle à ce qu’elle considère comme son devoir.",
+      "explanation": "Faux : elle refuse le compromis et reste fidèle à ce qu’elle considère comme son devoir.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q007",
+      "chapter_id": 96,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Personnages",
+      "question": "Ismène est…",
+      "choices": [
+        "La sœur d’Antigone",
+        "La mère de Sidi Mohammed",
+        "La fille du condamné",
+        "La femme de Victor Hugo"
+      ],
+      "correct_answer": "La sœur d’Antigone",
+      "expected_elements": [
+        "La sœur d’Antigone"
+      ],
+      "points": 1,
+      "correction": "La sœur d’Antigone",
+      "explanation": "La sœur d’Antigone",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q008",
+      "chapter_id": 96,
+      "difficulty": "intermediaire",
+      "type": "qcm",
+      "competence": "Personnages",
+      "question": "Hémon est à la fois le fils de Créon et…",
+      "choices": [
+        "Le fiancé d’Antigone",
+        "Le frère de Polynice",
+        "Le narrateur de la pièce",
+        "Le père d’Antigone"
+      ],
+      "correct_answer": "Le fiancé d’Antigone",
+      "expected_elements": [
+        "Le fiancé d’Antigone"
+      ],
+      "points": 1,
+      "correction": "Le fiancé d’Antigone",
+      "explanation": "Le fiancé d’Antigone",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q009",
+      "chapter_id": 96,
+      "difficulty": "intermediaire",
+      "type": "response_short",
+      "competence": "Valeurs des personnages",
+      "question": "Opposez en une phrase les valeurs d’Antigone et celles de Créon.",
+      "choices": [],
+      "correct_answer": "Antigone défend sa conscience et son devoir moral, tandis que Créon défend la loi, l’ordre et la raison d’État.",
+      "expected_elements": [
+        "Antigone",
+        "conscience ou devoir moral",
+        "Créon",
+        "loi ou ordre ou raison d’État"
+      ],
+      "points": 2,
+      "correction": "Antigone défend sa conscience et son devoir moral, tandis que Créon défend la loi, l’ordre et la raison d’État.",
+      "explanation": "Antigone défend sa conscience et son devoir moral, tandis que Créon défend la loi, l’ordre et la raison d’État.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q010",
+      "chapter_id": 96,
+      "difficulty": "intermediaire",
+      "type": "interpretation",
+      "competence": "Conflit tragique",
+      "question": "Pourquoi le conflit entre Antigone et Créon paraît-il difficile à résoudre ?",
+      "choices": [],
+      "correct_answer": "Leurs positions reposent sur des valeurs incompatibles : Antigone refuse de trahir sa conscience, tandis que Créon veut préserver l’ordre de la cité.",
+      "expected_elements": [
+        "valeurs incompatibles",
+        "conscience d’Antigone",
+        "ordre de la cité",
+        "refus du compromis"
+      ],
+      "points": 2,
+      "correction": "Leurs positions reposent sur des valeurs incompatibles : Antigone refuse de trahir sa conscience, tandis que Créon veut préserver l’ordre de la cité.",
+      "explanation": "Leurs positions reposent sur des valeurs incompatibles : Antigone refuse de trahir sa conscience, tandis que Créon veut préserver l’ordre de la cité.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q011",
+      "chapter_id": 96,
+      "difficulty": "intermediaire",
+      "type": "qcm",
+      "competence": "Forme théâtrale",
+      "question": "Quel élément est propre au texte théâtral ?",
+      "choices": [
+        "Les didascalies",
+        "Un narrateur autobiographique obligatoire",
+        "Des chapitres de journal intime",
+        "Une thèse expliquée par l’auteur"
+      ],
+      "correct_answer": "Les didascalies",
+      "expected_elements": [
+        "Les didascalies"
+      ],
+      "points": 1,
+      "correction": "Les didascalies",
+      "explanation": "Les didascalies",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q012",
+      "chapter_id": 96,
+      "difficulty": "intermediaire",
+      "type": "response_short",
+      "competence": "Personnages",
+      "question": "Citez deux valeurs défendues par Antigone.",
+      "choices": [],
+      "correct_answer": "La fidélité à sa conscience et le devoir envers son frère",
+      "expected_elements": [
+        "fidélité à sa conscience",
+        "devoir envers son frère"
+      ],
+      "points": 2,
+      "correction": "La fidélité à sa conscience et le devoir envers son frère",
+      "explanation": "La fidélité à sa conscience et le devoir envers son frère",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q013",
+      "chapter_id": 96,
+      "difficulty": "intermediaire",
+      "type": "response_short",
+      "competence": "Personnages",
+      "question": "Citez deux préoccupations défendues par Créon.",
+      "choices": [],
+      "correct_answer": "L’ordre de la cité et l’application de la loi",
+      "expected_elements": [
+        "ordre de la cité",
+        "application de la loi"
+      ],
+      "points": 2,
+      "correction": "L’ordre de la cité et l’application de la loi",
+      "explanation": "L’ordre de la cité et l’application de la loi",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q014",
+      "chapter_id": 96,
+      "difficulty": "intermediaire",
+      "type": "justification",
+      "competence": "Genre tragique",
+      "question": "Pourquoi la pièce peut-elle être qualifiée de tragédie ?",
+      "choices": [],
+      "correct_answer": "Le conflit est irréconciliable et conduit les personnages vers une issue fatale malgré les tentatives de dialogue.",
+      "expected_elements": [
+        "conflit irréconciliable",
+        "issue fatale",
+        "tentatives de dialogue insuffisantes"
+      ],
+      "points": 2,
+      "correction": "Le conflit est irréconciliable et conduit les personnages vers une issue fatale malgré les tentatives de dialogue.",
+      "explanation": "Le conflit est irréconciliable et conduit les personnages vers une issue fatale malgré les tentatives de dialogue.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q015",
+      "chapter_id": 96,
+      "difficulty": "intermediaire",
+      "type": "qcm",
+      "competence": "Fonctions théâtrales",
+      "question": "Quel personnage collectif présente et commente l’action ?",
+      "choices": [
+        "Le Chœur",
+        "Sidi Mohammed",
+        "Le condamné",
+        "Maalem Abdeslam"
+      ],
+      "correct_answer": "Le Chœur",
+      "expected_elements": [
+        "Le Chœur"
+      ],
+      "points": 1,
+      "correction": "Le Chœur",
+      "explanation": "Le Chœur",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q016",
+      "chapter_id": 96,
+      "difficulty": "avance",
+      "type": "interpretation",
+      "competence": "Comparaison de personnages",
+      "question": "Comparez brièvement Antigone et Ismène face au danger.",
+      "choices": [],
+      "correct_answer": "Antigone choisit d’agir malgré le danger, tandis qu’Ismène se montre d’abord prudente et craint les conséquences.",
+      "expected_elements": [
+        "Antigone agit malgré le danger",
+        "Ismène est prudente",
+        "peur des conséquences"
+      ],
+      "points": 2,
+      "correction": "Antigone choisit d’agir malgré le danger, tandis qu’Ismène se montre d’abord prudente et craint les conséquences.",
+      "explanation": "Antigone choisit d’agir malgré le danger, tandis qu’Ismène se montre d’abord prudente et craint les conséquences.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q017",
+      "chapter_id": 96,
+      "difficulty": "avance",
+      "type": "figure_style",
+      "competence": "Figures de style",
+      "question": "L’opposition « conscience individuelle / raison d’État » repose principalement sur quelle figure ?",
+      "choices": [
+        "Métaphore",
+        "Antithèse",
+        "Anaphore",
+        "Comparaison"
+      ],
+      "correct_answer": "Antithèse",
+      "expected_elements": [
+        "Antithèse"
+      ],
+      "points": 1,
+      "correction": "Antithèse",
+      "explanation": "Antithèse",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q018",
+      "chapter_id": 96,
+      "difficulty": "avance",
+      "type": "qcm",
+      "competence": "Dénouement tragique",
+      "question": "Quel destin attend Antigone à la fin de la pièce ?",
+      "choices": [
+        "La mort",
+        "Le couronnement",
+        "Le départ pour Fès",
+        "La libération sans condition"
+      ],
+      "correct_answer": "La mort",
+      "expected_elements": [
+        "La mort"
+      ],
+      "points": 1,
+      "correction": "La mort",
+      "explanation": "La mort",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q019",
+      "chapter_id": 96,
+      "difficulty": "avance",
+      "type": "interpretation",
+      "competence": "Portée de l’œuvre",
+      "question": "Pourquoi le refus d’Antigone peut-il avoir une portée universelle ?",
+      "choices": [],
+      "correct_answer": "Il pose la question de la fidélité à ses convictions lorsqu’une loi ou un pouvoir entre en conflit avec la conscience.",
+      "expected_elements": [
+        "fidélité aux convictions",
+        "loi ou pouvoir",
+        "conflit avec la conscience"
+      ],
+      "points": 2,
+      "correction": "Il pose la question de la fidélité à ses convictions lorsqu’une loi ou un pouvoir entre en conflit avec la conscience.",
+      "explanation": "Il pose la question de la fidélité à ses convictions lorsqu’une loi ou un pouvoir entre en conflit avec la conscience.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-96-q020",
+      "chapter_id": 96,
+      "difficulty": "avance",
+      "type": "justification",
+      "competence": "Méthodologie",
+      "question": "Rédigez une réponse courte montrant qu’Antigone défend ses convictions avec une idée, un fait et une explication.",
+      "choices": [],
+      "correct_answer": "Antigone reste fidèle à ses convictions ; elle décide d’ensevelir Polynice malgré l’interdiction de Créon ; cet acte montre qu’elle place son devoir moral au-dessus de la loi de la cité.",
+      "expected_elements": [
+        "fidèle à ses convictions",
+        "ensevelir Polynice",
+        "interdiction de Créon",
+        "devoir moral au-dessus de la loi"
+      ],
+      "points": 3,
+      "correction": "Antigone reste fidèle à ses convictions ; elle décide d’ensevelir Polynice malgré l’interdiction de Créon ; cet acte montre qu’elle place son devoir moral au-dessus de la loi de la cité.",
+      "explanation": "Antigone reste fidèle à ses convictions ; elle décide d’ensevelir Polynice malgré l’interdiction de Créon ; cet acte montre qu’elle place son devoir moral au-dessus de la loi de la cité.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q001",
+      "chapter_id": 97,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Repères de l’œuvre",
+      "question": "Qui est l’auteur du « Dernier Jour d’un condamné » ?",
+      "choices": [
+        "Victor Hugo",
+        "Jean Anouilh",
+        "Ahmed Sefrioui",
+        "Voltaire"
+      ],
+      "correct_answer": "Victor Hugo",
+      "expected_elements": [
+        "Victor Hugo"
+      ],
+      "points": 1,
+      "correction": "Victor Hugo",
+      "explanation": "Victor Hugo",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q002",
+      "chapter_id": 97,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Repères de l’œuvre",
+      "question": "En quelle année le roman a-t-il été publié ?",
+      "choices": [
+        "1829",
+        "1944",
+        "1954",
+        "1789"
+      ],
+      "correct_answer": "1829",
+      "expected_elements": [
+        "1829"
+      ],
+      "points": 1,
+      "correction": "1829",
+      "explanation": "1829",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q003",
+      "chapter_id": 97,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Genre littéraire",
+      "question": "Le « Dernier Jour d’un condamné » est un…",
+      "choices": [
+        "Roman à thèse",
+        "Roman autobiographique",
+        "Conte merveilleux",
+        "Vaudeville"
+      ],
+      "correct_answer": "Roman à thèse",
+      "expected_elements": [
+        "Roman à thèse"
+      ],
+      "points": 1,
+      "correction": "Roman à thèse",
+      "explanation": "Roman à thèse",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q004",
+      "chapter_id": 97,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Narrateur",
+      "question": "Le narrateur principal est…",
+      "choices": [
+        "Un condamné à mort anonyme",
+        "Victor Hugo nommé dans le récit",
+        "Créon",
+        "Sidi Mohammed"
+      ],
+      "correct_answer": "Un condamné à mort anonyme",
+      "expected_elements": [
+        "Un condamné à mort anonyme"
+      ],
+      "points": 1,
+      "correction": "Un condamné à mort anonyme",
+      "explanation": "Un condamné à mort anonyme",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q005",
+      "chapter_id": 97,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Forme du récit",
+      "question": "Sous quelle forme le récit est-il principalement présenté ?",
+      "choices": [
+        "Un journal fictif",
+        "Une pièce en cinq actes",
+        "Une correspondance comique",
+        "Un poème épique"
+      ],
+      "correct_answer": "Un journal fictif",
+      "expected_elements": [
+        "Un journal fictif"
+      ],
+      "points": 1,
+      "correction": "Un journal fictif",
+      "explanation": "Un journal fictif",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q006",
+      "chapter_id": 97,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Thèse de l’œuvre",
+      "question": "Quelle cause Victor Hugo défend-il principalement ?",
+      "choices": [
+        "L’abolition de la peine de mort",
+        "Le maintien de la peine de mort",
+        "La monarchie absolue",
+        "L’interdiction du théâtre"
+      ],
+      "correct_answer": "L’abolition de la peine de mort",
+      "expected_elements": [
+        "L’abolition de la peine de mort"
+      ],
+      "points": 1,
+      "correction": "L’abolition de la peine de mort",
+      "explanation": "L’abolition de la peine de mort",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q007",
+      "chapter_id": 97,
+      "difficulty": "debutant",
+      "type": "true_false",
+      "competence": "Compréhension",
+      "question": "Le roman présente l’exécution comme un spectacle positif.",
+      "choices": [
+        "Vrai",
+        "Faux"
+      ],
+      "correct_answer": "Faux",
+      "expected_elements": [
+        "Faux"
+      ],
+      "points": 1,
+      "correction": "Faux : le récit dénonce la peine de mort et met en évidence la souffrance du condamné.",
+      "explanation": "Faux : le récit dénonce la peine de mort et met en évidence la souffrance du condamné.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q008",
+      "chapter_id": 97,
+      "difficulty": "intermediaire",
+      "type": "response_short",
+      "competence": "Sentiments",
+      "question": "Citez deux sentiments dominants du condamné pendant l’attente.",
+      "choices": [],
+      "correct_answer": "La peur et l’angoisse",
+      "expected_elements": [
+        "peur",
+        "angoisse"
+      ],
+      "points": 2,
+      "correction": "On peut notamment relever la peur, l’angoisse, la souffrance et le désespoir.",
+      "explanation": "On peut notamment relever la peur, l’angoisse, la souffrance et le désespoir.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q009",
+      "chapter_id": 97,
+      "difficulty": "intermediaire",
+      "type": "qcm",
+      "competence": "Point de vue",
+      "question": "Quel effet produit surtout l’emploi de la première personne ?",
+      "choices": [
+        "Il rapproche le lecteur des pensées et des souffrances du condamné",
+        "Il rend le récit entièrement comique",
+        "Il supprime toute émotion",
+        "Il transforme le récit en dialogue théâtral"
+      ],
+      "correct_answer": "Il rapproche le lecteur des pensées et des souffrances du condamné",
+      "expected_elements": [
+        "Il rapproche le lecteur des pensées et des souffrances du condamné"
+      ],
+      "points": 1,
+      "correction": "Il rapproche le lecteur des pensées et des souffrances du condamné",
+      "explanation": "Il rapproche le lecteur des pensées et des souffrances du condamné",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q010",
+      "chapter_id": 97,
+      "difficulty": "intermediaire",
+      "type": "interpretation",
+      "competence": "Anonymat du personnage",
+      "question": "Quel effet produit l’anonymat du condamné ?",
+      "choices": [],
+      "correct_answer": "Il donne au personnage une portée universelle et invite le lecteur à voir en lui un être humain plutôt qu’un cas particulier.",
+      "expected_elements": [
+        "portée universelle",
+        "être humain",
+        "pas seulement un cas particulier"
+      ],
+      "points": 2,
+      "correction": "Il donne au personnage une portée universelle et invite le lecteur à voir en lui un être humain plutôt qu’un cas particulier.",
+      "explanation": "Il donne au personnage une portée universelle et invite le lecteur à voir en lui un être humain plutôt qu’un cas particulier.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q011",
+      "chapter_id": 97,
+      "difficulty": "intermediaire",
+      "type": "response_short",
+      "competence": "Thème central",
+      "question": "Formulez le thème central de l’œuvre en une phrase.",
+      "choices": [],
+      "correct_answer": "L’œuvre dénonce la peine de mort en montrant l’angoisse et la souffrance d’un condamné pendant l’attente de son exécution.",
+      "expected_elements": [
+        "dénonciation de la peine de mort",
+        "angoisse ou souffrance",
+        "attente de l’exécution"
+      ],
+      "points": 2,
+      "correction": "L’œuvre dénonce la peine de mort en montrant l’angoisse et la souffrance d’un condamné pendant l’attente de son exécution.",
+      "explanation": "L’œuvre dénonce la peine de mort en montrant l’angoisse et la souffrance d’un condamné pendant l’attente de son exécution.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q012",
+      "chapter_id": 97,
+      "difficulty": "intermediaire",
+      "type": "qcm",
+      "competence": "Construction du récit",
+      "question": "Pourquoi le temps qui reste avant l’exécution est-il important ?",
+      "choices": [
+        "Il crée un compte à rebours angoissant",
+        "Il permet une intrigue amoureuse",
+        "Il annonce une fête",
+        "Il supprime la tension"
+      ],
+      "correct_answer": "Il crée un compte à rebours angoissant",
+      "expected_elements": [
+        "Il crée un compte à rebours angoissant"
+      ],
+      "points": 1,
+      "correction": "Il crée un compte à rebours angoissant",
+      "explanation": "Il crée un compte à rebours angoissant",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q013",
+      "chapter_id": 97,
+      "difficulty": "intermediaire",
+      "type": "interpretation",
+      "competence": "Argumentation",
+      "question": "Comment le récit humanise-t-il le condamné ?",
+      "choices": [],
+      "correct_answer": "Il donne accès à ses pensées, à ses peurs, à ses souvenirs et à ses liens affectifs, ce qui fait apparaître sa dignité humaine.",
+      "expected_elements": [
+        "pensées",
+        "peurs",
+        "souvenirs",
+        "dignité humaine"
+      ],
+      "points": 2,
+      "correction": "Il donne accès à ses pensées, à ses peurs, à ses souvenirs et à ses liens affectifs, ce qui fait apparaître sa dignité humaine.",
+      "explanation": "Il donne accès à ses pensées, à ses peurs, à ses souvenirs et à ses liens affectifs, ce qui fait apparaître sa dignité humaine.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q014",
+      "chapter_id": 97,
+      "difficulty": "intermediaire",
+      "type": "response_short",
+      "competence": "Temporalité",
+      "question": "Quel contraste structure l’expérience du condamné ?",
+      "choices": [],
+      "correct_answer": "Le contraste entre ses souvenirs de la vie passée et l’imminence de la mort.",
+      "expected_elements": [
+        "souvenirs de la vie passée",
+        "imminence de la mort"
+      ],
+      "points": 2,
+      "correction": "Le contraste entre ses souvenirs de la vie passée et l’imminence de la mort.",
+      "explanation": "Le contraste entre ses souvenirs de la vie passée et l’imminence de la mort.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q015",
+      "chapter_id": 97,
+      "difficulty": "intermediaire",
+      "type": "justification",
+      "competence": "Genre littéraire",
+      "question": "Justifiez l’expression « roman à thèse » pour cette œuvre.",
+      "choices": [],
+      "correct_answer": "Le récit défend une idée claire, l’opposition à la peine de mort, en utilisant l’expérience et la souffrance du condamné comme arguments.",
+      "expected_elements": [
+        "idée claire ou thèse",
+        "opposition à la peine de mort",
+        "souffrance du condamné comme argument"
+      ],
+      "points": 2,
+      "correction": "Le récit défend une idée claire, l’opposition à la peine de mort, en utilisant l’expérience et la souffrance du condamné comme arguments.",
+      "explanation": "Le récit défend une idée claire, l’opposition à la peine de mort, en utilisant l’expérience et la souffrance du condamné comme arguments.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q016",
+      "chapter_id": 97,
+      "difficulty": "avance",
+      "type": "qcm",
+      "competence": "Vocabulaire",
+      "question": "L’expression « peine capitale » signifie…",
+      "choices": [
+        "Peine de mort",
+        "Peine financière",
+        "Exclusion scolaire",
+        "Travail obligatoire"
+      ],
+      "correct_answer": "Peine de mort",
+      "expected_elements": [
+        "Peine de mort"
+      ],
+      "points": 1,
+      "correction": "Peine de mort",
+      "explanation": "Peine de mort",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q017",
+      "chapter_id": 97,
+      "difficulty": "avance",
+      "type": "interpretation",
+      "competence": "Titre de l’œuvre",
+      "question": "Quel effet produit le titre « Le Dernier Jour d’un condamné » ?",
+      "choices": [],
+      "correct_answer": "Il annonce immédiatement l’urgence du temps, la proximité de la mort et le point de vue centré sur le condamné.",
+      "expected_elements": [
+        "urgence du temps",
+        "proximité de la mort",
+        "point de vue du condamné"
+      ],
+      "points": 2,
+      "correction": "Il annonce immédiatement l’urgence du temps, la proximité de la mort et le point de vue centré sur le condamné.",
+      "explanation": "Il annonce immédiatement l’urgence du temps, la proximité de la mort et le point de vue centré sur le condamné.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q018",
+      "chapter_id": 97,
+      "difficulty": "avance",
+      "type": "justification",
+      "competence": "Comparaison des œuvres",
+      "question": "Donnez un point commun entre le condamné et Antigone.",
+      "choices": [],
+      "correct_answer": "Tous deux sont confrontés à un pouvoir et à une mort imminente, ce qui place la dignité et la conscience individuelles au centre du conflit.",
+      "expected_elements": [
+        "confrontation à un pouvoir",
+        "mort imminente",
+        "dignité ou conscience individuelle"
+      ],
+      "points": 2,
+      "correction": "Tous deux sont confrontés à un pouvoir et à une mort imminente, ce qui place la dignité et la conscience individuelles au centre du conflit.",
+      "explanation": "Tous deux sont confrontés à un pouvoir et à une mort imminente, ce qui place la dignité et la conscience individuelles au centre du conflit.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q019",
+      "chapter_id": 97,
+      "difficulty": "avance",
+      "type": "response_short",
+      "competence": "Méthodologie",
+      "question": "Quels trois éléments faut-il repérer pour analyser l’argumentation du roman ?",
+      "choices": [],
+      "correct_answer": "La thèse, les arguments et les exemples ou procédés qui les soutiennent.",
+      "expected_elements": [
+        "thèse",
+        "arguments",
+        "exemples ou procédés"
+      ],
+      "points": 3,
+      "correction": "La thèse, les arguments et les exemples ou procédés qui les soutiennent.",
+      "explanation": "La thèse, les arguments et les exemples ou procédés qui les soutiennent.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-97-q020",
+      "chapter_id": 97,
+      "difficulty": "avance",
+      "type": "qcm",
+      "competence": "Narration",
+      "question": "Quelle personne grammaticale domine dans le journal du condamné ?",
+      "choices": [
+        "La première personne",
+        "La deuxième personne du pluriel",
+        "La troisième personne uniquement",
+        "Aucune personne grammaticale"
+      ],
+      "correct_answer": "La première personne",
+      "expected_elements": [
+        "La première personne"
+      ],
+      "points": 1,
+      "correction": "La première personne",
+      "explanation": "La première personne",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q001",
+      "chapter_id": 98,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Figures de style",
+      "question": "Quelle figure rapproche deux éléments à l’aide d’un outil comme « comme » ?",
+      "choices": [
+        "Comparaison",
+        "Métaphore",
+        "Anaphore",
+        "Antithèse"
+      ],
+      "correct_answer": "Comparaison",
+      "expected_elements": [
+        "Comparaison"
+      ],
+      "points": 1,
+      "correction": "Comparaison",
+      "explanation": "Comparaison",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q002",
+      "chapter_id": 98,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Figures de style",
+      "question": "Quelle figure rapproche deux éléments sans outil comparatif explicite ?",
+      "choices": [
+        "Métaphore",
+        "Comparaison",
+        "Question rhétorique",
+        "Gradation"
+      ],
+      "correct_answer": "Métaphore",
+      "expected_elements": [
+        "Métaphore"
+      ],
+      "points": 1,
+      "correction": "Métaphore",
+      "explanation": "Métaphore",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q003",
+      "chapter_id": 98,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Figures de style",
+      "question": "Quelle figure oppose fortement deux idées ?",
+      "choices": [
+        "Antithèse",
+        "Anaphore",
+        "Personnification",
+        "Comparaison"
+      ],
+      "correct_answer": "Antithèse",
+      "expected_elements": [
+        "Antithèse"
+      ],
+      "points": 1,
+      "correction": "Antithèse",
+      "explanation": "Antithèse",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q004",
+      "chapter_id": 98,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Figures de style",
+      "question": "Quelle figure répète un même mot au début de plusieurs segments ?",
+      "choices": [
+        "Anaphore",
+        "Métaphore",
+        "Hyperbole",
+        "Litote"
+      ],
+      "correct_answer": "Anaphore",
+      "expected_elements": [
+        "Anaphore"
+      ],
+      "points": 1,
+      "correction": "Anaphore",
+      "explanation": "Anaphore",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q005",
+      "chapter_id": 98,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Figures de style",
+      "question": "Une question posée sans attendre réellement de réponse est une…",
+      "choices": [
+        "Question rhétorique",
+        "Comparaison",
+        "Périphrase",
+        "Ellipse"
+      ],
+      "correct_answer": "Question rhétorique",
+      "expected_elements": [
+        "Question rhétorique"
+      ],
+      "points": 1,
+      "correction": "Question rhétorique",
+      "explanation": "Question rhétorique",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q006",
+      "chapter_id": 98,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Figures de style",
+      "question": "Quelle figure attribue un comportement humain à un objet ou à une idée ?",
+      "choices": [
+        "Personnification",
+        "Antithèse",
+        "Anaphore",
+        "Euphémisme"
+      ],
+      "correct_answer": "Personnification",
+      "expected_elements": [
+        "Personnification"
+      ],
+      "points": 1,
+      "correction": "Personnification",
+      "explanation": "Personnification",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q007",
+      "chapter_id": 98,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Figures de style",
+      "question": "Quelle figure exagère volontairement une réalité ?",
+      "choices": [
+        "Hyperbole",
+        "Métaphore",
+        "Comparaison",
+        "Question rhétorique"
+      ],
+      "correct_answer": "Hyperbole",
+      "expected_elements": [
+        "Hyperbole"
+      ],
+      "points": 1,
+      "correction": "Hyperbole",
+      "explanation": "Hyperbole",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q008",
+      "chapter_id": 98,
+      "difficulty": "intermediaire",
+      "type": "figure_style",
+      "competence": "Identification",
+      "question": "Identifiez la figure dans : « Il est fort comme un lion. »",
+      "choices": [
+        "Comparaison",
+        "Métaphore",
+        "Anaphore",
+        "Antithèse"
+      ],
+      "correct_answer": "Comparaison",
+      "expected_elements": [
+        "Comparaison"
+      ],
+      "points": 1,
+      "correction": "Comparaison",
+      "explanation": "Le mot-outil « comme » établit une comparaison.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q009",
+      "chapter_id": 98,
+      "difficulty": "intermediaire",
+      "type": "figure_style",
+      "competence": "Identification",
+      "question": "Identifiez la figure dans : « La ville dort. »",
+      "choices": [
+        "Personnification",
+        "Hyperbole",
+        "Antithèse",
+        "Comparaison"
+      ],
+      "correct_answer": "Personnification",
+      "expected_elements": [
+        "Personnification"
+      ],
+      "points": 1,
+      "correction": "Personnification",
+      "explanation": "Le verbe humain « dort » est attribué à la ville.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q010",
+      "chapter_id": 98,
+      "difficulty": "intermediaire",
+      "type": "figure_style",
+      "competence": "Identification",
+      "question": "Identifiez la figure dans : « Je veux comprendre, je veux agir, je veux réussir. »",
+      "choices": [
+        "Anaphore",
+        "Métaphore",
+        "Comparaison",
+        "Euphémisme"
+      ],
+      "correct_answer": "Anaphore",
+      "expected_elements": [
+        "Anaphore"
+      ],
+      "points": 1,
+      "correction": "Anaphore",
+      "explanation": "Le groupe « je veux » est répété au début de plusieurs segments.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q011",
+      "chapter_id": 98,
+      "difficulty": "intermediaire",
+      "type": "figure_style",
+      "competence": "Identification",
+      "question": "Identifiez la figure dans : « Qui pourrait accepter une telle injustice ? »",
+      "choices": [
+        "Question rhétorique",
+        "Antithèse",
+        "Comparaison",
+        "Anaphore"
+      ],
+      "correct_answer": "Question rhétorique",
+      "expected_elements": [
+        "Question rhétorique"
+      ],
+      "points": 1,
+      "correction": "Question rhétorique",
+      "explanation": "Question rhétorique",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q012",
+      "chapter_id": 98,
+      "difficulty": "intermediaire",
+      "type": "figure_style",
+      "competence": "Identification",
+      "question": "Identifiez la figure dans : « Cette nouvelle m’a brisé le cœur. »",
+      "choices": [
+        "Métaphore",
+        "Comparaison",
+        "Anaphore",
+        "Périphrase"
+      ],
+      "correct_answer": "Métaphore",
+      "expected_elements": [
+        "Métaphore"
+      ],
+      "points": 1,
+      "correction": "Métaphore",
+      "explanation": "Métaphore",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q013",
+      "chapter_id": 98,
+      "difficulty": "intermediaire",
+      "type": "figure_style",
+      "competence": "Identification",
+      "question": "Identifiez la figure dans : « Il se croit libre, mais il reste prisonnier. »",
+      "choices": [
+        "Antithèse",
+        "Personnification",
+        "Comparaison",
+        "Anaphore"
+      ],
+      "correct_answer": "Antithèse",
+      "expected_elements": [
+        "Antithèse"
+      ],
+      "points": 1,
+      "correction": "Antithèse",
+      "explanation": "Antithèse",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q014",
+      "chapter_id": 98,
+      "difficulty": "intermediaire",
+      "type": "true_false",
+      "competence": "Figures de style",
+      "question": "Une métaphore contient obligatoirement un outil comparatif comme « comme ».",
+      "choices": [
+        "Vrai",
+        "Faux"
+      ],
+      "correct_answer": "Faux",
+      "expected_elements": [
+        "Faux"
+      ],
+      "points": 1,
+      "correction": "Faux : l’outil comparatif caractérise surtout la comparaison explicite.",
+      "explanation": "Faux : l’outil comparatif caractérise surtout la comparaison explicite.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q015",
+      "chapter_id": 98,
+      "difficulty": "intermediaire",
+      "type": "response_short",
+      "competence": "Analyse littéraire",
+      "question": "Quelles sont les trois étapes essentielles pour analyser une figure de style ?",
+      "choices": [],
+      "correct_answer": "Identifier la figure, relever les éléments qui la construisent et expliquer son effet dans le contexte.",
+      "expected_elements": [
+        "identifier la figure",
+        "relever les éléments",
+        "expliquer l’effet",
+        "contexte"
+      ],
+      "points": 3,
+      "correction": "Identifier la figure, relever les éléments qui la construisent et expliquer son effet dans le contexte.",
+      "explanation": "Identifier la figure, relever les éléments qui la construisent et expliquer son effet dans le contexte.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q016",
+      "chapter_id": 98,
+      "difficulty": "avance",
+      "type": "qcm",
+      "competence": "Outils de comparaison",
+      "question": "Lequel de ces mots peut introduire une comparaison ?",
+      "choices": [
+        "Comme",
+        "Mais",
+        "Donc",
+        "Pourtant"
+      ],
+      "correct_answer": "Comme",
+      "expected_elements": [
+        "Comme"
+      ],
+      "points": 1,
+      "correction": "Comme",
+      "explanation": "Comme",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q017",
+      "chapter_id": 98,
+      "difficulty": "avance",
+      "type": "justification",
+      "competence": "Figures de style",
+      "question": "Expliquez la différence entre comparaison et métaphore.",
+      "choices": [],
+      "correct_answer": "La comparaison rapproche deux éléments à l’aide d’un outil comparatif, tandis que la métaphore effectue ce rapprochement sans outil explicite.",
+      "expected_elements": [
+        "comparaison avec outil comparatif",
+        "métaphore sans outil explicite"
+      ],
+      "points": 2,
+      "correction": "La comparaison rapproche deux éléments à l’aide d’un outil comparatif, tandis que la métaphore effectue ce rapprochement sans outil explicite.",
+      "explanation": "La comparaison rapproche deux éléments à l’aide d’un outil comparatif, tandis que la métaphore effectue ce rapprochement sans outil explicite.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q018",
+      "chapter_id": 98,
+      "difficulty": "avance",
+      "type": "figure_style",
+      "competence": "Identification",
+      "question": "Identifiez la figure dans : « Je te l’ai répété mille fois. »",
+      "choices": [
+        "Hyperbole",
+        "Anaphore",
+        "Métaphore",
+        "Antithèse"
+      ],
+      "correct_answer": "Hyperbole",
+      "expected_elements": [
+        "Hyperbole"
+      ],
+      "points": 1,
+      "correction": "Hyperbole",
+      "explanation": "Hyperbole",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q019",
+      "chapter_id": 98,
+      "difficulty": "avance",
+      "type": "interpretation",
+      "competence": "Effets stylistiques",
+      "question": "Quel effet une anaphore peut-elle produire dans un texte ?",
+      "choices": [],
+      "correct_answer": "Elle crée un rythme, insiste sur une idée et peut renforcer l’émotion ou l’argumentation.",
+      "expected_elements": [
+        "rythme",
+        "insistance",
+        "renforcer l’émotion ou l’argumentation"
+      ],
+      "points": 2,
+      "correction": "Elle crée un rythme, insiste sur une idée et peut renforcer l’émotion ou l’argumentation.",
+      "explanation": "Elle crée un rythme, insiste sur une idée et peut renforcer l’émotion ou l’argumentation.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-98-q020",
+      "chapter_id": 98,
+      "difficulty": "avance",
+      "type": "interpretation",
+      "competence": "Analyse littéraire",
+      "question": "Pourquoi faut-il expliquer l’effet d’une figure au lieu de seulement la nommer ?",
+      "choices": [],
+      "correct_answer": "Parce que l’analyse doit montrer comment le procédé contribue au sens, au ton ou à l’émotion du passage.",
+      "expected_elements": [
+        "contribution au sens",
+        "ton ou émotion",
+        "ne pas seulement nommer"
+      ],
+      "points": 2,
+      "correction": "Parce que l’analyse doit montrer comment le procédé contribue au sens, au ton ou à l’émotion du passage.",
+      "explanation": "Parce que l’analyse doit montrer comment le procédé contribue au sens, au ton ou à l’émotion du passage.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-99-q001",
+      "chapter_id": 99,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Méthodologie",
+      "question": "Quelle est la première action face à une consigne d’examen ?",
+      "choices": [
+        "Lire attentivement et repérer le verbe de consigne",
+        "Écrire immédiatement une longue réponse",
+        "Inventer une citation",
+        "Passer directement à la conclusion"
+      ],
+      "correct_answer": "Lire attentivement et repérer le verbe de consigne",
+      "expected_elements": [
+        "Lire attentivement et repérer le verbe de consigne"
+      ],
+      "points": 1,
+      "correction": "Lire attentivement et repérer le verbe de consigne",
+      "explanation": "Lire attentivement et repérer le verbe de consigne",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-99-q002",
+      "chapter_id": 99,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Construction de la réponse",
+      "question": "Une réponse complète contient principalement…",
+      "choices": [
+        "Une idée claire, un indice du texte et une explication",
+        "Une opinion sans preuve",
+        "Une citation inventée",
+        "Une seule phrase copiée"
+      ],
+      "correct_answer": "Une idée claire, un indice du texte et une explication",
+      "expected_elements": [
+        "Une idée claire, un indice du texte et une explication"
+      ],
+      "points": 1,
+      "correction": "Une idée claire, un indice du texte et une explication",
+      "explanation": "Une idée claire, un indice du texte et une explication",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-99-q003",
+      "chapter_id": 99,
+      "difficulty": "debutant",
+      "type": "true_false",
+      "competence": "Utilisation du texte",
+      "question": "Il est acceptable d’inventer une citation quand on ne se souvient pas du passage exact.",
+      "choices": [
+        "Vrai",
+        "Faux"
+      ],
+      "correct_answer": "Faux",
+      "expected_elements": [
+        "Faux"
+      ],
+      "points": 1,
+      "correction": "Faux : il faut s’appuyer sur le texte ou reformuler fidèlement sans inventer.",
+      "explanation": "Faux : il faut s’appuyer sur le texte ou reformuler fidèlement sans inventer.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-99-q004",
+      "chapter_id": 99,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Compréhension de la consigne",
+      "question": "Le verbe « justifiez » demande de…",
+      "choices": [
+        "Donner une réponse accompagnée d’une preuve ou d’un indice",
+        "Recopier la question",
+        "Donner uniquement oui ou non",
+        "Changer de sujet"
+      ],
+      "correct_answer": "Donner une réponse accompagnée d’une preuve ou d’un indice",
+      "expected_elements": [
+        "Donner une réponse accompagnée d’une preuve ou d’un indice"
+      ],
+      "points": 1,
+      "correction": "Donner une réponse accompagnée d’une preuve ou d’un indice",
+      "explanation": "Donner une réponse accompagnée d’une preuve ou d’un indice",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-99-q005",
+      "chapter_id": 99,
+      "difficulty": "debutant",
+      "type": "qcm",
+      "competence": "Organisation",
+      "question": "Quelle pratique aide à éviter le hors-sujet ?",
+      "choices": [
+        "Reformuler la question et sélectionner les idées utiles",
+        "Ajouter toutes les informations connues",
+        "Écrire sans plan",
+        "Ignorer les mots-clés"
+      ],
+      "correct_answer": "Reformuler la question et sélectionner les idées utiles",
+      "expected_elements": [
+        "Reformuler la question et sélectionner les idées utiles"
+      ],
+      "points": 1,
+      "correction": "Reformuler la question et sélectionner les idées utiles",
+      "explanation": "Reformuler la question et sélectionner les idées utiles",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-99-q006",
+      "chapter_id": 99,
+      "difficulty": "intermediaire",
+      "type": "response_short",
+      "competence": "Paragraphe argumenté",
+      "question": "Citez les quatre éléments d’un paragraphe argumenté simple.",
+      "choices": [],
+      "correct_answer": "Une opinion ou idée directrice, des arguments, un exemple et une conclusion.",
+      "expected_elements": [
+        "opinion ou idée directrice",
+        "arguments",
+        "exemple",
+        "conclusion"
+      ],
+      "points": 4,
+      "correction": "Une opinion ou idée directrice, des arguments, un exemple et une conclusion.",
+      "explanation": "Une opinion ou idée directrice, des arguments, un exemple et une conclusion.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-99-q007",
+      "chapter_id": 99,
+      "difficulty": "intermediaire",
+      "type": "qcm",
+      "competence": "Gestion du temps",
+      "question": "Quelle stratégie est la plus efficace ?",
+      "choices": [
+        "Répartir le temps entre lecture, réponses et relecture",
+        "Consacrer tout le temps à la première question",
+        "Ne jamais relire",
+        "Commencer par recopier le texte"
+      ],
+      "correct_answer": "Répartir le temps entre lecture, réponses et relecture",
+      "expected_elements": [
+        "Répartir le temps entre lecture, réponses et relecture"
+      ],
+      "points": 1,
+      "correction": "Répartir le temps entre lecture, réponses et relecture",
+      "explanation": "Répartir le temps entre lecture, réponses et relecture",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-99-q008",
+      "chapter_id": 99,
+      "difficulty": "intermediaire",
+      "type": "qcm",
+      "competence": "Révision linguistique",
+      "question": "Que faut-il vérifier pendant la relecture ?",
+      "choices": [
+        "L’orthographe, les accords, la ponctuation et la clarté",
+        "Uniquement la longueur",
+        "La couleur du stylo seulement",
+        "Le nombre de citations inventées"
+      ],
+      "correct_answer": "L’orthographe, les accords, la ponctuation et la clarté",
+      "expected_elements": [
+        "L’orthographe, les accords, la ponctuation et la clarté"
+      ],
+      "points": 1,
+      "correction": "L’orthographe, les accords, la ponctuation et la clarté",
+      "explanation": "L’orthographe, les accords, la ponctuation et la clarté",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-99-q009",
+      "chapter_id": 99,
+      "difficulty": "intermediaire",
+      "type": "response_short",
+      "competence": "Réponse d’analyse",
+      "question": "Donnez les trois étapes d’une réponse d’analyse littéraire.",
+      "choices": [],
+      "correct_answer": "Présenter l’idée, relever un indice ou un procédé, puis expliquer l’effet ou le sens.",
+      "expected_elements": [
+        "présenter l’idée",
+        "relever un indice ou procédé",
+        "expliquer l’effet ou le sens"
+      ],
+      "points": 3,
+      "correction": "Présenter l’idée, relever un indice ou un procédé, puis expliquer l’effet ou le sens.",
+      "explanation": "Présenter l’idée, relever un indice ou un procédé, puis expliquer l’effet ou le sens.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-99-q010",
+      "chapter_id": 99,
+      "difficulty": "intermediaire",
+      "type": "qcm",
+      "competence": "Pertinence",
+      "question": "Quelle réponse est la plus pertinente ?",
+      "choices": [
+        "Une réponse directement liée à la consigne et justifiée par le texte",
+        "Une opinion générale sans rapport",
+        "Une liste de personnages sans explication",
+        "Une citation inventée"
+      ],
+      "correct_answer": "Une réponse directement liée à la consigne et justifiée par le texte",
+      "expected_elements": [
+        "Une réponse directement liée à la consigne et justifiée par le texte"
+      ],
+      "points": 1,
+      "correction": "Une réponse directement liée à la consigne et justifiée par le texte",
+      "explanation": "Une réponse directement liée à la consigne et justifiée par le texte",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-99-q011",
+      "chapter_id": 99,
+      "difficulty": "intermediaire",
+      "type": "justification",
+      "competence": "Utilisation du texte",
+      "question": "Expliquez la différence entre citer et reformuler.",
+      "choices": [],
+      "correct_answer": "Citer consiste à reprendre exactement les mots du texte entre guillemets, tandis que reformuler consiste à exprimer fidèlement l’idée avec ses propres mots.",
+      "expected_elements": [
+        "citer reprend exactement les mots",
+        "guillemets",
+        "reformuler avec ses propres mots",
+        "fidélité à l’idée"
+      ],
+      "points": 2,
+      "correction": "Citer consiste à reprendre exactement les mots du texte entre guillemets, tandis que reformuler consiste à exprimer fidèlement l’idée avec ses propres mots.",
+      "explanation": "Citer consiste à reprendre exactement les mots du texte entre guillemets, tandis que reformuler consiste à exprimer fidèlement l’idée avec ses propres mots.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-99-q012",
+      "chapter_id": 99,
+      "difficulty": "avance",
+      "type": "justification",
+      "competence": "Planification",
+      "question": "Pourquoi préparer un plan bref avant une production écrite ?",
+      "choices": [],
+      "correct_answer": "Un plan organise les idées, évite les répétitions et le hors-sujet, et aide à construire une progression logique.",
+      "expected_elements": [
+        "organiser les idées",
+        "éviter répétitions ou hors-sujet",
+        "progression logique"
+      ],
+      "points": 2,
+      "correction": "Un plan organise les idées, évite les répétitions et le hors-sujet, et aide à construire une progression logique.",
+      "explanation": "Un plan organise les idées, évite les répétitions et le hors-sujet, et aide à construire une progression logique.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-99-q013",
+      "chapter_id": 99,
+      "difficulty": "avance",
+      "type": "qcm",
+      "competence": "Dernière vérification",
+      "question": "Que faut-il faire juste avant de rendre la copie ?",
+      "choices": [
+        "Relire les consignes et vérifier que chaque réponse est complète",
+        "Ajouter une citation inventée",
+        "Effacer les justifications",
+        "Changer toutes les réponses"
+      ],
+      "correct_answer": "Relire les consignes et vérifier que chaque réponse est complète",
+      "expected_elements": [
+        "Relire les consignes et vérifier que chaque réponse est complète"
+      ],
+      "points": 1,
+      "correction": "Relire les consignes et vérifier que chaque réponse est complète",
+      "explanation": "Relire les consignes et vérifier que chaque réponse est complète",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-99-q014",
+      "chapter_id": 99,
+      "difficulty": "avance",
+      "type": "response_short",
+      "competence": "Compétences de l’examen",
+      "question": "Quelles grandes compétences l’examen régional de français mobilise-t-il ?",
+      "choices": [],
+      "correct_answer": "La compréhension, la langue, l’analyse et la production écrite.",
+      "expected_elements": [
+        "compréhension",
+        "langue",
+        "analyse",
+        "production écrite"
+      ],
+      "points": 4,
+      "correction": "La compréhension, la langue, l’analyse et la production écrite.",
+      "explanation": "La compréhension, la langue, l’analyse et la production écrite.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    },
+    {
+      "id": "reg-99-q015",
+      "chapter_id": 99,
+      "difficulty": "avance",
+      "type": "justification",
+      "competence": "Production argumentée",
+      "question": "Rédigez le schéma d’une réponse argumentée à la question : « Faut-il toujours défendre ses convictions ? »",
+      "choices": [],
+      "correct_answer": "Je formule une opinion claire, je donne au moins deux arguments, j’ajoute un exemple pertinent et je termine par une conclusion.",
+      "expected_elements": [
+        "opinion claire",
+        "deux arguments",
+        "exemple pertinent",
+        "conclusion"
+      ],
+      "points": 4,
+      "correction": "Je formule une opinion claire, je donne au moins deux arguments, j’ajoute un exemple pertinent et je termine par une conclusion.",
+      "explanation": "Je formule une opinion claire, je donne au moins deux arguments, j’ajoute un exemple pertinent et je termine par une conclusion.",
+      "source": "EduMentor AI — cours 12 enrichi"
+    }
+  ]
+}

@@ -1,0 +1,262 @@
+﻿{
+    "provider":  "ollama",
+    "model":  "qwen3:1.7b",
+    "execution":  "local",
+    "generation_method":  "ai_preview",
+    "validation_status":  "valid",
+    "content":  {
+                    "level":  "debutant",
+                    "chapter_source_id":  "chapter_1",
+                    "title":  "Chapitre 1 â Solitude, Dar Chouafa et monde merveilleux",
+                    "summary":  "Le chapitre explore la solitude de Sidi Mohammed et la beautÃ© du monde merveilleux. Lâadulte, en se souvenant de son enfance, prÃ©sente Dar Chouafa, le Msid et le bain maure. La BoÃ®te Ã  Merveilles, un refuge contre la tristesse, est dÃ©crite avec des dÃ©tails sensoriels. La dispute entre Lalla Zoubida et Rahma, ainsi que lâÃ©vanouissement de lâenfant, marquent lâouverture de la tristesse. Le rÃ©cit alterne le regard de lâadulte et celui de lâenfant, soulignant la complexitÃ© de la vie collective et la peur de la solitude.",
+                    "explanation":  "Le chapitre prÃ©sente une opposition entre le rÃ©el quotidien et lâunivers merveilleux, crÃ©ant une atmosphÃ¨re de solitude et de peur. Lâadulte, en se souvenant de son enfance, montre la beautÃ© de Dar Chouafa et du bain maure. La BoÃ®te Ã  Merveilles, un refuge contre la tristesse, est dÃ©crite avec des dÃ©tails sensoriels, comme le bruit des rires, le parfum de la lavande et la chaleur du bain maure. La dispute entre Lalla Zoubida et Rahma, ainsi que lâÃ©vanouissement de lâenfant, marquent lâouverture de la tristesse. Le rÃ©cit alterne le regard de lâadulte et celui de lâenfant, soulignant la complexitÃ© de la vie collective et la peur de la solitude. Les figures de style, comme la mÃ©taphore de la BoÃ®te Ã  Merveilles, et les dÃ©tails sensoriels, comme le bruit des rires, contribuent Ã  crÃ©er une atmosphÃ¨re de solitude et de peur. Le rÃ©cit montre comment lâenfant, malgrÃ© sa solitude, peut trouver du rÃ©confort dans le monde merveilleux.",
+                    "key_points":  [
+                                       "Point clÃ© 1: Temps : PrÃ©sent du narrateur adulte, imparfait itÃ©ratif, lendemain du bain, un lundi.",
+                                       "Point clÃ© 2: Lieux : Impasse, Dar Chouafa, Msid, bain maure, patio.",
+                                       "Point clÃ© 3: Personnages : Sidi Mohammed, Lalla Zoubida, MÃ¢alem Abdeslam, Kenza la Chouafa, Rahma, Zineb, Driss El Aouad, Fatma Bziouya.",
+                                       "Point clÃ© 4: ÃvÃ©nements : PrÃ©sentation de lâenfant et de la maison, rituels de la voyante, bain maure, inventaire de la boÃ®te, rÃ©cits de la mÃ¨re, dispute Lalla ZoubidaâRahma, Ã©vanouissement.",
+                                       "Point clÃ© 5: ThÃ¨mes : solitude, enfance, superstition, rÃªve, peur, vie collective."
+                                   ],
+                    "vocabulary":  [
+                                       {
+                                           "term":  "BoÃ®te Ã  Merveilles",
+                                           "definition":  "Un refuge contre la tristesse, dÃ©crit avec des dÃ©tails sensoriels."
+                                       },
+                                       {
+                                           "term":  "Bain maure",
+                                           "definition":  "Un rituel de la voyante, souvent associÃ© Ã  la beautÃ© et Ã  la tranquillitÃ©."
+                                       },
+                                       {
+                                           "term":  "Lalla Zoubida",
+                                           "definition":  "Une des personnages de la maison, prÃ©sente dans le rÃ©cit."
+                                       },
+                                       {
+                                           "term":  "Rahma",
+                                           "definition":  "Une des personnages de la maison, prÃ©sente dans le rÃ©cit."
+                                       },
+                                       {
+                                           "term":  "MÃ¢alem Abdeslam",
+                                           "definition":  "Un personnage de la maison, prÃ©sent dans le rÃ©cit."
+                                       }
+                                   ],
+                    "guided_example":  {
+                                           "title":  "Le rÃ©cit de la BoÃ®te Ã  Merveilles",
+                                           "instruction":  "Observe comment la reponse reste liee au chapitre.",
+                                           "content":  "Le narrateur adulte, en se souvenant de son enfance, prÃ©sente Dar Chouafa, le Msid et le bain maure. La BoÃ®te Ã  Merveilles, un refuge contre la tristesse, est dÃ©crite avec des dÃ©tails sensoriels, comme le bruit des rires, le parfum de la lavande et la chaleur du bain maure. La dispute entre Lalla Zoubida et Rahma, ainsi que lâÃ©vanouissement de lâenfant, marquent lâouverture de la tristesse.",
+                                           "steps":  [
+                                                         "1. Identifier le temps et les lieux du rÃ©cit.",
+                                                         "2. Relever les personnages et les Ã©vÃ©nements clÃ©s.",
+                                                         "3. Analyser les figures de style et leur effet sur lâatmosphÃ¨re."
+                                                     ],
+                                           "answer":  "Le rÃ©cit montre comment lâenfant, malgrÃ© sa solitude, peut trouver du rÃ©confort dans le monde merveilleux."
+                                       },
+                    "learning_support":  [
+                                             "Method : Pour analyser un extrait, situer le passage dans lâincipit, identifier le regard de lâenfant, relever les champs lexicaux de la solitude ou du merveilleux, puis expliquer les figures de style et leur effet.",
+                                             "Steps : 1. Situer le passage dans lâincipit et identifier le regard de lâenfant. 2. Relever les champs lexicaux de la solitude ou du merveilleux. 3. Expliquer les figures de style et leur effet sur lâatmosphÃ¨re.",
+                                             "Pitfalls : 1. Ne pas confondre le regard de lâenfant et celui de lâadulte. 2. Ne pas oublier de relever les champs lexicaux de la solitude ou du merveilleux.",
+                                             "Memory_tip : Lâanalyse dâun extrait nÃ©cessite de situer le passage dans lâincipit, dâidentifier le regard de lâenfant et de relever les champs lexicaux de la solitude ou du merveilleux.",
+                                             "Associe Dar Chouafa a la solitude et la Boite a Merveilles au refuge imaginaire."
+                                         ],
+                    "practice_question":  {
+                                              "question":  "Question : Quel est le thÃ¨me central du chapitre ? RÃ©ponse attendue : La solitude de Sidi Mohammed et la beautÃ© du monde merveilleux.",
+                                              "instruction":  "Reponds avec des mots simples en t\u0027appuyant sur le chapitre.",
+                                              "difficulty":  "debutant",
+                                              "expected_elements":  [
+
+                                                                    ],
+                                              "expected_answer":  "La solitude de Sidi Mohammed et la beautÃ© du monde merveilleux.",
+                                              "explanation":  "La solitude de Sidi Mohammed et la beautÃ© du monde merveilleux sont les thÃ¨mes centraux du chapitre. Le rÃ©cit explore comment lâenfant, malgrÃ© sa solitude, peut trouver du rÃ©confort dans le monde merveilleux. Les figures de style, comme la mÃ©taphore de la BoÃ®te Ã  Merveilles, et les dÃ©tails sensoriels, comme le bruit des rires, contribuent Ã  crÃ©er une atmosphÃ¨re de solitude et de peur. Le rÃ©cit montre comment lâenfant, malgrÃ© sa solitude, peut trouver du rÃ©confort dans le monde merveilleux."
+                                          },
+                    "blocks":  [
+                                   {
+                                       "id":  "chapter_1-debutant-heading",
+                                       "type":  "heading",
+                                       "title":  "Titre du chapitre",
+                                       "content":  "Chapitre 1 â Solitude, Dar Chouafa et monde merveilleux",
+                                       "section":  "resume",
+                                       "source_block_id":  "chapter_1",
+                                       "source_chapter_id":  "chapter_1",
+                                       "source_hash":  "6745468fb3eda38b5ea37aab70d82a4c0330447de53faa226ddd7d8d1bf10f40",
+                                       "original_block_type":  "paragraph",
+                                       "level":  "debutant",
+                                       "generation_method":  "ai_preview"
+                                   },
+                                   {
+                                       "id":  "chapter_1-debutant-summary",
+                                       "type":  "summary",
+                                       "title":  "RÃ©sumÃ© adaptÃ©",
+                                       "content":  "Le chapitre explore la solitude de Sidi Mohammed et la beautÃ© du monde merveilleux. Lâadulte, en se souvenant de son enfance, prÃ©sente Dar Chouafa, le Msid et le bain maure. La BoÃ®te Ã  Merveilles, un refuge contre la tristesse, est dÃ©crite avec des dÃ©tails sensoriels. La dispute entre Lalla Zoubida et Rahma, ainsi que lâÃ©vanouissement de lâenfant, marquent lâouverture de la tristesse. Le rÃ©cit alterne le regard de lâadulte et celui de lâenfant, soulignant la complexitÃ© de la vie collective et la peur de la solitude.",
+                                       "section":  "resume",
+                                       "source_block_id":  "chapter_1",
+                                       "source_chapter_id":  "chapter_1",
+                                       "source_hash":  "6745468fb3eda38b5ea37aab70d82a4c0330447de53faa226ddd7d8d1bf10f40",
+                                       "original_block_type":  "paragraph",
+                                       "level":  "debutant",
+                                       "generation_method":  "ai_preview"
+                                   },
+                                   {
+                                       "id":  "chapter_1-debutant-explanation",
+                                       "type":  "paragraph",
+                                       "title":  "Explication dÃ©taillÃ©e",
+                                       "content":  "Le chapitre prÃ©sente une opposition entre le rÃ©el quotidien et lâunivers merveilleux, crÃ©ant une atmosphÃ¨re de solitude et de peur. Lâadulte, en se souvenant de son enfance, montre la beautÃ© de Dar Chouafa et du bain maure. La BoÃ®te Ã  Merveilles, un refuge contre la tristesse, est dÃ©crite avec des dÃ©tails sensoriels, comme le bruit des rires, le parfum de la lavande et la chaleur du bain maure. La dispute entre Lalla Zoubida et Rahma, ainsi que lâÃ©vanouissement de lâenfant, marquent lâouverture de la tristesse. Le rÃ©cit alterne le regard de lâadulte et celui de lâenfant, soulignant la complexitÃ© de la vie collective et la peur de la solitude. Les figures de style, comme la mÃ©taphore de la BoÃ®te Ã  Merveilles, et les dÃ©tails sensoriels, comme le bruit des rires, contribuent Ã  crÃ©er une atmosphÃ¨re de solitude et de peur. Le rÃ©cit montre comment lâenfant, malgrÃ© sa solitude, peut trouver du rÃ©confort dans le monde merveilleux.",
+                                       "section":  "resume",
+                                       "source_block_id":  "chapter_1",
+                                       "source_chapter_id":  "chapter_1",
+                                       "source_hash":  "6745468fb3eda38b5ea37aab70d82a4c0330447de53faa226ddd7d8d1bf10f40",
+                                       "original_block_type":  "paragraph",
+                                       "level":  "debutant",
+                                       "generation_method":  "ai_preview"
+                                   },
+                                   {
+                                       "id":  "chapter_1-debutant-vocabulary",
+                                       "type":  "definition",
+                                       "title":  "Vocabulaire et notions",
+                                       "content":  "BoÃ®te Ã  Merveilles: Un refuge contre la tristesse, dÃ©crit avec des dÃ©tails sensoriels.\nBain maure: Un rituel de la voyante, souvent associÃ© Ã  la beautÃ© et Ã  la tranquillitÃ©.\nLalla Zoubida: Une des personnages de la maison, prÃ©sente dans le rÃ©cit.\nRahma: Une des personnages de la maison, prÃ©sente dans le rÃ©cit.\nMÃ¢alem Abdeslam: Un personnage de la maison, prÃ©sent dans le rÃ©cit.",
+                                       "section":  "resume",
+                                       "source_block_id":  "chapter_1",
+                                       "source_chapter_id":  "chapter_1",
+                                       "source_hash":  "6745468fb3eda38b5ea37aab70d82a4c0330447de53faa226ddd7d8d1bf10f40",
+                                       "original_block_type":  "paragraph",
+                                       "level":  "debutant",
+                                       "generation_method":  "ai_preview"
+                                   },
+                                   {
+                                       "id":  "chapter_1-debutant-guided-example",
+                                       "type":  "example",
+                                       "title":  "Le rÃ©cit de la BoÃ®te Ã  Merveilles",
+                                       "content":  "Le narrateur adulte, en se souvenant de son enfance, prÃ©sente Dar Chouafa, le Msid et le bain maure. La BoÃ®te Ã  Merveilles, un refuge contre la tristesse, est dÃ©crite avec des dÃ©tails sensoriels, comme le bruit des rires, le parfum de la lavande et la chaleur du bain maure. La dispute entre Lalla Zoubida et Rahma, ainsi que lâÃ©vanouissement de lâenfant, marquent lâouverture de la tristesse.",
+                                       "section":  "sequences",
+                                       "source_block_id":  "chapter_1",
+                                       "source_chapter_id":  "chapter_1",
+                                       "source_hash":  "6745468fb3eda38b5ea37aab70d82a4c0330447de53faa226ddd7d8d1bf10f40",
+                                       "original_block_type":  "paragraph",
+                                       "level":  "debutant",
+                                       "generation_method":  "ai_preview"
+                                   },
+                                   {
+                                       "id":  "chapter_1-debutant-support",
+                                       "type":  "methodology",
+                                       "title":  "Aide Ã  l\u0027apprentissage",
+                                       "content":  "Method : Pour analyser un extrait, situer le passage dans lâincipit, identifier le regard de lâenfant, relever les champs lexicaux de la solitude ou du merveilleux, puis expliquer les figures de style et leur effet.\nSteps : 1. Situer le passage dans lâincipit et identifier le regard de lâenfant. 2. Relever les champs lexicaux de la solitude ou du merveilleux. 3. Expliquer les figures de style et leur effet sur lâatmosphÃ¨re.\nPitfalls : 1. Ne pas confondre le regard de lâenfant et celui de lâadulte. 2. Ne pas oublier de relever les champs lexicaux de la solitude ou du merveilleux.\nMemory_tip : Lâanalyse dâun extrait nÃ©cessite de situer le passage dans lâincipit, dâidentifier le regard de lâenfant et de relever les champs lexicaux de la solitude ou du merveilleux.\nAssocie Dar Chouafa a la solitude et la Boite a Merveilles au refuge imaginaire.",
+                                       "section":  "sequences",
+                                       "source_block_id":  "chapter_1",
+                                       "source_chapter_id":  "chapter_1",
+                                       "source_hash":  "6745468fb3eda38b5ea37aab70d82a4c0330447de53faa226ddd7d8d1bf10f40",
+                                       "original_block_type":  "paragraph",
+                                       "level":  "debutant",
+                                       "generation_method":  "ai_preview"
+                                   },
+                                   {
+                                       "id":  "chapter_1-debutant-schema",
+                                       "type":  "visual",
+                                       "title":  "SchÃ©ma pÃ©dagogique",
+                                       "content":  "Schema simple: Situation de depart -\u003e evenement important -\u003e idee a retenir -\u003e reponse courte.",
+                                       "section":  "schemas",
+                                       "source_block_id":  "chapter_1",
+                                       "source_chapter_id":  "chapter_1",
+                                       "source_hash":  "6745468fb3eda38b5ea37aab70d82a4c0330447de53faa226ddd7d8d1bf10f40",
+                                       "original_block_type":  "paragraph",
+                                       "level":  "debutant",
+                                       "generation_method":  "ai_preview"
+                                   },
+                                   {
+                                       "id":  "chapter_1-debutant-practice",
+                                       "type":  "exercise",
+                                       "title":  "Question d\u0027entraÃ®nement",
+                                       "content":  "Question : Quel est le thÃ¨me central du chapitre ? RÃ©ponse attendue : La solitude de Sidi Mohammed et la beautÃ© du monde merveilleux.",
+                                       "section":  "training_exams",
+                                       "source_block_id":  "chapter_1",
+                                       "source_chapter_id":  "chapter_1",
+                                       "source_hash":  "6745468fb3eda38b5ea37aab70d82a4c0330447de53faa226ddd7d8d1bf10f40",
+                                       "original_block_type":  "paragraph",
+                                       "level":  "debutant",
+                                       "generation_method":  "ai_preview"
+                                   },
+                                   {
+                                       "id":  "chapter_1-debutant-practice-correction",
+                                       "type":  "correction",
+                                       "title":  "Correction pÃ©dagogique",
+                                       "content":  "La solitude de Sidi Mohammed et la beautÃ© du monde merveilleux.\n\nLa solitude de Sidi Mohammed et la beautÃ© du monde merveilleux sont les thÃ¨mes centraux du chapitre. Le rÃ©cit explore comment lâenfant, malgrÃ© sa solitude, peut trouver du rÃ©confort dans le monde merveilleux. Les figures de style, comme la mÃ©taphore de la BoÃ®te Ã  Merveilles, et les dÃ©tails sensoriels, comme le bruit des rires, contribuent Ã  crÃ©er une atmosphÃ¨re de solitude et de peur. Le rÃ©cit montre comment lâenfant, malgrÃ© sa solitude, peut trouver du rÃ©confort dans le monde merveilleux.",
+                                       "section":  "corrections",
+                                       "source_block_id":  "chapter_1",
+                                       "source_chapter_id":  "chapter_1",
+                                       "source_hash":  "6745468fb3eda38b5ea37aab70d82a4c0330447de53faa226ddd7d8d1bf10f40",
+                                       "original_block_type":  "paragraph",
+                                       "level":  "debutant",
+                                       "generation_method":  "ai_preview"
+                                   },
+                                   {
+                                       "id":  "chapter_1-debutant-key-points",
+                                       "type":  "key_points",
+                                       "title":  "Points clÃ©s",
+                                       "content":  [
+                                                       "Point clÃ© 1: Temps : PrÃ©sent du narrateur adulte, imparfait itÃ©ratif, lendemain du bain, un lundi.",
+                                                       "Point clÃ© 2: Lieux : Impasse, Dar Chouafa, Msid, bain maure, patio.",
+                                                       "Point clÃ© 3: Personnages : Sidi Mohammed, Lalla Zoubida, MÃ¢alem Abdeslam, Kenza la Chouafa, Rahma, Zineb, Driss El Aouad, Fatma Bziouya.",
+                                                       "Point clÃ© 4: ÃvÃ©nements : PrÃ©sentation de lâenfant et de la maison, rituels de la voyante, bain maure, inventaire de la boÃ®te, rÃ©cits de la mÃ¨re, dispute Lalla ZoubidaâRahma, Ã©vanouissement.",
+                                                       "Point clÃ© 5: ThÃ¨mes : solitude, enfance, superstition, rÃªve, peur, vie collective."
+                                                   ],
+                                       "section":  "takeaways",
+                                       "source_block_id":  "chapter_1",
+                                       "source_chapter_id":  "chapter_1",
+                                       "source_hash":  "6745468fb3eda38b5ea37aab70d82a4c0330447de53faa226ddd7d8d1bf10f40",
+                                       "original_block_type":  "paragraph",
+                                       "level":  "debutant",
+                                       "generation_method":  "ai_preview"
+                                   },
+                                   {
+                                       "id":  "chapter_1-debutant-mini-assessment",
+                                       "type":  "mini_assessment",
+                                       "title":  "Question pratique finale",
+                                       "content":  {
+                                                       "question":  "Question : Quel est le thÃ¨me central du chapitre ? RÃ©ponse attendue : La solitude de Sidi Mohammed et la beautÃ© du monde merveilleux.",
+                                                       "answer":  "La solitude de Sidi Mohammed et la beautÃ© du monde merveilleux.",
+                                                       "explanation":  "La solitude de Sidi Mohammed et la beautÃ© du monde merveilleux sont les thÃ¨mes centraux du chapitre. Le rÃ©cit explore comment lâenfant, malgrÃ© sa solitude, peut trouver du rÃ©confort dans le monde merveilleux. Les figures de style, comme la mÃ©taphore de la BoÃ®te Ã  Merveilles, et les dÃ©tails sensoriels, comme le bruit des rires, contribuent Ã  crÃ©er une atmosphÃ¨re de solitude et de peur. Le rÃ©cit montre comment lâenfant, malgrÃ© sa solitude, peut trouver du rÃ©confort dans le monde merveilleux."
+                                                   },
+                                       "section":  "training_exams",
+                                       "source_block_id":  "chapter_1",
+                                       "source_chapter_id":  "chapter_1",
+                                       "source_hash":  "6745468fb3eda38b5ea37aab70d82a4c0330447de53faa226ddd7d8d1bf10f40",
+                                       "original_block_type":  "paragraph",
+                                       "level":  "debutant",
+                                       "generation_method":  "ai_preview"
+                                   }
+                               ],
+                    "source_block_ids":  [
+                                             "chapter_1_analysis",
+                                             "chapter_1_method",
+                                             "chapter_1_repÃ¨res",
+                                             "chapter_1_summary",
+                                             "chapter_1_takeaway"
+                                         ],
+                    "generation_method":  "ai_preview",
+                    "model":  "qwen3:1.7b",
+                    "generated_at":  "2026-07-28T22:13:06.062463",
+                    "expected_answer":  "La solitude de Sidi Mohammed et la beautÃ© du monde merveilleux.",
+                    "correction":  "La solitude de Sidi Mohammed et la beautÃ© du monde merveilleux sont les thÃ¨mes centraux du chapitre. Le rÃ©cit explore comment lâenfant, malgrÃ© sa solitude, peut trouver du rÃ©confort dans le monde merveilleux. Les figures de style, comme la mÃ©taphore de la BoÃ®te Ã  Merveilles, et les dÃ©tails sensoriels, comme le bruit des rires, contribuent Ã  crÃ©er une atmosphÃ¨re de solitude et de peur. Le rÃ©cit montre comment lâenfant, malgrÃ© sa solitude, peut trouver du rÃ©confort dans le monde merveilleux."
+                },
+    "metrics":  {
+                    "tokens_input":  2122,
+                    "tokens_output":  1460,
+                    "prompt_eval_count":  2122,
+                    "eval_count":  1460,
+                    "load_duration":  1127049100,
+                    "prompt_eval_duration":  292115000,
+                    "eval_duration":  305968077000,
+                    "total_duration":  301606520300,
+                    "duration_ms":  309599,
+                    "ollama_host":  "http://localhost:11434",
+                    "source_hash":  "6745468fb3eda38b5ea37aab70d82a4c0330447de53faa226ddd7d8d1bf10f40",
+                    "validation_errors":  [
+
+                                          ],
+                    "json_valid":  true,
+                    "schema_valid":  true
+                },
+    "reference":  {
+                      "course_level_variant_id":  74,
+                      "generation_method":  "mixed",
+                      "source_hash":  "84b85050da587187e5014755a037f7ac9978c734a7c1d90d22c3beee61fd9f9e",
+                      "read_only":  true
+                  }
+}

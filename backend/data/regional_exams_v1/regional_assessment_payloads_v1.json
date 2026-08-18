@@ -1,0 +1,1529 @@
+[
+  {
+    "external_exam_id": "regional_ma_marrakech_safi_2017_bam_normal",
+    "title": "Examen régional de français - Marrakech-Safi 2017",
+    "description": "{\"regional_exam\": {\"is_regional_exam\": true, \"exam_kind\": \"regional\", \"type\": \"official\", \"source_status\": \"official_verified\", \"year\": 2017, \"region\": \"Marrakech-Safi\", \"session\": \"Normale\", \"work_title\": \"La Boîte à merveilles\", \"duration_minutes\": 120, \"support_text\": \"La voix de ma mère me tira des profondeurs du sommeil. Je nageai, un bon moment, dans une lumière rouge parcourue d’étincelles et d’astres errants, puis, j’ouvris les yeux. Vite, je les refermai, espérant retrouver le noir si reposant et si frais. La voix insistait :\\n- Réveille-toi, il est trois heures du matin. Je t’ai préparé ton beau gilet, ta chemise neuve et ta sacoche. Tu n’as pas encore vu ta belle sacoche brodée. Ouvre les yeux ! Réveille-toi donc !\\nJe pleurnichai, je me frottai énergiquement les paupières de mes poings fermés. Je tentai plusieurs fois de me recoucher, mais ma mère fut impitoyable. Elle se mouilla la main et me la passa sur la figure. Mes oreilles cessèrent de bourdonner. J’entrouvris mes cils avec précaution. Mon père, habillé d’une djellaba de laine fine, me souriait.\\n- Prépare-toi pour fêter l’Achoura au Msid avec tes camarades. Du courage ! Du courage !\\nCe fut dans un état de somnambule que je me lavai les yeux, me rinçai la bouche, me rafraîchis les membres. Je retrouvai ma lucidité lorsque ma mère me passa, à même la peau, ma chemise neuve, craquante d’apprêt. Elle me grattait horriblement. À chaque mouvement, je remplissais la pièce d’un bruit de papier froissé. Je mis mon gilet rouge aux dessins compliqués et bien en relief. Ma sacoche en bandoulière, je complétai cet ensemble très élégant par la djellaba blanche qui dormait au fond du coffre de ma mère. Elle sentait la fleur d’oranger et la rose séchée.\\nMe voilà devenu un autre homme ! J’étais complètement réveillé. J’avais hâte de partir à l’école. Les vêtements, les chaussures, tout était neuf. Plein de dignité et d’assurance, je précédai mon père dans l’escalier.\\nLa lumière brillait à toutes les fenêtres de la maison. Hommes et femmes commençaient l’année dans l’activité. Ceux qui restaient au lit un matin comme celui-ci se sentiraient, durant douze mois, indolents, paresseux.\\nL’appel d’un mendiant nous arrivait de la rue. J’entendais le bruit de sa canne. C’était sûrement un aveugle.\\nJe perdais mes babouches tous les trois pas. Mes parents voyaient grand. Ni les vêtements, ni les chaussures n’étaient à ma taille. Mais j’étais heureux.\", \"dataset_version\": \"regional-exams-v1-20260802\"}}",
+    "instructions": "Répondez aux questions de l’étude de texte, puis rédigez la production écrite. Les réponses longues et la production nécessitent une validation enseignante.",
+    "time_limit_minutes": 120,
+    "max_attempts": 3,
+    "status": "published",
+    "questions": [
+      {
+        "question": "Donnez le titre de l’œuvre dont le texte est extrait.",
+        "choices": [],
+        "correct_answer": "La Boîte à merveilles",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 1,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"marrakech2017_q1a\", \"official_number\": \"1-a\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"La Boîte à merveilles\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Donnez le nom et le prénom de l’auteur.",
+        "choices": [],
+        "correct_answer": "Ahmed Sefrioui",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 2,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"marrakech2017_q1b\", \"official_number\": \"1-b\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Ahmed Sefrioui\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Précisez le genre littéraire de l’œuvre.",
+        "choices": [],
+        "correct_answer": "Roman autobiographique",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 3,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"marrakech2017_q1c\", \"official_number\": \"1-c\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"roman\", \"autobiographique\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Donnez la date de publication de l’œuvre.",
+        "choices": [],
+        "correct_answer": "1954",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 4,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"marrakech2017_q1d\", \"official_number\": \"1-d\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"1954\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Quel fait a eu lieu avant ce passage ?",
+        "choices": [
+          "Au Msid, les élèves fêtent l’Achoura en récitant des versets coraniques.",
+          "Lalla Aïcha rend visite à la mère de Sidi Mohamed.",
+          "Le narrateur-personnage accompagne son père chez le coiffeur."
+        ],
+        "correct_answer": "Le narrateur-personnage accompagne son père chez le coiffeur.",
+        "explanation": "Cet épisode précède le départ vers le Msid le matin de l’Achoura.",
+        "points": 1.0,
+        "order_index": 5,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"marrakech2017_q2\", \"official_number\": \"2\", \"question_type\": \"qcm\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "« Sidi Mohamed n’est pas pressé d’aller à l’école. » Vrai ou faux ? Justifiez par une phrase du texte.",
+        "choices": [],
+        "correct_answer": "Faux. « J’avais hâte de partir à l’école. »",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 6,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"marrakech2017_q3a\", \"official_number\": \"3-a\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"faux\", \"j’avais hâte de partir à l’école\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "« Sidi Mohamed doute fort que le mendiant soit aveugle. » Vrai ou faux ? Justifiez.",
+        "choices": [],
+        "correct_answer": "Faux. « C’était sûrement un aveugle. »",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 7,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"marrakech2017_q3b\", \"official_number\": \"3-b\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"faux\", \"c’était sûrement un aveugle\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Dans « L’appel d’un mendiant nous arrivait de la rue », qui est désigné par « nous » ?",
+        "choices": [
+          "Sidi Mohamed et sa mère.",
+          "Sidi Mohamed et son père.",
+          "Sidi Mohamed et un camarade du Msid."
+        ],
+        "correct_answer": "Sidi Mohamed et son père.",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 8,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"marrakech2017_q4\", \"official_number\": \"4\", \"question_type\": \"qcm\", \"competence\": \"Langue\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Relevez quatre mots ou expressions appartenant au champ lexical du sommeil.",
+        "choices": [],
+        "correct_answer": "des profondeurs du sommeil ; retrouver le noir ; réveille-toi ; me recoucher",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 9,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"marrakech2017_q5\", \"official_number\": \"5\", \"question_type\": \"response_short\", \"competence\": \"Langue\", \"section\": \"Étude de texte\", \"expected_elements\": [\"sommeil\", \"retrouver le noir\", \"réveille-toi\", \"me recoucher\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Quel argument la mère emploie-t-elle pour encourager son fils à se réveiller ?",
+        "choices": [
+          "Porter de nouveaux habits à l’occasion de l’Achoura.",
+          "Participer à la fête avec ses camarades.",
+          "Se frotter violemment la figure et les paupières."
+        ],
+        "correct_answer": "Porter de nouveaux habits à l’occasion de l’Achoura.",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 10,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"marrakech2017_q6a\", \"official_number\": \"6-a\", \"question_type\": \"qcm\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Relevez l’énoncé qui justifie la réponse précédente.",
+        "choices": [],
+        "correct_answer": "Je t’ai préparé ton beau gilet, ta chemise neuve et ta sacoche.",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 11,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"marrakech2017_q6b\", \"official_number\": \"6-b\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"beau gilet\", \"chemise neuve\", \"sacoche\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Relevez deux phrases qui montrent le caractère comique des habits de Sidi Mohamed.",
+        "choices": [],
+        "correct_answer": "Je perdais mes babouches tous les trois pas ; Ni les vêtements, ni les chaussures n’étaient à ma taille.",
+        "explanation": "On peut aussi accepter la phrase sur le bruit de papier froissé.",
+        "points": 1.0,
+        "order_index": 12,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"marrakech2017_q7\", \"official_number\": \"7\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"je perdais mes babouches\", \"n’étaient à ma taille\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Identifiez la figure de style dans « Je nageai, un bon moment, dans une lumière rouge… »",
+        "choices": [],
+        "correct_answer": "Métaphore",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 13,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"marrakech2017_q8a\", \"official_number\": \"8-a\", \"question_type\": \"response_short\", \"competence\": \"Figures de style\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Métaphore\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Identifiez la figure de style dans « la djellaba blanche qui dormait au fond du coffre de ma mère ».",
+        "choices": [],
+        "correct_answer": "Personnification",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 14,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"marrakech2017_q8b\", \"official_number\": \"8-b\", \"question_type\": \"response_short\", \"competence\": \"Figures de style\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Personnification\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Porter des habits neufs et élégants peut-il changer un individu et lui donner plus de valeur ? Justifiez.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "Réponse personnelle cohérente et justifiée.",
+        "points": 1.0,
+        "order_index": 15,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"marrakech2017_q9\", \"official_number\": \"9\", \"question_type\": \"response_long\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"prise de position\", \"justification\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "La difficulté de Sidi Mohamed à se réveiller est-elle due au fait qu’il est rêveur ? Justifiez.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "Exemple attendu : non, se réveiller à trois heures est difficile pour tout enfant.",
+        "points": 1.0,
+        "order_index": 16,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"marrakech2017_q10\", \"official_number\": \"10\", \"question_type\": \"response_long\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"prise de position\", \"justification liée au réveil à trois heures\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "On entend souvent dire que les gens qui se lèvent tard sont des paresseux qui ne réussiront jamais dans leur vie. Partagez-vous cette opinion ? Rédigez un texte argumentatif d’environ quinze lignes, avec des arguments et des exemples précis.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "Évaluation selon la grille. Une validation enseignante est requise.",
+        "points": 10.0,
+        "order_index": 17,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"marrakech2017_prod\", \"official_number\": \"Production écrite\", \"question_type\": \"production_ecrite\", \"competence\": \"Production écrite\", \"section\": \"Production écrite\", \"expected_elements\": [\"Respect de la consigne\", \"Texte argumentatif cohérent et bien structuré\", \"Langue : vocabulaire, syntaxe, orthographe, conjugaison et ponctuation\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": [{\"criterion\": \"Respect de la consigne\", \"points\": 1}, {\"criterion\": \"Texte argumentatif cohérent et bien structuré\", \"points\": 4}, {\"criterion\": \"Langue : vocabulaire, syntaxe, orthographe, conjugaison et ponctuation\", \"points\": 5}]}"
+      }
+    ]
+  },
+  {
+    "external_exam_id": "regional_ma_casablanca_2015_bam_normal",
+    "title": "Examen régional de français - Casablanca 2015",
+    "description": "{\"regional_exam\": {\"is_regional_exam\": true, \"exam_kind\": \"regional\", \"type\": \"official\", \"source_status\": \"official_verified\", \"year\": 2015, \"region\": \"Casablanca-Settat\", \"session\": \"Normale\", \"work_title\": \"La Boîte à merveilles\", \"duration_minutes\": 120, \"support_text\": \"Le lendemain vendredi, mon père rentra déjeuner selon sa coutume. Il portait une djellaba de laine boutonnée d’une éblouissante blancheur et un turban neuf, tout raide d’apprêt.\\nLe repas fut servi par ma mère. Le menu était particulièrement soigné. Nous mangeâmes du mouton aux artichauts sauvages, du couscous au sucre et à la cannelle et pour finir une délicieuse salade d’oranges à l’huile d’olive.\\nNous sirotâmes de nombreux verres de thé à la menthe. Au centre du plateau, deux roses d’Ispahan s’épanouissaient dans une vieille tasse de porcelaine.\\nMa mère soupira. Elle s’adressa à mon père :\\n- Le sort se montre parfois bien cruel. Pauvres et riches, bons et méchants sont à la merci de ses revers. J’ai bien du chagrin ! Je pense à Lalla Aïcha et mon cœur saigne. Je n’ai pas voulu t’ennuyer hier soir avec les tristes événements qui se sont déroulés dans la journée.\\nMon père prêta une oreille attentive. Elle poursuivit :\\n- Moulay Larbi, le mari de Lalla Aïcha, s’est disputé avec son associé, un certain Abdelkader fils de je ne sais qui…\\nElle leva les yeux au plafond pour invoquer :\\n- Dieu écarte de notre chemin, de celui de nos enfants et les enfants de nos enfants, tous les fils du péché qui se présentent le sourire aux lèvres et la poitrine pleine de ténèbres. Sois notre protecteur et notre mandataire : Amine ! Cet Abdelkader, ce fils de l’adultère, ce disciple de Satan ne possédait pas une chemise propre quand Moulay Larbi le prit comme ouvrier dans son atelier à Mechatine. Il le traita avec bienveillance, lui prêta de l’argent, le reçut souvent à déjeuner ou à dîner. Abdelkader se montrait poli et même obséquieux. Il chantait les mérites de Moulay Larbi, louait sa générosité, son bon caractère et la noblesse de ses sentiments. Tous les deux travaillaient beaucoup. Les babouches brodées jouissent auprès des femmes de Fès d’un grand succès. La production de Moulay Larbi et de son ouvrier avait bonne réputation. Abdelkader songea à se marier. Moulay Larbi l’encouragea dans cette voie et Lalla Aïcha lui trouva une jeune fille digne d’éloges. Les mariages coûtent toujours très cher. Malgré ses nuits de veille, Abdelkader n’avait pas su économiser. Il se trouva assez gêné lorsqu’il fallut verser une dot à sa fiancée. Il eut recours à son patron. Moulay Larbi réussit à assembler quatre-vingts rials. Il les lui versa sans méfiance. Il commit la faute de lui avancer cet argent sans établir de papier de reconnaissance de dette. Pour permettre à Abdelkader de gagner davantage, il l’associa à son affaire.\\n- Sais-tu comment ce fils du péché l’a remercié de ses bienfaits ?\\nMon père ne savait pas.\\nMa mère ne lui laissa d’ailleurs pas le temps de répondre…\", \"dataset_version\": \"regional-exams-v1-20260802\"}}",
+    "instructions": "Répondez aux questions de l’étude de texte, puis rédigez la production écrite. Les réponses longues et la production nécessitent une validation enseignante.",
+    "time_limit_minutes": 120,
+    "max_attempts": 3,
+    "status": "published",
+    "questions": [
+      {
+        "question": "Donnez le titre de l’œuvre.",
+        "choices": [],
+        "correct_answer": "La Boîte à merveilles",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 1,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2015_q1a\", \"official_number\": \"1-a\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"La Boîte à merveilles\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Précisez le genre littéraire.",
+        "choices": [],
+        "correct_answer": "Roman autobiographique",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 2,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2015_q1b\", \"official_number\": \"1-b\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"roman\", \"autobiographique\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Donnez le personnage principal.",
+        "choices": [],
+        "correct_answer": "Sidi Mohamed",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 3,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2015_q1c\", \"official_number\": \"1-c\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Sidi Mohamed\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Donnez le nom de l’auteur.",
+        "choices": [],
+        "correct_answer": "Ahmed Sefrioui",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 4,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2015_q1d\", \"official_number\": \"1-d\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Ahmed Sefrioui\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Où se situe ce passage dans l’œuvre ?",
+        "choices": [
+          "Après la visite à Sidi Ali Boughaleb.",
+          "Après le retour du coiffeur.",
+          "Après la visite rendue par Lalla Zoubida à Lalla Aïcha, à Zankat Hajjama."
+        ],
+        "correct_answer": "Après la visite rendue par Lalla Zoubida à Lalla Aïcha, à Zankat Hajjama.",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 5,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2015_q2\", \"official_number\": \"2\", \"question_type\": \"qcm\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Quelle expression montre que Mâalem Abdeslam déjeune chaque vendredi chez lui ?",
+        "choices": [],
+        "correct_answer": "selon sa coutume",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 6,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2015_q3a\", \"official_number\": \"3-a\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"selon sa coutume\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "De quoi se composait le menu de ce vendredi ?",
+        "choices": [],
+        "correct_answer": "Mouton aux artichauts sauvages, couscous au sucre et à la cannelle, salade d’oranges à l’huile d’olive et thé à la menthe.",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 7,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2015_q3b\", \"official_number\": \"3-b\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"mouton\", \"artichauts\", \"couscous\", \"salade d’oranges\", \"thé à la menthe\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Pourquoi le menu était-il particulièrement soigné ?",
+        "choices": [],
+        "correct_answer": "Parce que le père était présent, que le repas était plus riche et que c’était vendredi.",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 8,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2015_q3c\", \"official_number\": \"3-c\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"père était présent\", \"repas plus riche\", \"vendredi\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Citez deux reproches adressés à Moulay Larbi.",
+        "choices": [],
+        "correct_answer": "Excès de confiance en Abdelkader et absence de reconnaissance de dette.",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 9,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2015_q4\", \"official_number\": \"4\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"excès de confiance\", \"absence de prudence\", \"sans reconnaissance de dette\", \"responsable de son malheur\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Quelle est la tonalité dominante du passage consacré à Abdelkader ?",
+        "choices": [
+          "Comique",
+          "Satirique",
+          "Épique"
+        ],
+        "correct_answer": "Satirique",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 10,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2015_q5a\", \"official_number\": \"5-a\", \"question_type\": \"qcm\", \"competence\": \"Langue\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Justifiez la tonalité choisie.",
+        "choices": [],
+        "correct_answer": "Lalla Zoubida critique les défauts et l’ingratitude d’Abdelkader.",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 11,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2015_q5b\", \"official_number\": \"5-b\", \"question_type\": \"response_short\", \"competence\": \"Langue\", \"section\": \"Étude de texte\", \"expected_elements\": [\"critique\", \"ingratitude\", \"Abdelkader\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Que signifie « Ma mère ne lui laissa pas le temps de répondre » ?",
+        "choices": [
+          "Elle interdisait à son mari de parler.",
+          "Elle n’attendait pas de réponse de son mari.",
+          "Le mari ne s’intéressait pas à son récit."
+        ],
+        "correct_answer": "Elle n’attendait pas de réponse de son mari.",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 12,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2015_q6\", \"official_number\": \"6\", \"question_type\": \"qcm\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "« Je n’ai pas voulu t’ennuyer hier soir » appartient-il au récit ou au discours ?",
+        "choices": [],
+        "correct_answer": "Au discours",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 13,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2015_q7a\", \"official_number\": \"7-a\", \"question_type\": \"response_short\", \"competence\": \"Langue\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Au discours\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Donnez deux indices qui justifient la réponse précédente.",
+        "choices": [],
+        "correct_answer": "Emploi de je et t’, du passé composé et de l’indicateur temporel « hier ».",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 14,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2015_q7b\", \"official_number\": \"7-b\", \"question_type\": \"response_short\", \"competence\": \"Langue\", \"section\": \"Étude de texte\", \"expected_elements\": [\"je\", \"t’\", \"passé composé\", \"hier\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Identifiez la figure de style dans « Je pense à Lalla Aïcha et mon cœur saigne ».",
+        "choices": [],
+        "correct_answer": "Hyperbole",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 15,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2015_q8a\", \"official_number\": \"8-a\", \"question_type\": \"response_short\", \"competence\": \"Figures de style\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Hyperbole\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Que révèle cette figure sur Lalla Zoubida ?",
+        "choices": [],
+        "correct_answer": "Elle est profondément touchée par le malheur de son amie ; elle est sensible et émotive.",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 16,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2015_q8b\", \"official_number\": \"8-b\", \"question_type\": \"response_short\", \"competence\": \"Figures de style\", \"section\": \"Étude de texte\", \"expected_elements\": [\"profondément touchée\", \"amie\", \"sensible\", \"émotive\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Quel jugement Mâalem Abdeslam pourrait-il porter sur le récit agressif de sa femme ? Justifiez.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "Accepter un jugement positif ou négatif s’il est logique et justifié.",
+        "points": 1.0,
+        "order_index": 17,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2015_q9\", \"official_number\": \"9\", \"question_type\": \"response_long\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"jugement\", \"justification\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Partagez-vous le jugement sévère de Lalla Zoubida à l’égard d’Abdelkader ? Justifiez.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "Oui ou non, à condition d’argumenter.",
+        "points": 1.0,
+        "order_index": 18,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2015_q10\", \"official_number\": \"10\", \"question_type\": \"response_long\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"prise de position\", \"justification\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "La bonté, la solidarité et la générosité sont parfois mal récompensées. Ce comportement est-il une raison suffisante pour refuser toute aide à autrui ? Justifiez par des arguments et des exemples pertinents.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "Évaluation selon la grille. Une validation enseignante est requise.",
+        "points": 10.0,
+        "order_index": 19,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2015_prod\", \"official_number\": \"Production écrite\", \"question_type\": \"production_ecrite\", \"competence\": \"Production écrite\", \"section\": \"Production écrite\", \"expected_elements\": [\"Respect de la consigne\", \"Organisation du texte\", \"Arguments précis et pertinents\", \"Correction de la langue\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": [{\"criterion\": \"Respect de la consigne\", \"points\": 1}, {\"criterion\": \"Organisation du texte\", \"points\": 2}, {\"criterion\": \"Arguments précis et pertinents\", \"points\": 2}, {\"criterion\": \"Correction de la langue\", \"points\": 5}]}"
+      }
+    ]
+  },
+  {
+    "external_exam_id": "regional_ma_fes_meknes_2021_bam_normal",
+    "title": "Examen régional de français - Fès-Meknès 2021",
+    "description": "{\"regional_exam\": {\"is_regional_exam\": true, \"exam_kind\": \"regional\", \"type\": \"official\", \"source_status\": \"official_subject_web_verified_correction\", \"year\": 2021, \"region\": \"Fès-Meknès\", \"session\": \"Normale\", \"work_title\": \"La Boîte à merveilles\", \"duration_minutes\": 120, \"support_text\": \"Son pas résonna dans l’escalier. Je quittai ma marche et j’allai me changer.\\nLe souk des bijoutiers ressemblait à l’entrée d’une fourmilière. On s’y bousculait, on s’affairait dans toutes les directions. Personne ne semblait se diriger vers un but précis. Ma mère et Fatma Bziouya nous suivaient, mon père et moi, à petits pas, étroitement enveloppées dans leurs haïks blancs. Elles discutaient à mi-voix à qui mieux mieux. Les boutiques très surélevées offraient à nos yeux le clinquant des bijoux d’argent tout neufs qui semblaient coupés dans du vulgaire fer-blanc, des diadèmes et des ceintures d’or d’un travail si prétentieux qu’ils en perdaient toute noblesse, ces bijoux ne ressemblaient point aux fleurs.\\nAucun mystère ne les baignait. Des mains humaines les avaient fabriqués sans amour pour contenter la vanité des riches. Ils avaient raison, tous ces boutiquiers, de les vendre au poids, comme des épices. J’en avais mal au cœur. De nombreux chalands s’agitaient d’une boutique à l’autre. Leurs yeux luisaient d’avidité et de convoitise. D’autres personnages, hommes et femmes, groupés ça et là, refoulaient leurs larmes.\\nPlus tard, j’ai saisi tout le sens de leur mélancolie. J’ai senti moi-même cette humiliation de venir offrir à la rapacité indifférente des hommes ce qu’on tenait pour son bien le plus précieux. Des bijoux auxquels s’attachaient des souvenirs, des ornements de fête qui prenaient part à toutes nos joies deviennent sur un marché comme celui-ci de pauvres choses qu’on pèse, qu’on renifle, qu’on tourne et qu’on retourne entre les doigts pour finalement en offrir la moitié de leur prix réel.\", \"dataset_version\": \"regional-exams-v1-20260802\"}}",
+    "instructions": "Répondez aux questions de l’étude de texte, puis rédigez la production écrite. Les réponses longues et la production nécessitent une validation enseignante.",
+    "time_limit_minutes": 120,
+    "max_attempts": 3,
+    "status": "published",
+    "questions": [
+      {
+        "question": "Donnez le nom de l’auteur.",
+        "choices": [],
+        "correct_answer": "Ahmed Sefrioui",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 1,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"fes2021_q1a\", \"official_number\": \"1-a\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Ahmed Sefrioui\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Donnez le titre de l’œuvre.",
+        "choices": [],
+        "correct_answer": "La Boîte à merveilles",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 2,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"fes2021_q1b\", \"official_number\": \"1-b\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"La Boîte à merveilles\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Précisez le genre du roman.",
+        "choices": [],
+        "correct_answer": "Roman autobiographique",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 3,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"fes2021_q1c\", \"official_number\": \"1-c\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"roman\", \"autobiographique\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Donnez la date de publication.",
+        "choices": [],
+        "correct_answer": "1954",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 4,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"fes2021_q1d\", \"official_number\": \"1-d\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"1954\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Pourquoi le père est-il retourné à la maison ?",
+        "choices": [
+          "Pour acheter une trompette à son fils.",
+          "Pour acheter des cierges au fqih.",
+          "Pour acheter des bracelets à sa femme."
+        ],
+        "correct_answer": "Pour acheter des bracelets à sa femme.",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 5,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"fes2021_q2\", \"official_number\": \"2\", \"question_type\": \"qcm\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Relevez la comparaison qui caractérise le souk des bijoutiers.",
+        "choices": [],
+        "correct_answer": "Le souk des bijoutiers ressemblait à l’entrée d’une fourmilière.",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 6,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"fes2021_q3a\", \"official_number\": \"3-a\", \"question_type\": \"response_short\", \"competence\": \"Figures de style\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Le souk des bijoutiers ressemblait à l’entrée d’une fourmilière.\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Analysez la comparaison : outil, comparé, comparant et point de ressemblance.",
+        "choices": [],
+        "correct_answer": "Outil : ressemblait à ; comparé : le souk ; comparant : une fourmilière ; ressemblance : agitation et bousculade.",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 7,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"fes2021_q3b\", \"official_number\": \"3-b\", \"question_type\": \"response_short\", \"competence\": \"Figures de style\", \"section\": \"Étude de texte\", \"expected_elements\": [\"ressemblait à\", \"souk des bijoutiers\", \"fourmilière\", \"bousculait\", \"affairait\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Les bijoux sont-ils décrits de manière valorisante ou dévalorisante ?",
+        "choices": [
+          "Valorisante",
+          "Dévalorisante"
+        ],
+        "correct_answer": "Dévalorisante",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 8,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"fes2021_q4a\", \"official_number\": \"4-a\", \"question_type\": \"qcm\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Relevez un adjectif qui justifie la réponse.",
+        "choices": [],
+        "correct_answer": "vulgaire ou prétentieux",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 9,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"fes2021_q4b\", \"official_number\": \"4-b\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"vulgaire\", \"prétentieux\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Pourquoi les bijoux ne ressemblent-ils pas aux fleurs ? Donnez deux raisons.",
+        "choices": [],
+        "correct_answer": "Aucun mystère ne les baignait et ils avaient été fabriqués sans amour.",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 10,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"fes2021_q5\", \"official_number\": \"5\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"aucun mystère\", \"sans amour\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Quel sentiment exprime « j’en avais mal au cœur » ?",
+        "choices": [
+          "Dégoût",
+          "Pitié",
+          "Admiration"
+        ],
+        "correct_answer": "Dégoût",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 11,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"fes2021_q6\", \"official_number\": \"6\", \"question_type\": \"qcm\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Pourquoi certaines personnes se sentent-elles tristes et humiliées en vendant leurs bijoux ?",
+        "choices": [],
+        "correct_answer": "Parce que les bijoux sont liés à leurs souvenirs et à leurs joies, mais sont vendus sous leur valeur.",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 12,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"fes2021_q7a\", \"official_number\": \"7-a\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"souvenirs\", \"joies\", \"bien précieux\", \"moitié du prix\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Quel effet produit cette situation ?",
+        "choices": [
+          "Comique",
+          "Ironique",
+          "Pathétique"
+        ],
+        "correct_answer": "Pathétique",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 13,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"fes2021_q7b\", \"official_number\": \"7-b\", \"question_type\": \"qcm\", \"competence\": \"Langue\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Transformez au discours indirect : « J’ai saisi tout le sens de leur mélancolie », en commençant par « Le narrateur déclara… »",
+        "choices": [],
+        "correct_answer": "Le narrateur déclara qu’il avait saisi tout le sens de leur mélancolie.",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 14,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"fes2021_q8\", \"official_number\": \"8\", \"question_type\": \"response_short\", \"competence\": \"Langue\", \"section\": \"Étude de texte\", \"expected_elements\": [\"déclara qu’il avait saisi\", \"leur mélancolie\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Est-il bon d’acheter à très bas prix un objet vendu par une personne contrainte ? Justifiez.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "Réponse personnelle argumentée.",
+        "points": 1.0,
+        "order_index": 15,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"fes2021_q9\", \"official_number\": \"9\", \"question_type\": \"response_long\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"prise de position\", \"justification éthique\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Accepteriez-vous de vendre un objet auquel vous tenez beaucoup ? Justifiez.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "Réponse personnelle argumentée.",
+        "points": 1.0,
+        "order_index": 16,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"fes2021_q10\", \"official_number\": \"10\", \"question_type\": \"response_long\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"prise de position\", \"valeur affective ou nécessité\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Pour acheter quelque chose, préférez-vous le faire en ligne ou vous déplacer sur place ? Justifiez votre choix par des arguments variés et des exemples précis liés à votre expérience, à votre entourage et à vos lectures.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "Évaluation selon la grille. Une validation enseignante est requise.",
+        "points": 10.0,
+        "order_index": 17,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"fes2021_prod\", \"official_number\": \"Production écrite\", \"question_type\": \"production_ecrite\", \"competence\": \"Production écrite\", \"section\": \"Production écrite\", \"expected_elements\": [\"Respect de la consigne\", \"Texte argumentatif cohérent et bien structuré\", \"Langue : vocabulaire, syntaxe, orthographe, conjugaison et ponctuation\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": [{\"criterion\": \"Respect de la consigne\", \"points\": 1}, {\"criterion\": \"Texte argumentatif cohérent et bien structuré\", \"points\": 4}, {\"criterion\": \"Langue : vocabulaire, syntaxe, orthographe, conjugaison et ponctuation\", \"points\": 5}]}"
+      }
+    ]
+  },
+  {
+    "external_exam_id": "regional_ma_casablanca_settat_2019_antigone_normal",
+    "title": "Examen régional de français - Casablanca-Settat 2019",
+    "description": "{\"regional_exam\": {\"is_regional_exam\": true, \"exam_kind\": \"regional\", \"type\": \"official\", \"source_status\": \"official_verified\", \"year\": 2019, \"region\": \"Casablanca-Settat\", \"session\": \"Normale\", \"work_title\": \"Antigone\", \"duration_minutes\": 120, \"support_text\": \"ANTIGONE\\nTu as choisi la vie et moi la mort. Laisse-moi maintenant avec tes jérémiades. Il fallait y aller ce matin, à quatre pattes, dans la nuit. Il fallait aller gratter la terre avec tes ongles pendant qu’ils étaient tout près et te faire empoigner par eux comme une voleuse !\\nISMÈNE\\nEh bien, j’irai demain !\\nANTIGONE\\nTu l’entends, Créon ? Elle aussi. Qui sait si cela ne va pas prendre à d’autres encore, en m’écoutant ? Qu’est-ce que tu attends pour me faire taire, qu’est-ce que tu attends pour appeler tes gardes ? Allons, Créon, un peu de courage, ce n’est qu’un mauvais moment à passer. Allons, cuisinier, puisqu’il le faut !\\nCRÉON, crie soudain.\\nGardes !\\nLes gardes apparaissent aussitôt.\\nCRÉON\\nEmmenez-la.\\nANTIGONE, dans un grand cri soulagé.\\nEnfin, Créon !\\nLes gardes se jettent sur elle et l’emmènent. Ismène sort en criant derrière elle.\\nISMÈNE\\nAntigone ! Antigone !\\nCréon est resté seul, le chœur entre et va à lui.\\nLE CHŒUR\\nTu es fou, Créon. Qu’as-tu fait ?\\nCRÉON, qui regarde au loin devant lui.\\nIl fallait qu’elle meure.\\nLE CHŒUR\\nNe laisse pas mourir Antigone, Créon ! Nous allons tous porter cette plaie au côté, pendant des siècles.\\nCRÉON\\nC’est elle qui voulait mourir. Aucun de nous n’était assez fort pour la décider à vivre. Je le comprends maintenant, Antigone était faite pour être morte. Elle-même ne le savait peut-être pas, mais Polynice n’était qu’un prétexte. Quand elle a dû y renoncer, elle a trouvé autre chose tout de suite. Ce qui importait pour elle, c’était de refuser et de mourir.\\nLE CHŒUR\\nC’est une enfant, Créon.\\nCRÉON\\nQue veux-tu que je fasse pour elle ? La condamner à vivre ?\\nHémon entre en criant.\\nHÉMON\\nPère !\\nCRÉON, court à lui, l’embrasse.\\nOublie-la, Hémon ; oublie-la, mon petit.\\nHÉMON\\nTu es fou, père. Lâche-moi.\", \"dataset_version\": \"regional-exams-v1-20260802\"}}",
+    "instructions": "Répondez aux questions de l’étude de texte, puis rédigez la production écrite. Les réponses longues et la production nécessitent une validation enseignante.",
+    "time_limit_minutes": 120,
+    "max_attempts": 3,
+    "status": "published",
+    "questions": [
+      {
+        "question": "Donnez le titre de l’œuvre.",
+        "choices": [],
+        "correct_answer": "Antigone",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 1,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2019_q1a\", \"official_number\": \"1-a\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Antigone\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Donnez le nom de l’auteur.",
+        "choices": [],
+        "correct_answer": "Jean Anouilh",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 2,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2019_q1b\", \"official_number\": \"1-b\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Jean Anouilh\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Précisez le genre littéraire.",
+        "choices": [],
+        "correct_answer": "Pièce de théâtre",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 3,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2019_q1c\", \"official_number\": \"1-c\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"pièce\", \"théâtre\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Citez deux personnages principaux.",
+        "choices": [],
+        "correct_answer": "Antigone et Créon",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 4,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2019_q1d\", \"official_number\": \"1-d\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Antigone\", \"Créon\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Par qui Antigone a-t-elle été empoignée comme une voleuse ?",
+        "choices": [
+          "Le chœur",
+          "Créon",
+          "Les gardes"
+        ],
+        "correct_answer": "Les gardes",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 5,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2019_q2\", \"official_number\": \"2\", \"question_type\": \"qcm\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Relevez la phrase qui montre qu’Ismène a décidé d’imiter Antigone.",
+        "choices": [],
+        "correct_answer": "Eh bien, j’irai demain !",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 6,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2019_q3\", \"official_number\": \"3\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"j’irai demain\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Pourquoi Créon doit-il faire taire Antigone ?",
+        "choices": [],
+        "correct_answer": "Pour ne pas encourager les autres à faire comme elle.",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 7,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2019_q4\", \"official_number\": \"4\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"ne pas encourager\", \"autres\", \"faire comme elle\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Quelle est la fonction du chœur dans ce texte ?",
+        "choices": [],
+        "correct_answer": "Il représente la sagesse et la conscience de Créon et lui donne des conseils.",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 8,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2019_q5\", \"official_number\": \"5\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"sagesse\", \"conscience\", \"conseils\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Que traduit la phrase « Aucun de nous n’était assez fort pour la décider à vivre » ?",
+        "choices": [
+          "Son impuissance",
+          "Sa puissance",
+          "Son indifférence"
+        ],
+        "correct_answer": "Son impuissance",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 9,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2019_q6\", \"official_number\": \"6\", \"question_type\": \"qcm\", \"competence\": \"Langue\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Dégagez deux arguments employés par Créon pour convaincre le chœur.",
+        "choices": [],
+        "correct_answer": "Elle voulait mourir ; personne ne pouvait la décider à vivre.",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 10,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2019_q7\", \"official_number\": \"7\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"elle voulait mourir\", \"décider à vivre\", \"faite pour être morte\", \"refuser et mourir\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Identifiez la figure de style dans « Tu as choisi la vie et moi la mort ».",
+        "choices": [],
+        "correct_answer": "Antithèse",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 11,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2019_q8a\", \"official_number\": \"8-a\", \"question_type\": \"response_short\", \"competence\": \"Figures de style\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Antithèse\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Quel est l’effet recherché par cette figure ?",
+        "choices": [],
+        "correct_answer": "Mettre en évidence l’opposition entre Ismène, attachée à la vie, et Antigone, tournée vers la mort.",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 12,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2019_q8b\", \"official_number\": \"8-b\", \"question_type\": \"response_short\", \"competence\": \"Figures de style\", \"section\": \"Étude de texte\", \"expected_elements\": [\"opposition\", \"Ismène\", \"vie\", \"Antigone\", \"mort\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Le comportement d’Antigone envers Créon vous paraît-il acceptable ? Justifiez.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 13,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2019_q9\", \"official_number\": \"9\", \"question_type\": \"response_long\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"prise de position\", \"justification\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Antigone est-elle un personnage imprudent ? Justifiez.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 14,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2019_q10\", \"official_number\": \"10\", \"question_type\": \"response_long\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"prise de position\", \"justification\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Certains jeunes se montrent méchants, agressifs ou insultants envers leurs parents et les personnes âgées. Trouvez-vous ce comportement normal ? Rédigez un texte argumentatif avec des arguments et des exemples précis.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "Évaluation selon la grille. Une validation enseignante est requise.",
+        "points": 10.0,
+        "order_index": 15,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2019_prod\", \"official_number\": \"Production écrite\", \"question_type\": \"production_ecrite\", \"competence\": \"Production écrite\", \"section\": \"Production écrite\", \"expected_elements\": [\"Respect de la consigne\", \"Texte argumentatif cohérent et bien structuré\", \"Langue : vocabulaire, syntaxe, orthographe, conjugaison et ponctuation\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": [{\"criterion\": \"Respect de la consigne\", \"points\": 1}, {\"criterion\": \"Texte argumentatif cohérent et bien structuré\", \"points\": 4}, {\"criterion\": \"Langue : vocabulaire, syntaxe, orthographe, conjugaison et ponctuation\", \"points\": 5}]}"
+      }
+    ]
+  },
+  {
+    "external_exam_id": "regional_ma_casablanca_settat_2020_bam_normal",
+    "title": "Examen régional de français - Casablanca-Settat 2020 - Épreuve 1",
+    "description": "{\"regional_exam\": {\"is_regional_exam\": true, \"exam_kind\": \"regional\", \"type\": \"official\", \"source_status\": \"official_verified\", \"year\": 2020, \"region\": \"Casablanca-Settat\", \"session\": \"Normale\", \"work_title\": \"La Boîte à merveilles\", \"duration_minutes\": 120, \"support_text\": \"Les voisines faisaient à haute voix des vœux pour que notre bonheur soit durable et notre santé prospère.\\nDes you-you éclatèrent sur la terrasse. Des femmes venues des maisons mitoyennes manifestaient ainsi, bruyamment, la part qu’elles prenaient à notre joie. Ma mère ne cessait de remercier les unes et les autres.\\nDriss El Aouad arriva de son atelier. Sa femme le mit au courant du retour de mon père. Il appela :\\n- Maâlem Abdeslem ! Nous sommes très heureux de te voir de retour parmi les tiens.\\n- Monte un instant, Driss.\\nDriss, le fabricant de charrues, avait le même âge que mon père. Tous les deux frisaient la quarantaine. Ils se connaissaient depuis longtemps et s’estimaient beaucoup. Driss El Aouad monta chez nous.\\nLes deux hommes, après les salutations d’usage, discutèrent familièrement. Ils parlèrent de la qualité des récoltes, des prix des denrées, des amis communs.\\nDriss dit à mon père :\\n- Tu viens d’arriver et peut-être même les gens de ta maison ne le savent-ils pas encore. Le divorce entre Moulay Larbi et la fille du coiffeur a été prononcé hier devant notaire.\\n- Louange à Dieu ! Moulay Larbi va pouvoir enfin retrouver la tranquillité de l’âme, la paix des hommes bénis. Je savais que la folie de Moulay Larbi serait passagère. N’est-ce pas folie de vouloir conduire plusieurs attelages à la fois ? Il est déjà si difficile de s’entendre avec une seule femme, de vivre en harmonie avec les enfants de sa chair. Moulay Larbi a goûté au fruit amer de l’expérience, le voici de nouveau parmi les hommes normaux, il convient d’en louer le Seigneur.\\nMa mère m’appela à voix basse :\\n- Sidi Mohammed ! Viens chercher le plateau.\\nJ’allai la retrouver à la cuisine. Le plateau pesait lourd à mes bras d’enfant. Je m’acquittai de cette fonction avec un certain orgueil. Mon père versa le thé.\\nLa conversation des deux hommes reprit. Elle se transforma peu à peu en ronronnement. La fatigue envahit mes membres. Je me sentis triste et seul. Non ! Je ne voulais pas dormir, je ne voulais pas pleurer. Moi aussi, j’avais des amis. Ils sauraient partager ma joie. Je tirai de dessous le lit ma Boîte à Merveilles. Je l’ouvris religieusement. Toutes les figures de mes rêves m’y attendaient.\", \"dataset_version\": \"regional-exams-v1-20260802\"}}",
+    "instructions": "Répondez aux questions de l’étude de texte, puis rédigez la production écrite. Les réponses longues et la production nécessitent une validation enseignante.",
+    "time_limit_minutes": 120,
+    "max_attempts": 3,
+    "status": "published",
+    "questions": [
+      {
+        "question": "Donnez le titre de l’œuvre.",
+        "choices": [],
+        "correct_answer": "La Boîte à merveilles",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 1,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_bam_q1a\", \"official_number\": \"1-a\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"La Boîte à merveilles\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Donnez le nom de l’auteur.",
+        "choices": [],
+        "correct_answer": "Ahmed Sefrioui",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 2,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_bam_q1b\", \"official_number\": \"1-b\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Ahmed Sefrioui\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Précisez le genre littéraire.",
+        "choices": [],
+        "correct_answer": "Roman autobiographique",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 3,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_bam_q1c\", \"official_number\": \"1-c\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"roman\", \"autobiographique\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "À quel siècle se déroulent les événements ?",
+        "choices": [],
+        "correct_answer": "XXe siècle",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 4,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_bam_q1d\", \"official_number\": \"1-d\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"20\", \"XX\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Où se situe ce passage dans l’œuvre ?",
+        "choices": [
+          "Au début de l’œuvre",
+          "Au milieu de l’œuvre",
+          "À la fin de l’œuvre"
+        ],
+        "correct_answer": "À la fin de l’œuvre",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 5,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_bam_q2\", \"official_number\": \"2\", \"question_type\": \"qcm\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Driss apprend au père du narrateur la mort du coiffeur. Vrai ou faux ?",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ],
+        "correct_answer": "Faux",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 6,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_bam_q3a\", \"official_number\": \"3-a\", \"question_type\": \"qcm\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Driss apprend au père le divorce de la fille du coiffeur. Vrai ou faux ?",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ],
+        "correct_answer": "Vrai",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 7,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_bam_q3b\", \"official_number\": \"3-b\", \"question_type\": \"qcm\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Driss apprend au père qu’ils ont le même âge. Vrai ou faux ?",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ],
+        "correct_answer": "Faux",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 8,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_bam_q3c\", \"official_number\": \"3-c\", \"question_type\": \"qcm\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Driss apprend au père l’augmentation des prix des denrées. Vrai ou faux ?",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ],
+        "correct_answer": "Faux",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 9,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_bam_q3d\", \"official_number\": \"3-d\", \"question_type\": \"qcm\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Par quelles deux actions la mère du narrateur est-elle présente dans le passage ?",
+        "choices": [],
+        "correct_answer": "Elle remercie les voisines et appelle Sidi Mohammed pour chercher le plateau.",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 10,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_bam_q4\", \"official_number\": \"4\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"remercie\", \"appelle Sidi Mohammed\", \"plateau\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Relevez deux arguments du père qui approuvent la décision de Moulay Larbi.",
+        "choices": [],
+        "correct_answer": "Il retrouvera la tranquillité et la paix ; il est difficile de conduire plusieurs ménages.",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 11,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_bam_q5\", \"official_number\": \"5\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"tranquillité\", \"paix\", \"difficile\", \"plusieurs\", \"une seule femme\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Pourquoi Sidi Mohammed refuse-t-il de dormir ?",
+        "choices": [],
+        "correct_answer": "Il veut sortir de sa solitude et partager sa joie avec les figures de ses rêves.",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 12,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_bam_q6\", \"official_number\": \"6\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"sortir de sa solitude\", \"partager sa joie\", \"figures de ses rêves\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Relevez quatre mots appartenant au champ lexical de la religion.",
+        "choices": [],
+        "correct_answer": "Louange ; Dieu ; âme ; Seigneur",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 13,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_bam_q7\", \"official_number\": \"7\", \"question_type\": \"response_short\", \"competence\": \"Langue\", \"section\": \"Étude de texte\", \"expected_elements\": [\"louange\", \"Dieu\", \"âme\", \"Seigneur\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Identifiez la figure de style dans l’énumération des sujets discutés par les deux hommes.",
+        "choices": [],
+        "correct_answer": "Énumération",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 14,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_bam_q8a\", \"official_number\": \"8-a\", \"question_type\": \"response_short\", \"competence\": \"Figures de style\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Énumération\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Quel effet produit cette figure ?",
+        "choices": [],
+        "correct_answer": "Elle insiste sur la diversité et la pluralité des sujets discutés.",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 15,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_bam_q8b\", \"official_number\": \"8-b\", \"question_type\": \"response_short\", \"competence\": \"Figures de style\", \"section\": \"Étude de texte\", \"expected_elements\": [\"diversité\", \"pluralité\", \"sujets\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Que pensez-vous de Sidi Mohammed qui se sent seul alors qu’il est entouré de ses parents ?",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 16,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_bam_q9\", \"official_number\": \"9\", \"question_type\": \"response_long\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"prise de position\", \"justification liée à son univers intérieur\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Partagez-vous le jugement du père sur le divorce de la fille du coiffeur ? Justifiez.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 17,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_bam_q10\", \"official_number\": \"10\", \"question_type\": \"response_long\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"prise de position\", \"justification\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Pourquoi est-il difficile, de nos jours, de se marier avec plusieurs femmes à la fois ? Rédigez un texte argumentatif avec des arguments pertinents et des exemples précis.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "Évaluation selon la grille. Une validation enseignante est requise.",
+        "points": 10.0,
+        "order_index": 18,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_bam_prod\", \"official_number\": \"Production écrite\", \"question_type\": \"production_ecrite\", \"competence\": \"Production écrite\", \"section\": \"Production écrite\", \"expected_elements\": [\"Respect de la consigne\", \"Texte argumentatif cohérent et bien structuré\", \"Langue : vocabulaire, syntaxe, orthographe, conjugaison et ponctuation\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": [{\"criterion\": \"Respect de la consigne\", \"points\": 1}, {\"criterion\": \"Texte argumentatif cohérent et bien structuré\", \"points\": 4}, {\"criterion\": \"Langue : vocabulaire, syntaxe, orthographe, conjugaison et ponctuation\", \"points\": 5}]}"
+      }
+    ]
+  },
+  {
+    "external_exam_id": "regional_ma_casablanca_settat_2020_antigone_normal",
+    "title": "Examen régional de français - Casablanca-Settat 2020 - Épreuve 2",
+    "description": "{\"regional_exam\": {\"is_regional_exam\": true, \"exam_kind\": \"regional\", \"type\": \"official\", \"source_status\": \"official_verified\", \"year\": 2020, \"region\": \"Casablanca-Settat\", \"session\": \"Normale\", \"work_title\": \"Antigone\", \"duration_minutes\": 120, \"support_text\": \"Le chœur disparaît, tandis que les gardes poussent Antigone en scène.\\nLE GARDE, qui a repris tout son aplomb.\\nAllez, allez, pas d’histoires ! Vous vous expliquerez devant le chef. Moi, je ne connais que la consigne. Ce que vous aviez à faire là, je ne veux pas le savoir. Tout le monde a des excuses, tout le monde a quelque chose à objecter. S’il fallait écouter les gens, s’il fallait essayer de comprendre, on serait propres. Allez, allez ! Tenez-la, vous autres, et pas d’histoires ! Moi, ce qu’elle a à dire, je ne veux pas le savoir !\\nANTIGONE\\nDis-leur de me lâcher, avec leurs sales mains. Ils me font mal.\\nLE GARDE\\nLeurs sales mains ? Vous pourriez être polie, Mademoiselle… Moi, je suis poli.\\nANTIGONE\\nDis-leur de me lâcher. Je suis la fille d’Œdipe, je suis Antigone. Je ne me sauverai pas.\\nLE GARDE\\nLa fille d’Œdipe, oui ! Les putains qu’on ramasse à la garde de nuit, elles disent aussi de se méfier, qu’elles sont la bonne amie du préfet de police !\\nIls rigolent.\\nANTIGONE\\nJe veux bien mourir, mais pas qu’ils me touchent !\\nLE GARDE\\nEt les cadavres, dis, et la terre, ça ne te fait pas peur à toucher ? Tu dis « leurs sales mains » ! Regarde un peu les tiennes.\\nAntigone regarde ses mains tenues par les menottes avec un petit sourire. Elles sont pleines de terre.\\nLE GARDE\\nOn te l’avait prise, ta pelle ? Il a fallu que tu refasses ça avec tes ongles, la deuxième fois ? Ah ! cette audace ! Je tourne le dos une seconde, je te demande une chique, et allez, le temps de me la caler dans la joue, le temps de dire merci, elle était là, à gratter comme une petite hyène. Et en plein jour ! Et c’est qu’elle se débattait cette garce, quand j’ai voulu la prendre ! C’est qu’elle voulait me sauter aux yeux ! Elle criait qu’il fallait qu’elle finisse… C’est une folle, oui !\", \"dataset_version\": \"regional-exams-v1-20260802\"}}",
+    "instructions": "Répondez aux questions de l’étude de texte, puis rédigez la production écrite. Les réponses longues et la production nécessitent une validation enseignante.",
+    "time_limit_minutes": 120,
+    "max_attempts": 3,
+    "status": "published",
+    "questions": [
+      {
+        "question": "Précisez le genre de l’œuvre.",
+        "choices": [],
+        "correct_answer": "Pièce de théâtre / tragédie moderne",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 1,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ant_q1a\", \"official_number\": \"1-a\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"pièce de théâtre\", \"tragédie moderne\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Donnez le titre de l’œuvre.",
+        "choices": [],
+        "correct_answer": "Antigone",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 2,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ant_q1b\", \"official_number\": \"1-b\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Antigone\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Donnez le nom de l’auteur.",
+        "choices": [],
+        "correct_answer": "Jean Anouilh",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 3,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ant_q1c\", \"official_number\": \"1-c\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Jean Anouilh\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "À quel siècle l’œuvre a-t-elle été écrite ?",
+        "choices": [],
+        "correct_answer": "XXe siècle",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 4,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ant_q1d\", \"official_number\": \"1-d\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"20\", \"XX\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Pourquoi les gardes arrêtent-ils Antigone et la poussent-ils en scène ?",
+        "choices": [],
+        "correct_answer": "Ils l’ont surprise en train de creuser la terre pour enterrer son frère Polynice.",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 5,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ant_q2\", \"official_number\": \"2\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"surprise\", \"creuser la terre\", \"enterrer\", \"Polynice\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Après la perte de sa pelle, avec quoi Antigone creusait-elle ?",
+        "choices": [],
+        "correct_answer": "Avec ses ongles",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 6,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ant_q3\", \"official_number\": \"3\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"ongles\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Relevez la phrase qui montre que le garde se moque d’Antigone.",
+        "choices": [],
+        "correct_answer": "La fille d’Œdipe, oui ! Les putains… disent aussi qu’elles sont la bonne amie du préfet de police !",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 7,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ant_q4\", \"official_number\": \"4\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"la fille d’Œdipe\", \"bonne amie du préfet de police\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Le garde est-il prêt à écouter Antigone ? Justifiez.",
+        "choices": [],
+        "correct_answer": "Non, il applique la consigne à la lettre et refuse de savoir ce qu’elle a à dire.",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 8,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ant_q5\", \"official_number\": \"5\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"non\", \"consigne\", \"ne veux pas le savoir\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Quel registre de langue le garde emploie-t-il dans sa dernière tirade ?",
+        "choices": [
+          "Familier",
+          "Courant",
+          "Soutenu",
+          "Argotique"
+        ],
+        "correct_answer": "Familier",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 9,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ant_q6\", \"official_number\": \"6\", \"question_type\": \"qcm\", \"competence\": \"Langue\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Relevez un anachronisme qui montre qu’il s’agit d’une tragédie moderne.",
+        "choices": [],
+        "correct_answer": "Les menottes",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 10,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ant_q7a\", \"official_number\": \"7-a\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"menottes\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Relevez un indice de langage moderne ou familier.",
+        "choices": [],
+        "correct_answer": "« On te l’avait prise, ta pelle ? »",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 11,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ant_q7b\", \"official_number\": \"7-b\", \"question_type\": \"response_short\", \"competence\": \"Langue\", \"section\": \"Étude de texte\", \"expected_elements\": [\"on te l’avait prise\", \"ta pelle\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Identifiez la figure de style dans « Tout le monde a des excuses, tout le monde a quelque chose à objecter ».",
+        "choices": [],
+        "correct_answer": "Anaphore",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 12,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ant_q8a\", \"official_number\": \"8-a\", \"question_type\": \"response_short\", \"competence\": \"Figures de style\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Anaphore\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Quel effet produit cette figure ?",
+        "choices": [],
+        "correct_answer": "Elle souligne le refus du garde d’écouter les objections d’Antigone.",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 13,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ant_q8b\", \"official_number\": \"8-b\", \"question_type\": \"response_short\", \"competence\": \"Figures de style\", \"section\": \"Étude de texte\", \"expected_elements\": [\"refus\", \"écouter\", \"objections\", \"Antigone\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Quel jugement portez-vous sur le comportement du garde envers Antigone ?",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 14,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ant_q9\", \"official_number\": \"9\", \"question_type\": \"response_long\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"jugement\", \"justification\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Peut-on éprouver de la sympathie pour Antigone ? Justifiez.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 15,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ant_q10\", \"official_number\": \"10\", \"question_type\": \"response_long\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"prise de position\", \"devoir fraternel ou transgression\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Pour bien éduquer les enfants, certains parents pensent qu’il faut pardonner leurs fautes ; d’autres estiment qu’il faut les punir. À qui donnez-vous raison ? Rédigez un texte argumentatif avec des arguments et des exemples précis.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "Évaluation selon la grille. Une validation enseignante est requise.",
+        "points": 10.0,
+        "order_index": 16,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ant_prod\", \"official_number\": \"Production écrite\", \"question_type\": \"production_ecrite\", \"competence\": \"Production écrite\", \"section\": \"Production écrite\", \"expected_elements\": [\"Respect de la consigne\", \"Texte argumentatif cohérent et bien structuré\", \"Langue : vocabulaire, syntaxe, orthographe, conjugaison et ponctuation\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": [{\"criterion\": \"Respect de la consigne\", \"points\": 1}, {\"criterion\": \"Texte argumentatif cohérent et bien structuré\", \"points\": 4}, {\"criterion\": \"Langue : vocabulaire, syntaxe, orthographe, conjugaison et ponctuation\", \"points\": 5}]}"
+      }
+    ]
+  },
+  {
+    "external_exam_id": "regional_ma_casablanca_settat_2020_ldjc_normal",
+    "title": "Examen régional de français - Casablanca-Settat 2020 - Épreuve 3",
+    "description": "{\"regional_exam\": {\"is_regional_exam\": true, \"exam_kind\": \"regional\", \"type\": \"official\", \"source_status\": \"official_verified\", \"year\": 2020, \"region\": \"Casablanca-Settat\", \"session\": \"Normale\", \"work_title\": \"Le Dernier Jour d’un condamné\", \"duration_minutes\": 120, \"support_text\": \"Mais que les diables soient avec le passeport ! Il était jaune, et on avait écrit dessus forçat libéré. Il fallait montrer cela partout où je passais et le présenter tous les huit jours au maire du village où l’on me forçait de tapiquer. La belle recommandation ! Un galérien ! Je faisais peur, et les petits enfants se sauvaient, et l’on fermait les portes. Personne ne voulait me donner d’ouvrage. Je mangeai mes soixante-six francs. Et puis, il fallut vivre. Je montrai mes bras bons au travail, on ferma les portes. J’offris ma journée pour quinze sous, pour dix sous, pour cinq sous. Point. Que faire ? Un jour, j’avais faim. Je donnai un coup de coude dans le carreau d’un boulanger ; j’empoignai un pain, et le boulanger m’empoigna ; je ne mangeai pas le pain, et j’eus les galères à perpétuité, avec trois lettres de feu sur l’épaule. - Je te montrerai, si tu veux. - On appelle cette justice-là la récidive. Me voilà donc cheval de retour. On me remit à Toulon ; cette fois avec les bonnets verts. Il fallait m’évader. Pour cela, je n’avais que trois murs à percer, deux chaînes à couper, et j’avais un clou. Je m’évadai. On tira le canon d’alerte ; car, nous autres, nous sommes comme les cardinaux de Rome, habillés de rouge, et on tire le canon quand nous partons. Leur poudre alla aux moineaux. Cette fois, pas de passeport jaune, mais pas d’argent non plus. Je rencontrai des camarades qui avaient aussi fait leur temps ou cassé leur ficelle. Leur coire me proposa d’être des leurs, on faisait la grande soulasse sur le trimar. J’acceptai, et je me mis à tuer pour vivre. C’était tantôt une diligence, tantôt une chaise de poste, tantôt un marchand de bœufs à cheval. On prenait l’argent, on laissait aller au hasard la bête ou la voiture, et l’on enterrait l’homme sous un arbre, en ayant soin que les pieds ne sortissent pas ; et puis on dansait sur la fosse, pour que la terre ne parût pas fraîchement remuée. J’ai vieilli comme cela, gîtant dans les broussailles, dormant aux belles étoiles, traqué de bois en bois, mais du moins libre et à moi.\", \"dataset_version\": \"regional-exams-v1-20260802\"}}",
+    "instructions": "Répondez aux questions de l’étude de texte, puis rédigez la production écrite. Les réponses longues et la production nécessitent une validation enseignante.",
+    "time_limit_minutes": 120,
+    "max_attempts": 3,
+    "status": "published",
+    "questions": [
+      {
+        "question": "Donnez le titre de l’œuvre.",
+        "choices": [],
+        "correct_answer": "Le Dernier Jour d’un condamné",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 1,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ldjc_q1a\", \"official_number\": \"1-a\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Le Dernier Jour d’un condamné\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Donnez le nom de l’auteur.",
+        "choices": [],
+        "correct_answer": "Victor Hugo",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 2,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ldjc_q1b\", \"official_number\": \"1-b\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Victor Hugo\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Précisez le genre littéraire.",
+        "choices": [],
+        "correct_answer": "Roman à thèse",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 3,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ldjc_q1c\", \"official_number\": \"1-c\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"roman\", \"thèse\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "À quel siècle appartient l’œuvre ?",
+        "choices": [],
+        "correct_answer": "XIXe siècle",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 4,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ldjc_q1d\", \"official_number\": \"1-d\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"19\", \"XIX\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Combien de temps reste-t-il au narrateur avant son exécution ?",
+        "choices": [],
+        "correct_answer": "Quelques heures, six heures plus précisément, le jour même.",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 5,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ldjc_q2\", \"official_number\": \"2\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"six heures\", \"jour même\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Le forçat faisait peur. Vrai ou faux ?",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ],
+        "correct_answer": "Vrai",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 6,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ldjc_q3a\", \"official_number\": \"3-a\", \"question_type\": \"qcm\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Le forçat était libre d’habiter où il voulait. Vrai ou faux ?",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ],
+        "correct_answer": "Faux",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 7,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ldjc_q3b\", \"official_number\": \"3-b\", \"question_type\": \"qcm\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Le forçat n’était pas fier de son passeport. Vrai ou faux ?",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ],
+        "correct_answer": "Vrai",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 8,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ldjc_q3c\", \"official_number\": \"3-c\", \"question_type\": \"qcm\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Le forçat n’a jamais tué personne. Vrai ou faux ?",
+        "choices": [
+          "Vrai",
+          "Faux"
+        ],
+        "correct_answer": "Faux",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 9,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ldjc_q3d\", \"official_number\": \"3-d\", \"question_type\": \"qcm\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Relevez une phrase montrant que le forçat est rejeté par la société.",
+        "choices": [],
+        "correct_answer": "Personne ne voulait me donner d’ouvrage.",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 10,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ldjc_q4\", \"official_number\": \"4\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"personne ne voulait me donner d’ouvrage\", \"on fermait les portes\", \"les petits enfants se sauvaient\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Comment appelle-t-on un galérien qui retourne en prison ?",
+        "choices": [],
+        "correct_answer": "Un cheval de retour",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 11,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ldjc_q5\", \"official_number\": \"5\", \"question_type\": \"response_short\", \"competence\": \"Langue\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Un cheval de retour\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Pour quel crime est-il condamné aux galères à perpétuité ?",
+        "choices": [],
+        "correct_answer": "Pour avoir volé un pain",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 12,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ldjc_q6\", \"official_number\": \"6\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"volé\", \"pain\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Relevez quatre mots ou expressions du champ lexical de la prison.",
+        "choices": [],
+        "correct_answer": "galérien ; galères ; forçat ; perpétuité",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 13,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ldjc_q7\", \"official_number\": \"7\", \"question_type\": \"response_short\", \"competence\": \"Langue\", \"section\": \"Étude de texte\", \"expected_elements\": [\"galérien\", \"galères\", \"forçat\", \"perpétuité\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Identifiez la figure de style dans « pour quinze sous, pour dix sous, pour cinq sous ».",
+        "choices": [
+          "Métaphore",
+          "Hyperbole",
+          "Gradation décroissante",
+          "Métonymie"
+        ],
+        "correct_answer": "Gradation décroissante",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 14,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ldjc_q8a\", \"official_number\": \"8-a\", \"question_type\": \"qcm\", \"competence\": \"Figures de style\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Quel est l’effet recherché ?",
+        "choices": [],
+        "correct_answer": "Insister sur sa volonté de travailler à n’importe quel prix.",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 15,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ldjc_q8b\", \"official_number\": \"8-b\", \"question_type\": \"response_short\", \"competence\": \"Figures de style\", \"section\": \"Étude de texte\", \"expected_elements\": [\"volonté\", \"travailler\", \"n’importe quel prix\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Voler un pain mérite-t-il une condamnation à perpétuité ? Justifiez.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 16,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ldjc_q9\", \"official_number\": \"9\", \"question_type\": \"response_long\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"prise de position\", \"justice ou nécessité\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Quels sentiments éprouvez-vous envers le forçat ? Justifiez.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 17,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ldjc_q10\", \"official_number\": \"10\", \"question_type\": \"response_long\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"compassion ou condamnation\", \"justification\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "La société continue parfois de rejeter les anciens détenus après leur sortie de prison. Que pensez-vous de cette attitude ? Rédigez un texte argumentatif avec des arguments pertinents et des exemples précis.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "Évaluation selon la grille. Une validation enseignante est requise.",
+        "points": 10.0,
+        "order_index": 18,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2020_ldjc_prod\", \"official_number\": \"Production écrite\", \"question_type\": \"production_ecrite\", \"competence\": \"Production écrite\", \"section\": \"Production écrite\", \"expected_elements\": [\"Respect de la consigne\", \"Texte argumentatif cohérent et bien structuré\", \"Langue : vocabulaire, syntaxe, orthographe, conjugaison et ponctuation\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": [{\"criterion\": \"Respect de la consigne\", \"points\": 1}, {\"criterion\": \"Texte argumentatif cohérent et bien structuré\", \"points\": 4}, {\"criterion\": \"Langue : vocabulaire, syntaxe, orthographe, conjugaison et ponctuation\", \"points\": 5}]}"
+      }
+    ]
+  },
+  {
+    "external_exam_id": "regional_ma_casablanca_settat_2021_bam_normal",
+    "title": "Examen régional de français - Casablanca-Settat 2021",
+    "description": "{\"regional_exam\": {\"is_regional_exam\": true, \"exam_kind\": \"regional\", \"type\": \"official\", \"source_status\": \"official_verified\", \"year\": 2021, \"region\": \"Casablanca-Settat\", \"session\": \"Normale\", \"work_title\": \"La Boîte à merveilles\", \"duration_minutes\": 120, \"support_text\": \"Mon père venait se faire raser les cheveux depuis son installation à Fès, dans la boutique de Si Abderrahman.\\nLes barbiers participent à de nombreuses cérémonies familiales. À ma naissance, mon père, montagnard transplanté dans la grande ville, désirait néanmoins fêter dignement mon arrivée au monde. Si Abderrahman lui fut d’un excellent conseil. Il vint, selon l’usage, accompagné de ses deux apprentis, placer les invités et faire le service pendant le repas.\\nLors de ma première coupe de cheveux, mon père eut recours à ses soins et fit encore grand cas de ses avis et recommandations.\\nJe n’aimais pas Si Abderrahman. Je savais qu’il serait chargé de me circoncire. Je redoutais ce jour. Je sentais des frissons me parcourir l’épiderme quand je le voyais manier le rasoir ou les ciseaux.\\nNous le trouvâmes occupé à pratiquer une saignée. Le client présentait sa nuque rasée. Si Abderrahman se penchait sur le cou du patient. Je détournai les yeux de ce spectacle.\\nSi Abderrahman planta deux ventouses en fer-blanc derrière la tête de l’inconnu et nous souhaita en termes courtois une heureuse journée.\\n- Je vois, dit-il, que ce jeune homme a été gâté : un tambour, une trompette, un magnifique chariot et un cierge. Il est vrai que le cierge est destiné au fqih. Il faut toujours être très bien avec son maître, sinon, gare à la baguette de cognassier.\\nTout le monde se mit à rire. Je rougissais d’indignation. La baguette de cognassier n’a rien de risible. Ces messieurs n’en avaient jamais reçu sur la plante des pieds, au point de ne pouvoir se tenir debout. Ils pouvaient rire. La baguette de cognassier inspire à ceux qui la connaissent un sentiment de crainte et de respect.\\nUn homme sec, avec une barbe de bouc et un turban monumental, souleva le rideau d’entrée. Il geignait tant qu’il pouvait. Pour tout salut, il se contenta de hocher la tête d’un mouvement affirmatif. Il s’écroula entre les accoudoirs d’une chaise rigide et continua à geindre.\\n- Tu me parais encore bien fatigué, oncle Hammad ! Puis-je t’être utile ?\\n- Si Abderrahman, je vais mourir.\", \"dataset_version\": \"regional-exams-v1-20260802\"}}",
+    "instructions": "Répondez aux questions de l’étude de texte, puis rédigez la production écrite. Les réponses longues et la production nécessitent une validation enseignante.",
+    "time_limit_minutes": 120,
+    "max_attempts": 3,
+    "status": "published",
+    "questions": [
+      {
+        "question": "Donnez le nom de l’auteur.",
+        "choices": [],
+        "correct_answer": "Ahmed Sefrioui",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 1,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2021_q1a\", \"official_number\": \"1-a\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Ahmed Sefrioui\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Donnez le titre de l’œuvre.",
+        "choices": [],
+        "correct_answer": "La Boîte à merveilles",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 2,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2021_q1b\", \"official_number\": \"1-b\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"La Boîte à merveilles\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Précisez le genre littéraire.",
+        "choices": [],
+        "correct_answer": "Roman autobiographique",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 3,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2021_q1c\", \"official_number\": \"1-c\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"roman\", \"autobiographique\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Citez une autre œuvre du même auteur.",
+        "choices": [],
+        "correct_answer": "Le Chapelet d’ambre",
+        "explanation": "",
+        "points": 0.25,
+        "order_index": 4,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2021_q1d\", \"official_number\": \"1-d\", \"question_type\": \"response_short\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Chapelet d’ambre\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "À quel moment de l’Achoura se situe le passage ?",
+        "choices": [
+          "Avant la fête de l’Achoura",
+          "Pendant la fête de l’Achoura",
+          "Après la fête de l’Achoura"
+        ],
+        "correct_answer": "Pendant la fête de l’Achoura",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 5,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2021_q2\", \"official_number\": \"2\", \"question_type\": \"qcm\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [], \"scoring_mode\": \"exact\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Citez deux autres activités exercées par Si Abderrahman.",
+        "choices": [],
+        "correct_answer": "Il place les invités, sert pendant les repas, conseille et pratique la circoncision.",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 6,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2021_q3\", \"official_number\": \"3\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"placer les invités\", \"service pendant le repas\", \"conseiller\", \"circoncision\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Pourquoi le narrateur n’aime-t-il pas Si Abderrahman ?",
+        "choices": [],
+        "correct_answer": "Parce qu’il sait que le barbier sera chargé de le circoncire.",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 7,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2021_q4\", \"official_number\": \"4\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"chargé\", \"circoncire\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Qui est décrit par « Un homme sec, avec une barbe de bouc et un turban monumental » ?",
+        "choices": [],
+        "correct_answer": "Oncle Hammad",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 8,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2021_q5\", \"official_number\": \"5\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Oncle Hammad\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Pourquoi Sidi Mohammed n’accepte-t-il pas le rire des hommes dans la boutique ?",
+        "choices": [],
+        "correct_answer": "Parce que la baguette de cognassier inspire la crainte et le respect, non le rire.",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 9,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2021_q6\", \"official_number\": \"6\", \"question_type\": \"response_short\", \"competence\": \"Compréhension\", \"section\": \"Étude de texte\", \"expected_elements\": [\"baguette de cognassier\", \"crainte\", \"respect\", \"pas le rire\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Relevez quatre mots appartenant au champ lexical du métier de barbier.",
+        "choices": [],
+        "correct_answer": "coupe ; rasoir ; ciseaux ; rasée",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 10,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2021_q7\", \"official_number\": \"7\", \"question_type\": \"response_short\", \"competence\": \"Langue\", \"section\": \"Étude de texte\", \"expected_elements\": [\"coupe\", \"rasoir\", \"ciseaux\", \"rasée\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Identifiez la figure de style dans la liste des objets reçus par le jeune garçon.",
+        "choices": [],
+        "correct_answer": "Énumération",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 11,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2021_q8a\", \"official_number\": \"8-a\", \"question_type\": \"response_short\", \"competence\": \"Figures de style\", \"section\": \"Étude de texte\", \"expected_elements\": [\"Énumération\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Quel est l’effet recherché ?",
+        "choices": [],
+        "correct_answer": "Insister sur le nombre de jouets et sur le fait que l’enfant est considéré comme gâté.",
+        "explanation": "",
+        "points": 0.5,
+        "order_index": 12,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2021_q8b\", \"official_number\": \"8-b\", \"question_type\": \"response_short\", \"competence\": \"Figures de style\", \"section\": \"Étude de texte\", \"expected_elements\": [\"nombre\", \"jouets\", \"gâté\"], \"scoring_mode\": \"keyword\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "La boutique du barbier est-elle un espace de joie pour le narrateur ? Justifiez.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 13,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2021_q9\", \"official_number\": \"9\", \"question_type\": \"response_long\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"non\", \"peur\", \"circoncision\", \"moqueries\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "Quelle place le barbier occupait-il dans la vie des hommes à cette époque ?",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "",
+        "points": 1.0,
+        "order_index": 14,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2021_q10\", \"official_number\": \"10\", \"question_type\": \"response_long\", \"competence\": \"Méthodologie\", \"section\": \"Étude de texte\", \"expected_elements\": [\"place importante\", \"coiffer\", \"organiser les fêtes\", \"conseiller\", \"soins traditionnels\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": []}"
+      },
+      {
+        "question": "À l’époque d’Ahmed Sefrioui, certains artisans pratiquaient des actes proches de la médecine. Même aujourd’hui, faut-il encore accorder notre confiance à ces artisans ? Développez une réflexion argumentée avec des exemples.",
+        "choices": [],
+        "correct_answer": "",
+        "explanation": "Évaluation selon la grille. Une validation enseignante est requise.",
+        "points": 10.0,
+        "order_index": 15,
+        "active": true,
+        "adaptation_reason": "{\"question_id\": \"casa2021_prod\", \"official_number\": \"Production écrite\", \"question_type\": \"production_ecrite\", \"competence\": \"Production écrite\", \"section\": \"Production écrite\", \"expected_elements\": [\"Respect de la consigne\", \"Texte argumentatif cohérent et bien structuré\", \"Langue : vocabulaire, syntaxe, orthographe, conjugaison et ponctuation\"], \"scoring_mode\": \"automatic_hybrid\", \"requires_teacher_validation\": false, \"rubric\": [{\"criterion\": \"Respect de la consigne\", \"points\": 1}, {\"criterion\": \"Texte argumentatif cohérent et bien structuré\", \"points\": 4}, {\"criterion\": \"Langue : vocabulaire, syntaxe, orthographe, conjugaison et ponctuation\", \"points\": 5}]}"
+      }
+    ]
+  }
+]

@@ -7,6 +7,13 @@ from sqlalchemy.engine import make_url
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 from app.core.config import get_settings
+from app.core.catalog_migration import apply_catalog_migration
+from app.core.assessment_migration import apply_assessment_migration
+from app.core.automatic_generation_migration import apply_automatic_generation_migration
+from app.core.professor_migration import apply_professor_migration
+from app.core.positioning_path_migration import apply_positioning_path_migration
+from app.core.rag_migration import apply_rag_migration
+from app.core.role_migration import apply_role_migration
 
 DB_PATH = Path(__file__).resolve().parents[2] / "edumentor.db"
 SQLALCHEMY_SQLITE_URL = f"sqlite:///{DB_PATH.as_posix()}"
@@ -82,6 +89,12 @@ def init_db() -> None:
 
     migrate_persistence_schema()
     Base.metadata.create_all(bind=engine)
+    apply_positioning_path_migration(engine)
+    apply_catalog_migration(engine)
+    apply_professor_migration(engine)
+    apply_rag_migration(engine)
+    apply_assessment_migration(engine)
+    apply_automatic_generation_migration(engine)
 
 
 def log_database_target() -> None:
@@ -107,7 +120,6 @@ def migrate_persistence_schema() -> None:
         if "status" not in columns:
             connection.execute(text("ALTER TABLE user_profiles ADD COLUMN status VARCHAR(40) DEFAULT 'active'"))
 
-        connection.execute(text("UPDATE user_profiles SET role = 'user' WHERE role IS NULL OR role NOT IN ('admin', 'user')"))
         connection.execute(text("UPDATE user_profiles SET status = 'active' WHERE status IS NULL OR status NOT IN ('active', 'disabled')"))
         if engine.dialect.name == "postgresql":
             connection.execute(
@@ -119,6 +131,7 @@ def migrate_persistence_schema() -> None:
                     ")"
                 )
             )
+    apply_role_migration(engine)
 
 
 def get_db():

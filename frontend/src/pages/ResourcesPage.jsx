@@ -1,7 +1,7 @@
 import { BookOpen, Clock, Download, Eye, FileText, Layers, Search, X } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { API_BASE_URL, fetchCourses } from '../services/api.js'
+import { API_BASE_URL, fetchCourses, fetchSubjects } from '../services/api.js'
 import { addNotification } from '../services/notifications.js'
 
 const CHAPTER_PROGRESS_STORAGE_KEY = 'edumentor:chapterProgress'
@@ -12,6 +12,8 @@ function ResourcesPage() {
   const [courses, setCourses] = useState([])
   const [query, setQuery] = useState('')
   const [activeFilter, setActiveFilter] = useState('Tous')
+  const [activeSubject, setActiveSubject] = useState('')
+  const [subjects, setSubjects] = useState([])
   const [selectedCourse, setSelectedCourse] = useState(null)
   const [progressMap, setProgressMap] = useState({})
   const [isLoading, setIsLoading] = useState(true)
@@ -24,10 +26,11 @@ function ResourcesPage() {
   useEffect(() => {
     let isMounted = true
 
-    fetchCourses()
-      .then((data) => {
+    Promise.all([fetchCourses({ subject_slug: activeSubject }), fetchSubjects()])
+      .then(([data, subjectsData]) => {
         if (isMounted) {
           setCourses(Array.isArray(data) ? data : [])
+          setSubjects(Array.isArray(subjectsData) ? subjectsData : [])
           setError('')
         }
       })
@@ -45,7 +48,7 @@ function ResourcesPage() {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [activeSubject])
 
   const resources = useMemo(
     () => courses.map((course) => enrichCourse(course, progressMap[course.id])),
@@ -104,6 +107,10 @@ function ResourcesPage() {
               {filter}
             </button>
           ))}
+          <select onChange={(event) => setActiveSubject(event.target.value)} value={activeSubject}>
+            <option value="">Toutes les matieres</option>
+            {subjects.map((subject) => <option key={subject.id} value={subject.slug}>{subject.name}</option>)}
+          </select>
         </div>
       </article>
 
@@ -118,6 +125,7 @@ function ResourcesPage() {
                 <span className="resource-pdf-icon"><FileText size={34} /></span>
                 <div>
                   <small>{course.level}</small>
+                  <small>{course.subject?.name || 'Matiere non definie'}</small>
                   <h2>{course.title}</h2>
                 </div>
               </div>

@@ -1,0 +1,39 @@
+{
+  "model_version": "answer-quality-v1-20260801",
+  "training_source": "Données synthétiques contrôlées créées à partir des réponses de référence de la banque EduMentor.",
+  "training_examples": 390,
+  "open_question_count": 39,
+  "evaluation_protocol": "Séparation par question (GroupShuffleSplit, 25 % des questions réservées au test).",
+  "accuracy": 0.97,
+  "macro_f1": 0.9655,
+  "classes": {
+    "correct": 195,
+    "partiel": 78,
+    "incorrect": 117
+  },
+  "confusion_matrix": {
+    "labels": [
+      "correct",
+      "partiel",
+      "incorrect"
+    ],
+    "values": [
+      [
+        48,
+        2,
+        0
+      ],
+      [
+        1,
+        19,
+        0
+      ],
+      [
+        0,
+        0,
+        30
+      ]
+    ]
+  },
+  "scientific_limit": "Ces métriques mesurent un jeu synthétique contrôlé. Une validation sur des réponses réelles d’élèves reste nécessaire."
+}

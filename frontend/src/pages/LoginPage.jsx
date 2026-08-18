@@ -6,7 +6,7 @@ import { useAuth } from '../hooks/useAuth.js'
 
 function LoginPage() {
   const navigate = useNavigate()
-  const { login, loginWithGoogle, resetPassword } = useAuth()
+  const { login, loginWithGoogle, refreshAuthProfile, resetPassword } = useAuth()
   const [authMessage, setAuthMessage] = useState('')
   const [showPassword, setShowPassword] = useState(false)
 
@@ -20,7 +20,8 @@ function LoginPage() {
 
     try {
       await login(email, password)
-      navigate('/dashboard')
+      const profile = await refreshAuthProfile()
+      navigate(getRedirectPath(profile?.role))
     } catch {
       setAuthMessage("Impossible de se connecter avec ces identifiants Firebase.")
     }
@@ -31,7 +32,8 @@ function LoginPage() {
 
     try {
       await loginWithGoogle()
-      navigate('/dashboard')
+      const profile = await refreshAuthProfile()
+      navigate(getRedirectPath(profile?.role))
     } catch {
       setAuthMessage('Connexion Google indisponible pour le moment.')
     }
@@ -115,11 +117,11 @@ export function AuthIntro() {
         <strong>EduMentor <em>AI</em></strong>
       </div>
       <h2>Votre mentor intelligent pour <span>apprendre</span> mieux</h2>
-      <p>Connectez-vous à votre espace et continuez votre apprentissage personnalisé avec l'IA à vos côtés.</p>
+      <p>Connectez-vous à votre espace et continuez votre préparation personnalisée au régional de français.</p>
       <div className="auth-benefits">
         <AuthBenefit icon={GraduationCap} title="Apprenez plus vite" text="Des cours clairs et adaptés à votre niveau." />
         <AuthBenefit icon={TrendingUp} title="Suivez vos progrès" text="Visualisez vos statistiques et atteignez vos objectifs." />
-        <AuthBenefit icon={MessageCircle} title="Obtenez de l'aide" text="Posez vos questions à notre chatbot IA 24/7." />
+        <AuthBenefit icon={MessageCircle} title="Obtenez de l'aide" text="Posez vos questions sur les oeuvres, la langue et la méthodologie." />
       </div>
       <img className="student-illustration" src={studentIllustration} alt="" />
     </section>
@@ -146,7 +148,7 @@ export function AuthFooter() {
           <Brain size={34} />
           <strong>EduMentor <em>AI</em></strong>
         </div>
-        <p>Votre mentor intelligent pour un apprentissage plus efficace grâce à l'intelligence artificielle.</p>
+        <p>Votre mentor intelligent pour préparer le régional de français de 1ère Bac au Maroc.</p>
         <small>© 2026 EduMentor AI. Tous droits réservés.</small>
       </div>
       <div>
@@ -181,3 +183,10 @@ export function AuthFooter() {
 }
 
 export default LoginPage
+
+function getRedirectPath(role) {
+  if (role === 'admin') return '/admin'
+  if (role === 'professor') return '/professor'
+  if (role === 'parent') return '/parent/dashboard'
+  return '/dashboard'
+}

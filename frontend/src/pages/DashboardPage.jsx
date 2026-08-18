@@ -2,14 +2,16 @@ import { useEffect, useMemo, useState } from 'react'
 import { BarChart3, BookOpen, Calendar, CheckCircle2, Star } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useUserData } from '../hooks/useUserData.js'
-import { fetchCourses } from '../services/api.js'
+import { fetchCourses, fetchSubjects, getStudentAdaptiveDashboard } from '../services/api.js'
 
 const PASSING_QUIZ_SCORE = 60
 
 function DashboardPage() {
   const navigate = useNavigate()
-  const { diagnosticResult, progress, quizResults } = useUserData()
+  const { diagnosticResult, diagnosticResults, progress, quizResults } = useUserData()
   const [courses, setCourses] = useState([])
+  const [subjects, setSubjects] = useState([])
+  const [adaptiveDashboard, setAdaptiveDashboard] = useState(null)
   const localData = useMemo(() => ({
     chapterProgress: progress,
     quizResults,
@@ -18,15 +20,19 @@ function DashboardPage() {
   useEffect(() => {
     let isMounted = true
 
-    fetchCourses()
-      .then((data) => {
+    Promise.allSettled([fetchCourses({ subject_slug: 'francais' }), getStudentAdaptiveDashboard(), fetchSubjects()])
+      .then(([coursesResult, adaptiveResult, subjectsResult]) => {
         if (isMounted) {
-          setCourses(Array.isArray(data) ? data : [])
-        }
-      })
-      .catch(() => {
-        if (isMounted) {
-          setCourses([])
+          const loadedCourses = coursesResult.status === 'fulfilled' && Array.isArray(coursesResult.value)
+            ? coursesResult.value
+            : []
+          const loadedSubjects = subjectsResult.status === 'fulfilled' && Array.isArray(subjectsResult.value)
+            ? subjectsResult.value
+            : []
+
+          setCourses(loadedCourses)
+          setAdaptiveDashboard(adaptiveResult.status === 'fulfilled' ? adaptiveResult.value : null)
+          setSubjects(loadedSubjects.filter(isFrenchSubject))
         }
       })
 
@@ -40,12 +46,12 @@ function DashboardPage() {
     [courses, localData, diagnosticResult],
   )
   const learnerName = diagnosticResult?.name || 'Wijdane'
-  const displayLevel = diagnosticResult?.level || 'Test diagnostique non encore passe'
+  const displayLevel = diagnosticResult?.level || 'Test de positionnement non encore passe'
   const displayScore = Number.isFinite(diagnosticResult?.score) ? `${diagnosticResult.score}%` : '--'
   const displayDate = diagnosticResult?.date ? formatDate(diagnosticResult.date) : 'Aucun test'
   const recommendations = useMemo(
-    () => buildRecommendations(courses, localData, diagnosticResult, dashboardData),
-    [courses, localData, diagnosticResult, dashboardData],
+    () => buildRecommendations(courses, localData, diagnosticResult, dashboardData, subjects, diagnosticResults),
+    [courses, localData, diagnosticResult, dashboardData, subjects, diagnosticResults],
   )
   const activities = useMemo(
     () => buildActivities(courses, localData, diagnosticResult),
@@ -66,7 +72,7 @@ function DashboardPage() {
             <p>Niveau actuel</p>
             <h2>{displayLevel}</h2>
             {diagnosticResult ? (
-              <strong>Score diagnostique : {displayScore} - {displayDate}</strong>
+              <strong>Score de positionnement : {displayScore} - {displayDate}</strong>
             ) : (
               <button className="outline-button" onClick={() => navigate('/diagnostic')} type="button">Passer le test</button>
             )}
@@ -86,7 +92,50 @@ function DashboardPage() {
         </article>
       </div>
 
+      <div className="dashboard-stats">
+        <article className="metric-card">
+          <p>Évaluations disponibles</p>
+          <h2>{adaptiveDashboard?.available_count || 0}</h2>
+          <strong>{adaptiveDashboard?.upcoming_count || 0} à venir</strong>
+        </article>
+        <article className="metric-card">
+          <p>Dernier résultat</p>
+          <h2>{adaptiveDashboard?.latest_result ? `${Math.round(adaptiveDashboard.latest_result.percentage)}%` : '--'}</h2>
+          <strong>{adaptiveDashboard?.weakest_skill ? `À renforcer : ${adaptiveDashboard.weakest_skill.name}` : 'Aucune compétence faible détectée'}</strong>
+        </article>
+        <article className="metric-card">
+          <p>Parcours personnalisé</p>
+          <h2>{getAdaptiveProgress(adaptiveDashboard)}</h2>
+          <strong>
+            {adaptiveDashboard?.active_study_path
+              ? 'Parcours actif'
+              : adaptiveDashboard?.personalized_assessment_available
+                ? 'Test personnalisé disponible'
+                : 'Aucun parcours actif'}
+          </strong>
+        </article>
+      </div>
+
       <div className="dashboard-grid">
+        {adaptiveDashboard?.active_study_path && (
+          <article className="panel-card recommend-panel">
+            <div className="panel-title">
+              <h2>Mon parcours actuel</h2>
+              <button type="button" onClick={() => navigate(`/study-paths/${adaptiveDashboard.active_study_path.id}`)}>Ouvrir</button>
+            </div>
+            <div className="recommended-item">
+              <span><Star size={22} /></span>
+              <div>
+                <strong>{adaptiveDashboard.active_study_path.course_title}</strong>
+                <p>{adaptiveDashboard.active_study_path.next_action?.label || 'Continuer le parcours guide'}</p>
+                <div className="progress-track"><span style={{ width: `${adaptiveDashboard.active_study_path.progress_percentage}%` }} /></div>
+              </div>
+              <button type="button" onClick={() => navigate(adaptiveDashboard.active_study_path.next_action?.route || `/study-paths/${adaptiveDashboard.active_study_path.id}`)}>
+                Continuer
+              </button>
+            </div>
+          </article>
+        )}
         <article className="panel-card history-panel">
           <div className="panel-title">
             <h2>Historique</h2>
@@ -160,8 +209,27 @@ function DashboardPage() {
           <button className="primary-button" onClick={() => navigate('/courses')}>Mes cours</button>
         </article>
       )}
+
+      <article className="continue-card">
+        <span><ClipboardIcon /></span>
+        <div>
+          <h2>Prochaine action recommandée</h2>
+          <h3>{getDashboardNextAction(adaptiveDashboard).title}</h3>
+          <p>{getDashboardNextAction(adaptiveDashboard).description}</p>
+        </div>
+        <button
+          className="primary-button"
+          onClick={() => navigate(getDashboardNextAction(adaptiveDashboard).path)}
+        >
+          Ouvrir
+        </button>
+      </article>
     </section>
   )
+}
+
+function ClipboardIcon() {
+  return <CheckCircle2 size={44} />
 }
 
 function buildDashboardData(courses, localData, diagnosticResult) {
@@ -196,15 +264,75 @@ function buildDashboardData(courses, localData, diagnosticResult) {
   }
 }
 
-function buildRecommendations(courses, localData, diagnosticResult, dashboardData) {
+function buildRecommendations(courses, localData, diagnosticResult, dashboardData, subjects = [], diagnosticResults = {}) {
+  const unevaluatedSubject = subjects.find((subject) => !diagnosticResults?.[subject.id])
+  if (unevaluatedSubject) {
+    return [{
+      icon: BarChart3,
+      title: `Evaluer ${unevaluatedSubject.name}`,
+      subtitle: 'Passez un test de positionnement dans une matiere non evaluee',
+      action: 'Passer le test',
+      path: '/diagnostic',
+    }]
+  }
+
   if (!diagnosticResult) {
     return [{
       icon: BarChart3,
-      title: 'Test diagnostique non encore passe',
+      title: 'Test de positionnement non encore passe',
       subtitle: 'Passez le test pour personnaliser votre parcours',
       action: 'Passer le test',
       path: '/diagnostic',
     }]
+  }
+
+  if (Array.isArray(diagnosticResult.recommendations) && diagnosticResult.recommendations.length > 0) {
+    const courseById = new Map(
+      courses.map((course) => [Number(course.id), course]),
+    )
+
+    const currentRecommendations = diagnosticResult.recommendations
+      .map((recommendation) => {
+        const currentCourse = courseById.get(Number(recommendation.course_id))
+
+        if (!currentCourse) {
+          return null
+        }
+
+        return {
+          ...recommendation,
+          course_id: currentCourse.id,
+          title: currentCourse.title,
+          reason:
+            recommendation.reason
+            || currentCourse.summary
+            || 'Cours recommandé selon votre test de positionnement.',
+          path: `/courses/${currentCourse.id}`,
+        }
+      })
+      .filter(Boolean)
+
+    const fallbackCourses = courses.map((course) => ({
+      course_id: course.id,
+      title: course.title,
+      reason: course.summary || 'Cours complémentaire adapté à votre parcours.',
+      path: `/courses/${course.id}`,
+    }))
+
+    const recommendations = dedupeRecommendations([
+      ...currentRecommendations,
+      ...fallbackCourses,
+    ]).slice(0, 2)
+
+    if (recommendations.length > 0) {
+      return recommendations.map((course) => ({
+        icon: Star,
+        title: course.title,
+        subtitle: course.reason,
+        action: 'Commencer',
+        path: course.path,
+      }))
+    }
   }
 
   const level = dashboardData.diagnosticLevel
@@ -279,8 +407,8 @@ function buildActivities(courses, localData, diagnosticResult) {
   if (diagnosticResult?.date) {
     activities.push({
       Icon: BarChart3,
-      title: 'Test diagnostique complete',
-      text: `Niveau obtenu : ${diagnosticResult.level} - Score : ${diagnosticResult.score}%`,
+      title: 'Test de positionnement complete',
+      text: `Niveau obtenu en ${diagnosticResult.subject?.name || 'matiere'} : ${diagnosticResult.level} - Score : ${diagnosticResult.score}%`,
       timestamp: diagnosticResult.date,
     })
   }
@@ -321,6 +449,71 @@ function getActiveChapter(progress) {
     || [...progress.chapters].reverse().find((chapter) => chapter.completed === true)
     || null
   )
+}
+
+
+function normalizeText(value) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+}
+
+function isFrenchSubject(subject) {
+  return normalizeText(`${subject?.slug || ''} ${subject?.name || ''}`).includes('francais')
+}
+
+function dedupeRecommendations(recommendations) {
+  const seenTitles = new Set()
+
+  return recommendations.filter((item) => {
+    const normalizedTitle = normalizeText(item?.title)
+
+    if (!normalizedTitle || seenTitles.has(normalizedTitle)) {
+      return false
+    }
+
+    seenTitles.add(normalizedTitle)
+    return true
+  })
+}
+
+
+function getAdaptiveProgress(dashboard) {
+  if (dashboard?.active_remediation && Number.isFinite(Number(dashboard.active_remediation.progress))) {
+    return `${Math.round(Number(dashboard.active_remediation.progress))}%`
+  }
+
+  if (dashboard?.active_study_path && Number.isFinite(Number(dashboard.active_study_path.progress_percentage))) {
+    return `${Math.round(Number(dashboard.active_study_path.progress_percentage))}%`
+  }
+
+  return '--'
+}
+
+function getDashboardNextAction(dashboard) {
+  const pathAction = dashboard?.active_study_path?.next_action
+  if (pathAction) {
+    return {
+      title: pathAction.label || 'Continuer le parcours personnalisé',
+      description: 'Poursuivez la prochaine étape de votre parcours personnalisé.',
+      path: pathAction.route || `/study-paths/${dashboard.active_study_path.id}`,
+    }
+  }
+
+  if (dashboard?.next_action) {
+    return {
+      title: dashboard.next_action.title || 'Continuer le parcours',
+      description: dashboard.next_action.description || 'Poursuivez la prochaine étape recommandée.',
+      path: dashboard.next_action.path || '/courses',
+    }
+  }
+
+  return {
+    title: 'Commencer un cours',
+    description: 'Ouvrez vos cours de français pour commencer votre progression.',
+    path: '/courses',
+  }
 }
 
 function normalizeLevel(level) {

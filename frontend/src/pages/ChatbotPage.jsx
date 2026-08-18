@@ -14,7 +14,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { API_BASE_URL, sendChatMessage } from '../services/api.js'
+import { API_BASE_URL, fetchCourseRagStatus, fetchCourses, fetchSubjects, sendChatMessage } from '../services/api.js'
 import { addNotification } from '../services/notifications.js'
 
 const CHAT_SESSIONS_KEY = 'edumentor:chatSessions'
@@ -32,6 +32,7 @@ const DEFAULT_CHAT_PREFERENCES = {
 function ChatbotPage() {
   const streamTimerRef = useRef(null)
   const stopStreamingRef = useRef(false)
+  const pendingRequestsRef = useRef(new Set())
   const [input, setInput] = useState('')
   const [isSending, setIsSending] = useState(false)
   const [diagnosticResult, setDiagnosticResult] = useState(null)
@@ -42,6 +43,11 @@ function ChatbotPage() {
   const [feedback, setFeedback] = useState(() => readLocalStorage(CHAT_FEEDBACK_KEY, {}))
   const [xp, setXp] = useState(() => Number(readLocalStorage(CHAT_XP_KEY, 0)))
   const [chatPreferences, setChatPreferences] = useState(() => readLocalStorage(PREFERENCES_STORAGE_KEY, DEFAULT_CHAT_PREFERENCES))
+  const [subjects, setSubjects] = useState([])
+  const [courses, setCourses] = useState([])
+  const [selectedSubjectId, setSelectedSubjectId] = useState('')
+  const [selectedCourseId, setSelectedCourseId] = useState('')
+  const [ragContextStatus, setRagContextStatus] = useState(null)
   const learnerLevel = diagnosticResult?.level ? getDisplayLevel(diagnosticResult.level) : ''
 
   useEffect(() => {
@@ -67,6 +73,43 @@ function ChatbotPage() {
   }, [sessions])
 
   useEffect(() => () => clearStreamTimer(), [])
+
+  useEffect(() => {
+    let cancelled = false
+    Promise.all([fetchSubjects(), fetchCourses()])
+      .then(([subjectsData, coursesData]) => {
+        if (cancelled) return
+        setSubjects(subjectsData)
+        setCourses(coursesData)
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setSubjects([])
+          setCourses([])
+        }
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!selectedCourseId) {
+      setRagContextStatus(null)
+      return
+    }
+    let cancelled = false
+    fetchCourseRagStatus(selectedCourseId)
+      .then((status) => {
+        if (!cancelled) setRagContextStatus(status)
+      })
+      .catch(() => {
+        if (!cancelled) setRagContextStatus({ index_status: 'failed', error: 'Contexte de cours indisponible.' })
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [selectedCourseId])
 
   const activeSession = sessions.find((session) => session.id === activeSessionId) || sessions[0] || createSession()
   const filteredSessions = useMemo(
@@ -96,22 +139,37 @@ function ChatbotPage() {
       return
     }
 
+    const sessionSnapshot = options.sessionOverride || sessions.find((session) => session.id === activeSessionId) || activeSession
+    const clientMessageId = createId()
     clearStreamTimer()
     stopStreamingRef.current = false
     setInput('')
     setIsSending(true)
+    pendingRequestsRef.current.add(clientMessageId)
 
-    const userMessage = buildMessage('user', cleanMessage)
-    const context = buildRecentContext(activeSession.messages)
-    const nextSession = appendMessagesToSession(activeSession, [userMessage])
+    const userMessage = buildMessage('user', cleanMessage, { clientMessageId })
+    const context = buildRecentContext(sessionSnapshot.messages)
+    const nextSession = appendMessagesToSession(sessionSnapshot, [userMessage])
     updateSession(nextSession)
 
     try {
-      const data = await sendChatMessage(cleanMessage, learnerLevel, context)
+      const data = await sendChatMessage(cleanMessage, learnerLevel, context, {
+        client_message_id: clientMessageId,
+        course_id: selectedCourseId ? Number(selectedCourseId) : null,
+        subject_id: selectedSubjectId ? Number(selectedSubjectId) : null,
+        session_id: sessionSnapshot.id,
+      })
+      if (!pendingRequestsRef.current.has(clientMessageId)) {
+        return
+      }
+      pendingRequestsRef.current.delete(clientMessageId)
       const assistantMessage = buildMessage('assistant', '', {
         fullText: data.answer,
         mode: data.mode,
-        sources: data.mode === 'rag_semantic' ? data.sources || [] : [],
+        sources: isRagMode(data.mode) ? data.sources || [] : [],
+        replyTo: clientMessageId,
+        requestId: data.request_id,
+        clientMessageId: data.client_message_id || clientMessageId,
       })
       const sessionWithAssistant = appendMessagesToSession(nextSession, [assistantMessage])
       updateSession(sessionWithAssistant)
@@ -122,10 +180,13 @@ function ChatbotPage() {
         animateAssistantMessage(sessionWithAssistant.id, assistantMessage)
       }
       notifyChatUsage(options.regenerated)
-    } catch {
+    } catch (error) {
+      pendingRequestsRef.current.delete(clientMessageId)
       const errorMessage = buildMessage('assistant', "Impossible de contacter le service IA pour le moment.", {
         mode: 'error',
         sources: [],
+        replyTo: clientMessageId,
+        error: error?.message || '',
       })
       updateSession(appendMessagesToSession(nextSession, [errorMessage]))
       setIsSending(false)
@@ -173,11 +234,20 @@ function ChatbotPage() {
       lastMessage: trimmedMessages.at(-1)?.text || '',
       updatedAt: new Date().toISOString(),
     })
-    sendUserMessage(lastUserMessage.text, { regenerated: true })
+    sendUserMessage(lastUserMessage.text, {
+      regenerated: true,
+      sessionOverride: {
+        ...activeSession,
+        messages: trimmedMessages,
+        lastMessage: trimmedMessages.at(-1)?.text || '',
+        updatedAt: new Date().toISOString(),
+      },
+    })
   }
 
   function startNewConversation() {
     clearStreamTimer()
+    pendingRequestsRef.current.clear()
     const newSession = createSession()
     setSessions((current) => [newSession, ...current])
     setActiveSessionId(newSession.id)
@@ -253,12 +323,18 @@ function ChatbotPage() {
     URL.revokeObjectURL(url)
   }
 
+  function handleSubjectChange(event) {
+    setSelectedSubjectId(event.target.value)
+    setSelectedCourseId('')
+    setRagContextStatus(null)
+  }
+
   return (
     <section className="page-section chatbot-page">
       <div className="page-heading page-heading-row">
         <div>
           <h1>Chatbot IA</h1>
-          <p>Posez toutes vos questions sur l'intelligence artificielle.</p>
+          <p>Posez vos questions sur les oeuvres, la langue, les figures de style et la production ecrite.</p>
         </div>
         <div className="chat-xp-pill">XP {xp}</div>
       </div>
@@ -314,12 +390,42 @@ function ChatbotPage() {
             </div>
           </div>
 
+          <div className="chat-context-bar panel-card">
+            <label>
+              <span>Matière</span>
+              <select onChange={handleSubjectChange} value={selectedSubjectId}>
+                <option value="">Tous les supports autorisés</option>
+                {subjects.map((subject) => (
+                  <option key={subject.id} value={subject.id}>{subject.name}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>Cours</span>
+              <select onChange={(event) => setSelectedCourseId(event.target.value)} value={selectedCourseId}>
+                <option value="">Aucun cours précis</option>
+                {courses
+                  .filter((course) => !selectedSubjectId || Number(course.subject_id) === Number(selectedSubjectId))
+                  .map((course) => (
+                    <option key={course.id} value={course.id}>{course.title}</option>
+                  ))}
+              </select>
+            </label>
+            <button className="outline-button" onClick={() => { setSelectedSubjectId(''); setSelectedCourseId(''); setRagContextStatus(null) }} type="button">
+              Retirer le filtre
+            </button>
+            <p>
+              Contexte : {selectedCourseId ? courses.find((course) => Number(course.id) === Number(selectedCourseId))?.title : selectedSubjectId ? subjects.find((subject) => Number(subject.id) === Number(selectedSubjectId))?.name : 'Tous les supports'}
+              {ragContextStatus && <span> - État : {statusLabel(ragContextStatus.index_status)}</span>}
+            </p>
+          </div>
+
           <div className="chat-window panel-card">
             {!diagnosticResult && (
               <MessageBubble role="assistant" text="Passez d'abord le test diagnostique pour que je puisse adapter mes réponses à votre niveau." time="Maintenant" />
             )}
             {diagnosticResult && activeSession.messages.length === 0 && (
-              <MessageBubble role="assistant" text="Bonjour ! Je suis EduMentor AI. Posez-moi une question sur vos cours d'IA." time="Maintenant" />
+              <MessageBubble role="assistant" text="Bonjour ! Je suis votre assistant de francais pour la preparation au regional. Je peux vous aider avec les oeuvres, la langue, les figures de style, la methodologie et la production ecrite." time="Maintenant" />
             )}
             {diagnosticResult && activeSession.messages.map((message) => (
               <MessageBubble
@@ -350,7 +456,7 @@ function ChatbotPage() {
           )}
 
           {chatPreferences.questionSuggestions !== false && <div className="suggestion-row">
-            {['Explique le Deep Learning', 'Différence IA, ML, DL', "Exemples d'utilisation du RAG", 'What is overfitting?'].map((item) => (
+            {['Explique-moi ce passage de La Boite a merveilles.', 'Quelle figure de style est utilisee dans cette phrase ?', 'Corrige ma reponse a cette question.', 'Aide-moi a preparer une production ecrite.', 'Fais-moi reviser mes points faibles.', 'Pose-moi cinq questions sur Antigone.'].map((item) => (
               <button disabled={!diagnosticResult || isSending} key={item} onClick={() => sendUserMessage(item)} type="button">{item}</button>
             ))}
           </div>}
@@ -369,15 +475,15 @@ function ChatbotPage() {
 
         <aside className="chat-side panel-card">
           <h2>À propos de l'assistant</h2>
-          <p>Je suis votre assistant IA personnel. Je peux vous aider à comprendre les concepts, résoudre des problèmes et vous accompagner dans votre apprentissage.</p>
+          <p>Je suis votre assistant de francais pour la 1ere Bac. Je peux vous aider a comprendre les oeuvres, analyser une phrase, corriger une reponse et preparer une production ecrite.</p>
           <h3>Niveau utilisé</h3>
           <p>{diagnosticResult ? learnerLevel : 'Test diagnostique non encore passé'}</p>
-          <h3>Modes de réponse</h3>
-          <p>RAG <span>Supports PDF</span></p>
-          <p>Général <span>Groq</span></p>
-          <p>Hors sujet <span>Filtré</span></p>
+          <h3>Accompagnement</h3>
+          <p>Oeuvres <span>Programme regional</span></p>
+          <p>Langue <span>Exercices guides</span></p>
+          <p>Methodologie <span>Conseils adaptes</span></p>
           <h3>Exemples</h3>
-          {["Qu'est-ce que l'IA générative ?", 'Comment fonctionne un réseau de neurones ?', 'Donne-moi un exemple de prompt efficace.'].map((item) => (
+          {["Explique-moi le role de Creon dans Antigone.", 'Quelle figure de style est utilisee dans cette phrase ?', 'Aide-moi a rediger une introduction.'].map((item) => (
             <p className="sample-question" key={item}><Sparkles size={18} />{item}</p>
           ))}
         </aside>
@@ -405,7 +511,7 @@ function MessageBubble({
   const isAssistant = role === 'assistant'
   const mode = message.mode
   const suggestions = isAssistant && showSuggestions ? buildSuggestions(text) : []
-  const quiz = isAssistant && showMiniQuiz && ['rag_semantic', 'general'].includes(mode) ? buildMiniQuiz(text) : null
+  const quiz = isAssistant && showMiniQuiz && (isRagMode(mode) || ['general', 'general_education', 'general_french'].includes(mode)) ? buildMiniQuiz(text) : null
 
   return (
     <div className={`chat-message ${role}`}>
@@ -421,13 +527,11 @@ function MessageBubble({
           </div>
         )}
         <MarkdownContent text={text} />
-        {isAssistant && mode === 'rag_semantic' && sources.length > 0 && (
+        {isAssistant && isRagMode(mode) && sources.length > 0 && (
           <div className="chat-sources">
             <strong>Sources utilisées</strong>
             {sources.map((source, index) => (
-              <a href={sourceUrl(source)} key={`${source.file_name}-${source.page_number}-${index}`} rel="noreferrer" target="_blank">
-                {source.file_name} · {source.course_name} · page {source.page_number || '-'}
-              </a>
+              <SourceLink key={`${source.chunk_id || source.display_source || source.source_label || index}-${index}`} source={source} />
             ))}
           </div>
         )}
@@ -482,6 +586,19 @@ function MiniQuiz({ answer, messageId, onAnswer, quiz }) {
         </p>
       )}
     </div>
+  )
+}
+
+function SourceLink({ source }) {
+  const url = sourceUrl(source)
+  const label = sourceDisplayLabel(source)
+  if (!url) {
+    return <span>{label}</span>
+  }
+  return (
+    <a href={url} rel="noreferrer" target="_blank">
+      {label}
+    </a>
   )
 }
 
@@ -631,41 +748,41 @@ function buildRecentContext(messages) {
 
 function buildSuggestions(text) {
   const normalized = normalizeText(text)
-  if (normalized.includes('rag')) {
-    return ['Donne un exemple RAG', 'Explique le chunking', 'Pourquoi citer les sources ?']
+  if (normalized.includes('antigone') || normalized.includes('creon')) {
+    return ['Resume le conflit', 'Explique Creon', 'Pose-moi 3 questions']
   }
-  if (normalized.includes('deep learning') || normalized.includes('neurone')) {
-    return ['Explique les couches', 'Donne un exemple simple', 'Quels sont les risques ?']
+  if (normalized.includes('figure') || normalized.includes('metaphore') || normalized.includes('comparaison')) {
+    return ['Donne un exemple', 'Explique son effet', 'Propose un exercice']
   }
-  if (normalized.includes('prompt')) {
-    return ['Donne un bon prompt', 'Quels sont les pièges ?', 'Améliore ce prompt']
+  if (normalized.includes('production') || normalized.includes('redaction')) {
+    return ['Propose un plan', 'Aide-moi a introduire', 'Donne des connecteurs']
   }
-  return ['Donne un exemple', 'Résume en 3 points', 'Propose un mini exercice']
+  return ['Donne un exemple', 'Resume en 3 points', 'Propose un mini exercice']
 }
 
 function buildMiniQuiz(text) {
   const normalized = normalizeText(text)
-  if (normalized.includes('rag')) {
+  if (normalized.includes('figure') || normalized.includes('metaphore') || normalized.includes('comparaison')) {
     return {
-      question: 'Quel est le rôle principal du RAG ?',
-      options: ['Citer des sources et rechercher dans les documents', 'Remplacer tous les PDF', 'Créer une base SQL', 'Supprimer les chunks'],
-      answer: 'Citer des sources et rechercher dans les documents',
-      explanation: 'Le RAG récupère des passages pertinents puis aide à formuler une réponse sourcée.',
+      question: 'Que faut-il toujours expliquer apres avoir nomme une figure de style ?',
+      options: ['Son effet dans le texte', 'Le nombre de pages', 'Le nom du correcteur', 'La couleur de la couverture'],
+      answer: 'Son effet dans le texte',
+      explanation: 'Identifier la figure ne suffit pas : il faut expliquer ce qu elle apporte au sens.',
     }
   }
-  if (normalized.includes('overfitting')) {
+  if (normalized.includes('antigone') || normalized.includes('creon')) {
     return {
-      question: "Que signifie l'overfitting ?",
-      options: ['Le modèle mémorise trop les données', 'Le modèle ne reçoit aucune donnée', 'Le modèle refuse de prédire', 'Le modèle supprime les features'],
-      answer: 'Le modèle mémorise trop les données',
-      explanation: "Un modèle surappris fonctionne bien sur l'entraînement mais généralise mal.",
+      question: 'Dans une reponse sur Antigone, que faut-il ajouter pour justifier son idee ?',
+      options: ['Un indice du texte', 'Une information inventee', 'Un avis sans preuve', 'Une phrase hors sujet'],
+      answer: 'Un indice du texte',
+      explanation: 'Une bonne reponse de comprehension doit etre justifiee par un element precis du passage.',
     }
   }
   return {
-    question: 'Quelle bonne pratique aide à apprendre ce concept ?',
-    options: ['Relier la définition à un exemple', 'Ignorer les sources', 'Tout mémoriser sans exercice', 'Supprimer les questions'],
-    answer: 'Relier la définition à un exemple',
-    explanation: 'Un exemple concret facilite la compréhension et la mémorisation.',
+    question: 'Quelle bonne pratique aide a reussir une question de regional ?',
+    options: ['Lire la consigne puis justifier', 'Repondre sans lire', 'Inventer une citation', 'Ignorer le bareme'],
+    answer: 'Lire la consigne puis justifier',
+    explanation: 'La consigne indique le type de reponse attendu et la justification montre votre comprehension.',
   }
 }
 
@@ -680,16 +797,54 @@ function notifyChatUsage(regenerated) {
 }
 
 function sourceUrl(source) {
-  const page = source.page_number ? `#page=${source.page_number}` : ''
-  return `${API_BASE_URL}/docs/courses/${encodeURIComponent(source.file_name)}${page}`
+  const page = source.page_start || source.page_number
+  const pageAnchor = page ? `#page=${page}` : ''
+  if (source.file_url) return `${API_BASE_URL}${source.file_url}${pageAnchor}`
+  const fileName = source.file_name || source.pdf_name
+  if (!fileName || String(fileName).startsWith('Corpus francais 1ere Bac')) return ''
+  return `${API_BASE_URL}/docs/courses/${encodeURIComponent(fileName)}${pageAnchor}`
+}
+
+function sourceDisplayLabel(source) {
+  const explicit = source.display_source || source.source_label
+  if (explicit) return cleanSourceLabel(explicit)
+  if (source.document_type === 'figure_of_style' && source.competence) return `Figures de style — ${source.competence}`
+  if (source.chapter_title) return cleanSourceLabel(source.chapter_title)
+  return cleanSourceLabel(source.course_title || source.course_name || source.file_name || source.pdf_name || 'Source pédagogique')
+}
+
+function cleanSourceLabel(value) {
+  return String(value || '')
+    .replace(/^Corpus francais 1ere Bac\s*-\s*/i, '')
+    .replace(/\s*-\s*page\s*-?\s*$/i, '')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
 function modeLabel(mode) {
+  if (mode === 'rag_course') return 'Réponse basée sur le cours'
+  if (mode === 'rag_subject') return 'Réponse basée sur la matière'
   if (mode === 'rag_semantic') return 'Réponse basée sur les supports'
+  if (mode === 'general_education') return 'Réponse générale'
+  if (mode === 'general_french') return 'Réponse générale'
+  if (mode === 'targeted_practice') return 'Entrainement personnalisé'
   if (mode === 'out_of_scope') return 'Assistant EduMentor'
   if (mode === 'social') return 'Assistant EduMentor'
   if (mode === 'error') return 'Service indisponible'
   return 'Réponse générale'
+}
+
+function isRagMode(mode) {
+  return ['rag_semantic', 'rag_course', 'rag_subject'].includes(mode)
+}
+
+function statusLabel(status) {
+  if (status === 'ready') return 'Indexé'
+  if (status === 'processing') return 'Indexation en cours'
+  if (status === 'pending') return 'En attente'
+  if (status === 'outdated') return 'Réindexation nécessaire'
+  if (status === 'failed') return 'Échec'
+  return status || 'Non indexé'
 }
 
 function readSessions() {
@@ -728,9 +883,9 @@ function buildTextExport(session) {
 
 function titleFromMessage(message) {
   const normalized = normalizeText(message)
-  if (normalized.includes('deep learning')) return 'Deep Learning'
-  if (normalized.includes('rag')) return 'Question RAG'
-  if (normalized.includes('overfitting')) return 'Overfitting'
+  if (normalized.includes('antigone')) return 'Antigone'
+  if (normalized.includes('figure')) return 'Figure de style'
+  if (normalized.includes('production')) return 'Production ecrite'
   if (normalized.includes('bonjour') || normalized.includes('salut') || normalized.includes('hello') || normalized.includes('hi')) return 'Bonjour'
 
   const words = String(message || '')
@@ -750,10 +905,10 @@ function displaySessionPreview(session) {
   return shortPreview(session.lastMessage || session.messages?.find((message) => message.role === 'user')?.text || 'Conversation vide')
 }
 
-function shortPreview(value) {
+function shortPreview(value, maxLength = 20) {
   const text = String(value || '').replace(/\s+/g, ' ').trim()
   if (!text) return 'Conversation vide'
-  return text.length > 20 ? `${text.slice(0, 20)}...` : text
+  return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text
 }
 
 function slugify(value) {
@@ -796,3 +951,4 @@ function normalizeText(value) {
 }
 
 export default ChatbotPage
+

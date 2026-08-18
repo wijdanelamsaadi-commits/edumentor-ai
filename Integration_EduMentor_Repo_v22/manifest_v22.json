@@ -1,0 +1,130 @@
+{
+  "version": "22.0.0",
+  "target_repository": "wijdanelamsaadi-commits/edumentor-ai",
+  "target_local_path": "C:\\Users\\HP\\Desktop\\yancode",
+  "firebase_integration": "uses app.api.auth_dependencies.get_current_user",
+  "postgresql_changes": false,
+  "holdout_included": false,
+  "payload_files": {
+    "backend/app/api/nlp_routes.py": {
+      "bytes": 5783,
+      "sha256": "e92b0faff13243975731c8dfe2c6b9091fdefca237ea1b2f2d55f93aa397e21b"
+    },
+    "backend/app/nlp_runtime/__init__.py": {
+      "bytes": 23,
+      "sha256": "466f2a3762ed9349d8eb47320db12169273f790144294791c5bd6708169297d4"
+    },
+    "backend/app/nlp_runtime/config.py": {
+      "bytes": 418,
+      "sha256": "590e6bfe0f66f8126ce1da2e504087e27da07488a73b83be9601d18445919904"
+    },
+    "backend/app/nlp_runtime/data/chapter_index_v8.json": {
+      "bytes": 41570,
+      "sha256": "8edf6162241095830fc25c4ec55c0a8bef69cac2560e54595477daa32e1a90a8"
+    },
+    "backend/app/nlp_runtime/data/exact_train_qa_memory_v18.json": {
+      "bytes": 301626,
+      "sha256": "8886c2878de8cae96a39b93288c466d30913756aee03df261c4d2c8b3762220b"
+    },
+    "backend/app/nlp_runtime/models/adaptation_style_memory_v17.joblib": {
+      "bytes": 5159277,
+      "sha256": "df75d7803368c2cabd80b0c704c9d81dad086acc7984c8a9595336bacf2890b6"
+    },
+    "backend/app/nlp_runtime/models/content_family_classifier_v15.joblib": {
+      "bytes": 3363608,
+      "sha256": "e61e7d93c0fda515baba3649f552714786557c7a660ef08bb458641f9e1e7026"
+    },
+    "backend/app/nlp_runtime/models/content_hierarchy_config_v15.json": {
+      "bytes": 2282,
+      "sha256": "2faccd464da7b90553b541f8231ab9c7284415ec69706fc702aaf7cc196c11ed"
+    },
+    "backend/app/nlp_runtime/models/content_metadata_router_v16.joblib": {
+      "bytes": 4076424,
+      "sha256": "2fe17fc36634a53a21d2a7ae2e528bed66de88f85f48a4126f78e8652a013e56"
+    },
+    "backend/app/nlp_runtime/models/content_subtype_correction_v15.joblib": {
+      "bytes": 475712,
+      "sha256": "75a09616afb5465d9b4620e11fee065dc5aba6f100a3b78936a2b2ffb7b03318"
+    },
+    "backend/app/nlp_runtime/models/content_subtype_langue_v15.joblib": {
+      "bytes": 359760,
+      "sha256": "c42c9e1836a379f813fde8de3ed4fdad1026e8afb1af7f6eae4016a031ab311d"
+    },
+    "backend/app/nlp_runtime/models/content_subtype_question_v15.joblib": {
+      "bytes": 455104,
+      "sha256": "cbdd9d014bb0285192505abd0a596685a335f4385ce931c54cb18eede1dd320f"
+    },
+    "backend/app/nlp_runtime/models/content_subtype_reperes_v15.joblib": {
+      "bytes": 1590800,
+      "sha256": "1adf850824f98a2d01a91526416d2bc917125c72174aea43f21e67734266de59"
+    },
+    "backend/app/nlp_runtime/models/content_subtype_synthese_v15.joblib": {
+      "bytes": 1117128,
+      "sha256": "9dc1af5671b3fc4bc7247143b133c1e8adf830fff484d4aebc32f95fff39f523"
+    },
+    "backend/app/nlp_runtime/models/exam_competence_v20.joblib": {
+      "bytes": 1216384,
+      "sha256": "23ec5d8b9ba2ebf1aaaf6de22da07126b364dd989453a6783837a4471c6f503e"
+    },
+    "backend/app/nlp_runtime/models/figure_binary_v20.joblib": {
+      "bytes": 847216,
+      "sha256": "821864de08e7373dab07c1fa7e8f547056aee68691fe66aa27490f842548cc64"
+    },
+    "backend/app/nlp_runtime/models/figure_type_v20.joblib": {
+      "bytes": 502392,
+      "sha256": "69ddfb1e938b375662d5bffa3bfcd740d218fb3c2423171ec246ae645078a2e4"
+    },
+    "backend/app/nlp_runtime/models/level_classifier_v13.joblib": {
+      "bytes": 1201360,
+      "sha256": "419199a942c2c965745d54697620fb85c4fd024b8a9054d37f84fce4cd887eed"
+    },
+    "backend/app/nlp_runtime/models/qa_retrieval_memory_v18.joblib": {
+      "bytes": 1180785,
+      "sha256": "5a8e25a39e5d494c1ba085b0141a92979eac02e1ccbea5a4750371ca14ce0041"
+    },
+    "backend/app/nlp_runtime/schemas.py": {
+      "bytes": 3077,
+      "sha256": "d7536ffe41fa54647a70285740ebf669e5d6001cf8f171b79fc6c324b449fd7d"
+    },
+    "backend/app/nlp_runtime/services/__init__.py": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "backend/app/nlp_runtime/services/adaptation.py": {
+      "bytes": 6687,
+      "sha256": "85e3d5dcb836984f67883226ad3ddbc56d5e3e9a08519e49090efe0c401081fc"
+    },
+    "backend/app/nlp_runtime/services/content.py": {
+      "bytes": 2109,
+      "sha256": "2042462dc94f89ee51916f89296070976c825a6b3d8c8638fbb9262e0f1ffcd1"
+    },
+    "backend/app/nlp_runtime/services/figures_exam.py": {
+      "bytes": 6380,
+      "sha256": "e838bc72b8b8b82a67daceb5f280b87ef18a8aaddb87b0f831db4fab0ba13132"
+    },
+    "backend/app/nlp_runtime/services/level.py": {
+      "bytes": 957,
+      "sha256": "84c8140648fb4788800d5d66d689f685ab75b9457c6bdbc1e00614aa9fb218ee"
+    },
+    "backend/app/nlp_runtime/services/qa.py": {
+      "bytes": 8354,
+      "sha256": "286e0fdee71fbf76e27c278b62618602cf0c321e2a5a22210987e1cf45088a9b"
+    },
+    "backend/app/nlp_runtime/services/registry.py": {
+      "bytes": 3038,
+      "sha256": "a5be48c9498e6e3bdd5121573158665addd583e66937bc884c6c90031068e6d2"
+    },
+    "backend/app/nlp_runtime/services/unified.py": {
+      "bytes": 1254,
+      "sha256": "0f543b65fcb0ea0a8756a2b5fafe83a2f4d71eaef56f3c7cc978cdcba54d3994"
+    },
+    "backend/scripts/test_nlp_runtime.py": {
+      "bytes": 2037,
+      "sha256": "ee8312dd67c2ab14cfedb21b2fabd6784a018ee6229a686deee652596c154468"
+    },
+    "frontend/src/services/nlpApi.js": {
+      "bytes": 1147,
+      "sha256": "2910ca152aa13c78715e938d46f38fb889378534d2db943ac3a9380d58fd5da4"
+    }
+  }
+}

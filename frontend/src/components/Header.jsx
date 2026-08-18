@@ -37,7 +37,7 @@ const USER_PROFILE_STORAGE_KEY = 'edumentor:userProfile'
 const DEFAULT_USER_PROFILE = {
   fullName: 'Wijdane Lamsadi',
   email: 'wijdane@edumentor.ai',
-  role: 'Apprenante en IA',
+  role: 'Apprenante - 1ère Bac Français',
   registeredAt: 'Mai 2024',
   photo: '',
 }

@@ -17,6 +17,16 @@ build/
 # Local data and generated artifacts
 backend/data/chroma/
 backend/edumentor.db
+backend/backups/
+backend/backup_*/
+backend/cleanup_reports/
+backend/benchmark_results/
+backend/model_evaluation_v2_artifacts/
+backend/runtime_logs/
+backend/positioning_model_artifacts/
+docs/automatic_import_pdfs/
+rapport_screens_final/
+EduMentorAI_Screens_Final.zip
 *.db
 *.sqlite
 *.sqlite3
@@ -27,6 +37,14 @@ mobile.zip
 *.log
 *.err.log
 *.tmp
+*.bak
+*.cache
+.pytest_cache/
+coverage/
+.coverage
+.DS_Store
+.idea/
+.vscode/
 
 # Environment and credentials
 .env
@@ -36,3 +54,7 @@ mobile.zip
 !frontend/.env.example
 firebase-service-account.json
 *service-account*.json
+*credentials*.json
+*secret*.json
+*.pem
+*.key

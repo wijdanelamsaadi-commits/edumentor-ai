@@ -1,0 +1,12 @@
+﻿id,texte,vrai_label,label_predit
+LBM-C1-VOC-002,voyante,vocabulary,content_annotation
+LBM-C1-EXAM-005,Quel effet produit la répétition du mot « attendre » ?,regional_exam_question,regional_exam_question
+LBM-C1-CONT-015,Les pratiques de la voyante et les références au surnaturel structurent l'univers social du chapitre.,content_annotation,content_annotation
+LBM-C1-FIG-002,Attendre ! C'est cela exister.,figure_de_style,content_annotation
+LBM-C1-FIG-004,La maison avalait les voix de ses habitants.,figure_de_style,content_annotation
+INGEST-002,"Extraction des titres, sections et paragraphes, puis normalisation vers le schéma JSON.",ingestion_rule,content_annotation
+LBM-C1-EXAM-004,Expliquez ce que représente l'attente dans la réflexion du narrateur-enfant.,regional_exam_question,content_annotation
+LBM-C1-CONT-013,Le sentiment d'isolement relie le narrateur adulte à l'enfant qu'il était.,content_annotation,content_annotation
+LBM-C1-CONT-011,Sidi Mohammed accompagne sa mère au hammam et vit l'expérience avec peur et malaise.,content_annotation,content_annotation
+LBM-C1-CONT-005,Voyante qui occupe le rez-de-chaussée de Dar Chouafa et nourrit l'univers mystique du narrateur.,content_annotation,content_annotation
+LBM-C1-CONT-008,Lieu que l'enfant perçoit comme oppressant et infernal malgré sa fonction sociale et rituelle.,content_annotation,content_annotation
