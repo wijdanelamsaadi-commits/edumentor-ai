@@ -48,6 +48,13 @@ def create_parent_student_link(db: Session, admin: UserProfile, payload: dict) -
     ensure_admin_actor(admin)
     parent = get_user_or_404(db, int(payload.get("parent_id") or 0))
     student = get_user_or_404(db, int(payload.get("student_id") or 0))
+    return create_parent_student_link_for_users(db, admin, parent, student, str(payload.get("relation") or "responsable"))
+
+
+def create_parent_student_link_for_users(db: Session, admin: UserProfile, parent: UserProfile, student: UserProfile, relation: str = "responsable") -> dict:
+    ensure_admin_actor(admin)
+    if parent.id == student.id:
+        raise HTTPException(status_code=422, detail="Un utilisateur ne peut pas etre lie a lui-meme")
     if parent.role != UserRole.PARENT.value:
         raise HTTPException(status_code=422, detail="Le compte parent doit avoir le role parent")
     if student.role != UserRole.STUDENT.value:
@@ -63,11 +70,13 @@ def create_parent_student_link(db: Session, admin: UserProfile, payload: dict) -
             parent_id=parent.id,
             student_id=student.id,
             created_by_user_id=admin.id,
-            relation=str(payload.get("relation") or "responsable"),
+            relation=relation,
             status="active",
             verified_at=datetime.utcnow(),
         )
         db.add(link)
+    elif link.status == "active":
+        raise HTTPException(status_code=409, detail="Cet eleve est deja associe a ce parent")
     else:
         link.status = "active"
         link.verified_at = link.verified_at or datetime.utcnow()
@@ -89,6 +98,60 @@ def create_parent_student_link(db: Session, admin: UserProfile, payload: dict) -
 def list_parent_student_links(db: Session) -> list[dict]:
     rows = list(db.scalars(select(ParentStudentLink).order_by(ParentStudentLink.created_at.desc())))
     return [serialize_parent_link(row) for row in rows]
+
+
+def list_parent_students(db: Session, admin: UserProfile, parent_id: int) -> dict:
+    ensure_admin_actor(admin)
+    parent = get_user_or_404(db, parent_id)
+    if parent.role != UserRole.PARENT.value:
+        raise HTTPException(status_code=422, detail="Le compte selectionne doit avoir le role parent")
+    rows = list(
+        db.scalars(
+            select(ParentStudentLink)
+            .where(ParentStudentLink.parent_id == parent.id, ParentStudentLink.status == "active")
+            .order_by(ParentStudentLink.created_at.desc())
+        )
+    )
+    return {
+        "parent": {
+            "id": parent.id,
+            "full_name": parent.full_name,
+            "email": parent.email,
+            "role": parent.role,
+        },
+        "children": [serialize_parent_link(row) for row in rows],
+    }
+
+
+def link_parent_student(db: Session, admin: UserProfile, parent_id: int, student_id: int) -> dict:
+    parent = get_user_or_404(db, parent_id)
+    student = get_user_or_404(db, student_id)
+    return create_parent_student_link_for_users(db, admin, parent, student)
+
+
+def unlink_parent_student(db: Session, admin: UserProfile, parent_id: int, student_id: int) -> dict:
+    ensure_admin_actor(admin)
+    parent = get_user_or_404(db, parent_id)
+    student = get_user_or_404(db, student_id)
+    if parent.role != UserRole.PARENT.value:
+        raise HTTPException(status_code=422, detail="Le compte parent doit avoir le role parent")
+    if student.role != UserRole.STUDENT.value:
+        raise HTTPException(status_code=422, detail="Le compte enfant doit avoir le role student")
+    link = db.scalars(
+        select(ParentStudentLink).where(
+            ParentStudentLink.parent_id == parent.id,
+            ParentStudentLink.student_id == student.id,
+            ParentStudentLink.status == "active",
+        )
+    ).first()
+    if link is None:
+        raise HTTPException(status_code=404, detail="Association parent-eleve introuvable")
+    before = serialize_parent_link(link)
+    link.status = "inactive"
+    db.commit()
+    db.refresh(link)
+    create_audit_log(db, admin.id, "unlink_parent_student", "parent_student_link", str(link.id), before, serialize_parent_link(link))
+    return {"status": "unlinked", "parent_id": parent.id, "student_id": student.id}
 
 
 def list_parent_notifications(db: Session) -> list[dict]:

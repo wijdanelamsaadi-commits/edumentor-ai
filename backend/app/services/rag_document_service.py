@@ -12,12 +12,14 @@ from pypdf import PdfReader
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
+from app.core.config import get_settings
 from app.models.persistence import AdminAuditLog, Course, RagDocument, RagIndexJob, UserProfile
 from app.rag.vector_store import COLLECTION_NAME, EMBEDDING_MODEL_NAME, delete_document_vectors, get_vector_store_status, index_chunks, semantic_search
 
-DOCS_DIR = Path(__file__).resolve().parents[2] / "docs" / "courses"
+DOCS_ROOT = Path(get_settings().get("docs_dir") or Path(__file__).resolve().parents[2] / "docs")
+DOCS_DIR = DOCS_ROOT / "courses"
 LEGACY_DOCS_DIR = Path(__file__).resolve().parents[3] / "docs" / "courses"
-FRENCH_REGIONAL_DOCS_DIR = Path(__file__).resolve().parents[2] / "docs" / "french_regional"
+FRENCH_REGIONAL_DOCS_DIR = DOCS_ROOT / "french_regional"
 CHUNK_SIZE = 800
 CHUNK_OVERLAP = 150
 MAX_TOP_K = 10
@@ -95,6 +97,14 @@ def sync_rag_documents(db: Session) -> dict[str, int]:
 def get_public_status(db: Session) -> dict[str, Any]:
     sync_rag_documents(db)
     vector_status = get_vector_store_status()
+    if int(vector_status.get("chunk_count") or 0) == 0:
+        try:
+            from app.services.french_regional_corpus_service import sync_french_regional_corpus
+
+            sync_french_regional_corpus(db, index=True)
+            vector_status = get_vector_store_status()
+        except Exception as exc:
+            vector_status = {**vector_status, "error": f"{type(exc).__name__}: {exc}"}
     ready_documents = db.scalar(select(func.count(RagDocument.id)).where(RagDocument.active.is_(True), RagDocument.index_status == "ready")) or 0
     total_chunks = db.scalar(select(func.coalesce(func.sum(RagDocument.chunk_count), 0)).where(RagDocument.active.is_(True), RagDocument.index_status == "ready")) or 0
     return {

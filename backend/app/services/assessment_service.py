@@ -38,7 +38,7 @@ from app.models.persistence import (
     Skill,
     UserProfile,
 )
-from app.services import course_service, personalized_lesson_service, rag_document_service, study_path_service
+from app.services import course_service, personalized_lesson_service, rag_document_service, student_weakness_model_service, study_path_service
 from app.services.groq_service import GROQ_CHAT_COMPLETIONS_URL
 
 ASSESSMENT_TYPES = {"initial", "personalized", "final", "practice"}
@@ -682,74 +682,74 @@ def build_question_text(chapter: CourseChapter, block: dict) -> tuple[str, str, 
     lower_title = normalize_question_key(f"{title} {chapter_title}")
     lower_text = normalize_question_key(text)
 
-    if "erreur de syntaxe" in lower_title or "syntaxe bloque" in lower_text:
-        correct = "Une erreur de syntaxe."
+    if "antigone" in lower_title or "creon" in lower_text or "créon" in lower_text:
+        correct = "Le conflit oppose Antigone et Créon autour de la loi et du devoir."
         return (
-            "Quelle erreur empeche generalement l'execution d'un programme ?",
+            "Quel est le conflit central dans Antigone ?",
             correct,
             distinct_choices([
                 correct,
-                "Une erreur semantique qui produit un resultat incorrect.",
-                "Un commentaire trop detaille dans le code.",
-                "Un nom de fichier choisi par l'utilisateur.",
+                "Un souvenir d'enfance raconté par Sidi Mohammed.",
+                "Une description neutre d'un quartier marocain.",
+                "Une simple scène comique sans opposition.",
             ]),
-            "Une erreur de syntaxe viole les regles d'ecriture du langage et bloque souvent le lancement du programme.",
+            "La pièce met en relation le choix d'Antigone et l'autorité de Créon.",
         )
 
-    if "programmation" in lower_title:
-        correct = "Traduire une idee en instructions structurees executables par un ordinateur."
+    if "boite a merveilles" in lower_title or "boîte à merveilles" in lower_title or "sidi mohammed" in lower_text:
+        correct = "Sidi Mohammed raconte ses souvenirs d'enfance à la première personne."
         return (
-            "Qu'est-ce que la programmation ?",
+            "Quel élément caractérise le récit dans La Boîte à merveilles ?",
             correct,
             distinct_choices([
                 correct,
-                "Choisir une interface graphique sans definir d'instructions.",
-                "Stocker des fichiers sans logique de traitement.",
-                "Utiliser un ordinateur sans lui indiquer les etapes a suivre.",
+                "Créon raconte son enfance à la première personne.",
+                "Victor Hugo décrit une épreuve comique.",
+                "Le texte présente uniquement une leçon de grammaire.",
             ]),
-            "Le cours explique que programmer consiste a transformer une intention en instructions precises qu'un ordinateur peut executer.",
+            "L'oeuvre d'Ahmed Sefrioui est centrée sur les souvenirs du narrateur Sidi Mohammed.",
         )
 
-    if "regles d'or" in lower_text or "commentaires utiles" in lower_text or "bien programmer" in lower_title:
-        correct = "Ecrire des commentaires pour expliquer les parties complexes."
+    if "dernier jour" in lower_title or "condamne" in lower_text or "condamné" in lower_text:
+        correct = "L'oeuvre dénonce la peine de mort à travers la voix du condamné."
         return (
-            "Quelle pratique fait partie des cinq regles d'or pour bien programmer ?",
+            "Quelle thèse porte Le Dernier Jour d'un condamné ?",
             correct,
             distinct_choices([
                 correct,
-                "Copier-coller de longs blocs pour aller plus vite.",
-                "Regrouper tout le programme dans un seul sous-programme.",
-                "Utiliser des fonctionnalites que l'on ne comprend pas.",
+                "La célébration d'une fête familiale.",
+                "Le récit d'une enfance heureuse dans un quartier.",
+                "Une opposition entre Antigone et Créon.",
             ]),
-            "Le support insiste sur la lisibilite : commentaires utiles, decoupage clair et sous-programmes courts facilitent la maintenance.",
+            "Victor Hugo utilise le point de vue du condamné pour critiquer la peine capitale.",
         )
 
-    if "python" in lower_title and ("portable" in lower_text or "lisible" in lower_text):
-        correct = "Il est portable, lisible et utilisable sur plusieurs systemes."
+    if "figure" in lower_title or "metaphore" in lower_text or "métaphore" in lower_text or "comparaison" in lower_text:
+        correct = "Nommer la figure puis expliquer son effet dans le passage."
         return (
-            "Quelle caracteristique correspond a Python ?",
+            "Que faut-il faire pour répondre à une question sur une figure de style ?",
             correct,
             distinct_choices([
                 correct,
-                "Il fonctionne uniquement sur un seul systeme d'exploitation.",
-                "Il interdit l'utilisation de bibliotheques externes.",
-                "Il est concu pour rendre les programmes volontairement illisibles.",
+                "Donner seulement le nom de l'auteur.",
+                "Changer d'oeuvre sans justifier.",
+                "Copier la consigne sans répondre.",
             ]),
-            "Le chapitre presente Python comme un langage gratuit, lisible, extensible et portable entre plusieurs environnements.",
+            "Une réponse complète identifie la figure et relie son effet au sens de l'extrait.",
         )
 
-    if "installer" in lower_title or "idle" in lower_text or "environnement" in lower_title:
-        correct = "Installer Python depuis une source fiable puis ouvrir un environnement comme IDLE."
+    if "methodologie" in lower_title or "méthodologie" in lower_title or "consigne" in lower_text:
+        correct = "Lire la consigne, repérer les mots-clés, répondre puis justifier."
         return (
-            "Quelle action permet de commencer a utiliser Python ?",
+            "Quelle démarche aide à réussir une question du régional ?",
             correct,
             distinct_choices([
                 correct,
-                "Modifier les fichiers systeme sans installer l'interpreteur.",
-                "Lire uniquement le titre du support sans tester d'instruction.",
-                "Choisir une version au hasard sans verifier son lancement.",
+                "Répondre sans lire l'extrait.",
+                "Écrire une opinion sans indice du texte.",
+                "Changer de sujet quand la question semble difficile.",
             ]),
-            "Le cours recommande de passer par une installation fiable, puis de verifier le demarrage avec un environnement de travail comme IDLE.",
+            "La méthode attendue au régional combine compréhension de la consigne et justification par le texte.",
         )
 
     if block_type == "definition":
@@ -988,6 +988,7 @@ def submit_assessment(db: Session, user: UserProfile, assessment_id: int, payloa
         attempt.answers.append(
             AssessmentAnswer(
                 question_id=question.id,
+                question=question,
                 selected_answer=selected,
                 correct=correct,
                 points_awarded=points if correct else 0,
@@ -1000,10 +1001,19 @@ def submit_assessment(db: Session, user: UserProfile, assessment_id: int, payloa
     assignment = get_assignment(db, user, assessment.id)
     if assignment:
         assignment.status = "completed"
-    plan = create_remediation_from_attempt(db, attempt, assessment)
+    plan = None
+    if assessment.assessment_type != "personalized":
+        plan = create_remediation_from_attempt(db, attempt, assessment)
     if plan:
+        db.flush()
         try:
-            personalized_lesson_service.generate_lessons_for_plan(db, user, plan.id, use_groq=False, commit=False)
+            personalized_lesson_service.generate_lessons_for_plan(
+                db,
+                user,
+                plan.id,
+                use_groq=bool(get_settings().get("ai_remediation_enabled")),
+                commit=False,
+            )
         except HTTPException:
             pass
         study_path_service.create_or_refresh_for_plan(db, plan)
@@ -1011,6 +1021,9 @@ def submit_assessment(db: Session, user: UserProfile, assessment_id: int, payloa
         source_attempt_id = next((question.source_attempt_id for question in assessment.questions if question.source_attempt_id), None)
         source_plan = db.scalars(select(RemediationPlan).where(RemediationPlan.source_attempt_id == source_attempt_id)).first() if source_attempt_id else None
         if source_plan:
+            source_plan.status = "completed" if attempt.percentage >= 70 else "to_reevaluate"
+            if source_plan.status == "completed":
+                source_plan.completed_at = source_plan.completed_at or datetime.utcnow()
             study_path_service.create_or_refresh_for_plan(db, source_plan)
     create_notification(db, user.id, "assessment", "Resultat disponible", f"Votre resultat pour {assessment.title} est disponible.")
     db.commit()
@@ -2371,40 +2384,201 @@ def aggregate_by_dimension(db: Session, answers: list[AssessmentAnswer], dimensi
 
 
 def create_remediation_from_attempt(db: Session, attempt: AssessmentAttempt, assessment: Assessment) -> RemediationPlan | None:
-    weak_answers = [answer for answer in attempt.answers if not answer.correct]
-    if not weak_answers:
+    weak_groups = remediation_groups_from_attempt(db, attempt, assessment)
+    if not weak_groups:
+        return None
+    weak_groups = [group for group in weak_groups if not active_remediation_exists(db, attempt.student_id, assessment.course_id, group["chapter_id"], group["skill_id"])]
+    if not weak_groups:
         return None
     plan = RemediationPlan(
         student_id=attempt.student_id,
         source_attempt_id=attempt.id,
         course_id=assessment.course_id,
         subject_id=assessment.subject_id,
+        status="active",
         initial_score=attempt.percentage,
     )
     db.add(plan)
     db.flush()
-    seen = set()
     order = 1
-    for answer in weak_answers:
-        question = answer.question
-        key = (question.chapter_id if question else None, question.skill_id if question else None)
-        if key in seen:
-            continue
-        seen.add(key)
+    for group in weak_groups:
+        key = (group["chapter_id"], group["skill_id"])
         for item_type in ["chapter", "example", "exercise", "chatbot_context"]:
-            db.add(
+            plan.items.append(
                 RemediationItem(
-                    remediation_plan_id=plan.id,
                     chapter_id=key[0],
                     skill_id=key[1],
                     item_type=item_type,
                     order_index=order,
-                    reason="Question incorrecte dans l'evaluation initiale.",
+                    reason=group["reason"],
                 )
             )
             order += 1
-    create_notification(db, attempt.student_id, "remediation", "Parcours personnalise cree", "Un parcours cible est disponible apres votre evaluation.")
+    create_notification(db, attempt.student_id, "remediation", "Remediation personnalisee assignee", "Un mini-parcours automatique cible vos competences a renforcer.")
     return plan
+
+
+def remediation_groups_from_attempt(db: Session, attempt: AssessmentAttempt, assessment: Assessment) -> list[dict]:
+    model_decisions = weakness_model_decisions_for_student(db, attempt.student_id)
+    if model_decisions is None:
+        model_decisions = fallback_decisions_from_attempt(attempt)
+    if not model_decisions:
+        return []
+
+    grouped: dict[tuple[int | None, int | None], dict] = {}
+    for answer in attempt.answers:
+        question = answer.question
+        if question is None or answer.correct:
+            continue
+        key = (question.chapter_id, question.skill_id)
+        group = grouped.setdefault(
+            key,
+            {
+                "chapter_id": question.chapter_id,
+                "skill_id": question.skill_id,
+                "answers": [],
+                "correct": 0,
+                "total": 0,
+                "competence": detect_answer_competence(question),
+            },
+        )
+        group["answers"].append(answer)
+
+    for answer in attempt.answers:
+        question = answer.question
+        if question is None:
+            continue
+        key = (question.chapter_id, question.skill_id)
+        if key not in grouped:
+            continue
+        grouped[key]["total"] += 1
+        if answer.correct:
+            grouped[key]["correct"] += 1
+
+    remediation_groups = []
+    for group in grouped.values():
+        total = int(group.get("total") or 0)
+        if total <= 0:
+            continue
+        percentage = round((float(group.get("correct") or 0) / total) * 100, 2)
+        competence = group.get("competence") or ""
+        model_row = model_decision_for_group(model_decisions, competence, group)
+        if not model_row:
+            continue
+        status_label = str(model_row.get("status") or "")
+        if status_label not in {"faible", "a_renforcer"}:
+            continue
+        chapter = db.get(CourseChapter, group["chapter_id"]) if group.get("chapter_id") else None
+        skill = db.get(Skill, group["skill_id"]) if group.get("skill_id") else None
+        topic = clean_text(model_row.get("competence") or (skill.name if skill else chapter.title if chapter else "competence ciblee"))
+        readable_status = "faible" if status_label == "faible" else "a renforcer"
+        remediation_groups.append(
+            {
+                "chapter_id": group["chapter_id"],
+                "skill_id": group["skill_id"],
+                "status": status_label,
+                "percentage": float(model_row.get("score_percentage") if model_row.get("score_percentage") is not None else percentage),
+                "reason": f"{topic} est classee {readable_status} par le modele de points faibles. Remediation automatique assignee.",
+            }
+        )
+    return remediation_groups
+
+
+def weakness_model_decisions_for_student(db: Session, student_id: int) -> list[dict] | None:
+    student = db.get(UserProfile, student_id)
+    if student is None:
+        return []
+    try:
+        prediction = student_weakness_model_service.predict_student_weaknesses(db, student)
+    except Exception:
+        return None
+    overall = prediction.get("overall") or {}
+    if overall.get("status") == "donnees_insuffisantes":
+        return []
+    rows = prediction.get("competencies") or []
+    return [row for row in rows if isinstance(row, dict)]
+
+
+def fallback_decisions_from_attempt(attempt: AssessmentAttempt) -> list[dict]:
+    buckets: dict[str, dict] = {}
+    for answer in attempt.answers:
+        question = answer.question
+        competence = detect_answer_competence(question)
+        if not competence:
+            continue
+        bucket = buckets.setdefault(competence, {"competence": competence, "correct": 0, "total": 0})
+        bucket["total"] += 1
+        if answer.correct:
+            bucket["correct"] += 1
+    decisions = []
+    for bucket in buckets.values():
+        total = int(bucket["total"])
+        if total < student_weakness_model_service.MIN_EVENTS_FOR_PREDICTION:
+            decisions.append({"competence": bucket["competence"], "status": "non_evalue", "method": "fallback_insufficient_data"})
+            continue
+        percentage = round((float(bucket["correct"]) / total) * 100, 2)
+        if percentage < 40:
+            status_label = "faible"
+        elif percentage < 70:
+            status_label = "a_renforcer"
+        else:
+            status_label = "maitrise"
+        decisions.append({"competence": bucket["competence"], "status": status_label, "score_percentage": percentage, "method": "fallback_attempt_percentage"})
+    return decisions
+
+
+def detect_answer_competence(question: AssessmentQuestion | None) -> str:
+    if question is None:
+        return ""
+    if question.skill and question.skill.name:
+        return clean_text(question.skill.name)
+    text = " ".join(
+        clean_text(value)
+        for value in [
+            question.question,
+            question.explanation,
+            question.chapter.title if question.chapter else "",
+        ]
+        if value
+    )
+    normalized = normalize_question_key(text)
+    candidates = {
+        "Compréhension": ["comprehension", "comprendre", "personnage", "idee", "extrait"],
+        "Langue": ["langue", "grammaire", "vocabulaire", "conjugaison"],
+        "Figures de style": ["figure", "metaphore", "comparaison", "personnification", "antithese"],
+        "Production écrite": ["production", "redaction", "argument", "paragraphe"],
+        "Méthodologie": ["methodologie", "consigne", "bareme", "justifier", "demarche"],
+    }
+    for competence, keywords in candidates.items():
+        if any(keyword in normalized for keyword in keywords):
+            return competence
+    return ""
+
+
+def model_decision_for_group(model_decisions: list[dict], competence: str, group: dict) -> dict | None:
+    normalized_competence = normalize_question_key(competence)
+    for row in model_decisions:
+        if normalize_question_key(row.get("competence") or "") == normalized_competence:
+            return row
+    weak_rows = [row for row in model_decisions if row.get("status") in {"faible", "a_renforcer"}]
+    if len(weak_rows) == 1 and group.get("answers"):
+        return weak_rows[0]
+    return None
+
+
+def active_remediation_exists(db: Session, student_id: int, course_id: int, chapter_id: int | None, skill_id: int | None) -> bool:
+    query = (
+        select(RemediationPlan)
+        .join(RemediationItem, RemediationItem.remediation_plan_id == RemediationPlan.id)
+        .where(
+            RemediationPlan.student_id == student_id,
+            RemediationPlan.course_id == course_id,
+            RemediationPlan.status.in_(["active", "to_reevaluate"]),
+        )
+    )
+    query = query.where(RemediationItem.chapter_id.is_(None) if chapter_id is None else RemediationItem.chapter_id == chapter_id)
+    query = query.where(RemediationItem.skill_id.is_(None) if skill_id is None else RemediationItem.skill_id == skill_id)
+    return db.scalars(query).first() is not None
 
 
 def get_owned_classroom(db: Session, user: UserProfile, classroom_id: int) -> Classroom:

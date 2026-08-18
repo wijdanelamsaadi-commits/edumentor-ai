@@ -1552,3 +1552,242 @@ def test_phase10_missing_latex_reference_is_reported_readably():
         assert "Reference LaTeX absente: chapter_6" in str(exc.detail)
     else:
         raise AssertionError("La reference LaTeX manquante aurait du etre signalee")
+
+
+def adaptation_nlp_reference_package() -> str:
+    blocks = []
+    for index, content in enumerate(
+        [
+            "La comparaison rapproche deux elements avec un outil comme ou tel que.",
+            "La metaphore rapproche deux elements sans outil de comparaison.",
+            "La personnification donne une qualite humaine a une chose ou une idee.",
+            "L'hyperbole exagere une idee pour renforcer l'effet.",
+            "L'antithese oppose deux idees dans une meme phrase.",
+            "L'anaphore repete un meme mot ou groupe de mots au debut de plusieurs segments.",
+        ],
+        start=1,
+    ):
+        blocks.append({"id": f"definition_{index}", "type": "definition", "title": f"Definition {index}", "content": content})
+    for index, content in enumerate(
+        [
+            "Il est courageux comme un lion.",
+            "Cet homme est un lion.",
+            "La djellaba dormait au fond du coffre.",
+            "Il sourit malgre sa profonde tristesse.",
+            "Je t'ai appele mille fois.",
+            "Toujours aimer, toujours apprendre, toujours avancer.",
+        ],
+        start=1,
+    ):
+        blocks.append({"id": f"example_{index}", "type": "example", "title": f"Exemple {index}", "content": content})
+    blocks.append(
+        {
+            "id": "methodology_1",
+            "type": "methodology",
+            "title": "Methode pour identifier une figure",
+            "items": ["Lire la phrase", "Reperer l'indice", "Nommer la figure", "Expliquer l'effet"],
+        }
+    )
+    blocks.extend(
+        [
+            {
+                "id": "exercise_1",
+                "type": "exercise",
+                "title": "QCM comparaison",
+                "question": "Quelle figure apparait dans: Il est fort comme un lion ?",
+                "choices": ["Comparaison", "Metaphore", "Antithese", "Hyperbole"],
+                "answer": "Comparaison",
+                "explanation": "L'outil comme relie deux elements.",
+            },
+            {
+                "id": "exercise_2",
+                "type": "exercise",
+                "title": "QCM metaphore",
+                "question": "Quelle figure apparait dans: Cette classe est une ruche ?",
+                "choices": ["Metaphore", "Comparaison", "Personnification", "Antithese"],
+                "answer": "Metaphore",
+                "explanation": "Le rapprochement se fait sans outil.",
+            },
+            {
+                "id": "exercise_3",
+                "type": "exercise",
+                "title": "Exercice ouvert",
+                "question": "Identifiez la figure dans: la ville s'endort.",
+                "solution": "Personnification",
+                "explanation": "La ville recoit une action humaine.",
+            },
+            {
+                "id": "exercise_4",
+                "type": "exercise",
+                "title": "Exercice ouvert antithese",
+                "question": "Redigez une phrase contenant une antithese.",
+                "solution": "Il sourit malgre sa profonde tristesse.",
+                "explanation": "Deux idees contraires sont rapprochees.",
+            },
+        ]
+    )
+    blocks.append(
+        {
+            "id": "summary_1",
+            "type": "summary",
+            "title": "A retenir",
+            "items": [
+                "Une figure se repere avec des indices precis.",
+                "La reponse doit nommer la figure.",
+                "La justification explique l'effet produit.",
+            ],
+        }
+    )
+    return json.dumps(
+        {
+            "schema_version": "2.0",
+            "course": {
+                "title": "Figures de style",
+                "summary": "Cours de figures de style.",
+                "description": "Preparation aux questions de langue.",
+                "subject": "Francais",
+                "education_level": "1ere annee Baccalaureat",
+                "difficulty": "Adaptatif",
+                "estimated_duration_hours": 4,
+                "prerequisites": [],
+            },
+            "target": {
+                "country": "Maroc",
+                "cycle": "1ere_bac",
+                "academic_year": "2026-2027",
+                "region": "Toutes les regions",
+                "stream": "Toutes filieres",
+                "exam_type": "regional",
+            },
+            "works": [],
+            "chapters": [
+                {
+                    "id": "chapter_1",
+                    "title": "Figures de style",
+                    "order": 1,
+                    "objectives": ["Identifier", "Justifier"],
+                    "skills": ["Langue"],
+                    "content_blocks": blocks,
+                    "latex_reference": "chapter_1",
+                }
+            ],
+            "assessment_blueprint": {
+                "questions_per_assessment": 10,
+                "duration_minutes": 30,
+                "passing_score": 70,
+                "max_attempts": 2,
+                "skills": ["Langue"],
+                "levels": {
+                    "debutant": {"direct_questions_ratio": 0.7, "analysis_questions_ratio": 0.2, "production_questions_ratio": 0.1},
+                    "intermediaire": {"direct_questions_ratio": 0.4, "analysis_questions_ratio": 0.4, "production_questions_ratio": 0.2},
+                    "avance": {"direct_questions_ratio": 0.2, "analysis_questions_ratio": 0.4, "production_questions_ratio": 0.4},
+                },
+            },
+        }
+    )
+
+
+def test_course_adaptation_explicit_json_types_drive_distribution(monkeypatch):
+    monkeypatch.setattr(course_adaptation_nlp_service, "get_registry", lambda: (_ for _ in ()).throw(RuntimeError("disabled")))
+    package = automatic_course_generation_service.parse_package(adaptation_nlp_reference_package().encode("utf-8"))
+
+    analysis = course_adaptation_nlp_service.analyze_package_sections(package, {})
+    counts = analysis["section_counts"]
+
+    assert counts.get("definition", 0) == 6
+    assert counts.get("example", 0) == 6
+    assert counts.get("methodology", 0) == 1
+    assert counts.get("exercise", 0) == 4
+    assert counts.get("summary", 0) == 1
+    assert counts.get("other", 0) == 0
+    assert all(section["type_source"] == "explicit_json" for section in analysis["sections"])
+
+
+def test_course_adaptation_type_specific_payloads_preserve_structures(monkeypatch):
+    monkeypatch.setattr(course_adaptation_nlp_service, "get_registry", lambda: (_ for _ in ()).throw(RuntimeError("disabled")))
+    package = automatic_course_generation_service.parse_package(adaptation_nlp_reference_package().encode("utf-8"))
+    sections = course_adaptation_nlp_service.analyze_package_sections(package, {})["sections"]
+    by_id = {section["source_block_id"]: section for section in sections}
+
+    qcm = course_adaptation_nlp_service.adapt_section(by_id["exercise_1"], "intermediaire")["payload"]
+    open_exercise = course_adaptation_nlp_service.adapt_section(by_id["exercise_3"], "avance")["payload"]
+    summary = course_adaptation_nlp_service.adapt_section(by_id["summary_1"], "debutant")["payload"]
+    example = course_adaptation_nlp_service.adapt_section(by_id["example_1"], "intermediaire")
+
+    assert qcm["question"]
+    assert qcm["choices"] == ["Comparaison", "Metaphore", "Antithese", "Hyperbole"]
+    assert len(qcm["choices"]) == 4
+    assert len(qcm["choices"]) == len(set(qcm["choices"]))
+    assert qcm["answer"] == "Comparaison"
+    assert qcm["explanation"]
+    assert open_exercise["question"]
+    assert open_exercise["solution"] == "Personnification"
+    assert open_exercise["answer"] == ""
+    assert isinstance(summary["items"], list)
+    assert len(summary["items"]) == 3
+    assert "Il est courageux comme un lion" in example["content"]
+    assert course_adaptation_nlp_service.is_question_duplicated(qcm["content"], qcm) is False
+
+
+def test_course_adaptation_levels_differ_without_narrative_noise(monkeypatch):
+    monkeypatch.setattr(course_adaptation_nlp_service, "get_registry", lambda: (_ for _ in ()).throw(RuntimeError("disabled")))
+    package = automatic_course_generation_service.parse_package(adaptation_nlp_reference_package().encode("utf-8"))
+    sections = course_adaptation_nlp_service.analyze_package_sections(package, {})["sections"]
+    definition = next(section for section in sections if section["source_block_id"] == "definition_1")
+
+    beginner = course_adaptation_nlp_service.adapt_section(definition, "debutant")["content"]
+    intermediate = course_adaptation_nlp_service.adapt_section(definition, "intermediaire")["content"]
+    advanced = course_adaptation_nlp_service.adapt_section(definition, "avance")["content"]
+    all_content = " ".join([beginner, intermediate, advanced]).lower()
+
+    assert beginner != intermediate
+    assert intermediate != advanced
+    assert "progression narrative" not in all_content
+    assert "personnages" not in all_content
+    assert "suite de l'oeuvre" not in all_content
+    assert "antigone" not in all_content
+
+
+def test_course_adaptation_uses_matching_examples_and_reliable_indicators(monkeypatch):
+    monkeypatch.setattr(course_adaptation_nlp_service, "get_registry", lambda: (_ for _ in ()).throw(RuntimeError("disabled")))
+    package = automatic_course_generation_service.parse_package(adaptation_nlp_reference_package().encode("utf-8"))
+    sections = course_adaptation_nlp_service.analyze_package_sections(package, {})["sections"]
+    definitions = [section for section in sections if section["section_type"] == "definition"]
+    expected = {
+        "comparaison": "Il est courageux comme un lion",
+        "metaphore": "Cet homme est un lion",
+        "personnification": "La djellaba dormait au fond du coffre",
+        "antithese": "Il sourit malgre sa profonde tristesse",
+        "hyperbole": "Je t'ai appele mille fois",
+        "anaphore": "Toujours aimer, toujours apprendre, toujours avancer",
+    }
+
+    for definition in definitions:
+        figure = course_adaptation_nlp_service.detect_figure_key(definition["text"])
+        payload = course_adaptation_nlp_service.adapt_section(definition, "debutant")["payload"]
+        assert payload["example"] == expected[figure]
+        assert course_adaptation_nlp_service.normalize_ascii(payload["indicator"]) not in {"la", "l", "le", "un", "une"}
+
+
+def test_course_adaptation_advanced_comparison_names_precise_distinction(monkeypatch):
+    monkeypatch.setattr(course_adaptation_nlp_service, "get_registry", lambda: (_ for _ in ()).throw(RuntimeError("disabled")))
+    package = automatic_course_generation_service.parse_package(adaptation_nlp_reference_package().encode("utf-8"))
+    sections = course_adaptation_nlp_service.analyze_package_sections(package, {})["sections"]
+    comparison = next(section for section in sections if "comparaison" in course_adaptation_nlp_service.normalize_ascii(section["text"]))
+
+    advanced = course_adaptation_nlp_service.adapt_section(comparison, "avance")["payload"]
+
+    assert "metaphore" in course_adaptation_nlp_service.normalize_ascii(advanced["content"])
+    assert "notion proche" not in course_adaptation_nlp_service.normalize_ascii(advanced["content"])
+
+
+def test_course_adaptation_open_production_is_not_single_mandatory_answer(monkeypatch):
+    monkeypatch.setattr(course_adaptation_nlp_service, "get_registry", lambda: (_ for _ in ()).throw(RuntimeError("disabled")))
+    package = automatic_course_generation_service.parse_package(adaptation_nlp_reference_package().encode("utf-8"))
+    sections = course_adaptation_nlp_service.analyze_package_sections(package, {})["sections"]
+    production = next(section for section in sections if section["source_block_id"] == "exercise_4")
+
+    payload = course_adaptation_nlp_service.adapt_section(production, "avance")["payload"]
+
+    assert payload["solution"].startswith("Exemple possible:")
+    assert "reponse obligatoire" not in course_adaptation_nlp_service.normalize_ascii(payload["solution"])

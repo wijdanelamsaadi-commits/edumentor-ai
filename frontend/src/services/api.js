@@ -511,6 +511,14 @@ export function fetchProfessorDashboard() {
 
 export const getProfessorDashboard = fetchProfessorDashboard
 
+export function getProfessorStudents() {
+  return authenticatedRequest('/api/professor/students')
+}
+
+export function getProfessorStudentDetail(studentId) {
+  return authenticatedRequest(`/api/professor/students/${studentId}`)
+}
+
 export function getProfessorCourses(params = {}) {
   const query = buildQuery(params)
   return authenticatedRequest(`/api/professor/courses${query}`)
@@ -1076,6 +1084,22 @@ export function getParentStudent(studentId) {
   return authenticatedRequest(`/api/parent/students/${studentId}`)
 }
 
+export function getParentStudentProgress(studentId) {
+  return authenticatedRequest(`/api/parent/students/${studentId}/progress`)
+}
+
+export function getParentStudentWeaknesses(studentId) {
+  return authenticatedRequest(`/api/parent/students/${studentId}/weaknesses`)
+}
+
+export function getParentStudentAttempts(studentId) {
+  return authenticatedRequest(`/api/parent/students/${studentId}/attempts`)
+}
+
+export function getParentStudentRecommendations(studentId) {
+  return authenticatedRequest(`/api/parent/students/${studentId}/recommendations`)
+}
+
 export function getParentNotificationPreferences() {
   return authenticatedRequest('/api/parent/notification-preferences')
 }
@@ -1117,6 +1141,14 @@ export function submitRegionalExam(examId, data) {
   })
 }
 
+export function saveRegionalExamAnswers(examId, data) {
+  return authenticatedRequest(`/api/regional-exams/${examId}/answers`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+}
+
 export function getRegionalExamAttempts(examId) {
   return authenticatedRequest(`/api/regional-exams/${examId}/attempts`)
 }
@@ -1131,6 +1163,18 @@ export function createAdminParentStudentLink(data) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   })
+}
+
+export function getAdminParentStudents(parentId) {
+  return authenticatedRequest(`/api/admin/parents/${parentId}/students`)
+}
+
+export function linkAdminParentStudent(parentId, studentId) {
+  return authenticatedRequest(`/api/admin/parents/${parentId}/students/${studentId}`, { method: 'POST' })
+}
+
+export function unlinkAdminParentStudent(parentId, studentId) {
+  return authenticatedRequest(`/api/admin/parents/${parentId}/students/${studentId}`, { method: 'DELETE' })
 }
 
 export function getAdminParentStudentLinks() {

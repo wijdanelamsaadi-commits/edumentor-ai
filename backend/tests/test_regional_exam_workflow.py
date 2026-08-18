@@ -13,7 +13,9 @@ from app.core.database import Base
 from app.models import persistence as persistence_models  # noqa: F401
 from app.models.persistence import (
     Assessment,
+    AssessmentAnswer,
     AssessmentAssignment,
+    AssessmentAttempt,
     AssessmentQuestion,
     Course,
     Subject,
@@ -173,6 +175,34 @@ def test_regional_attempt_start_and_submit_qcm_score(db_session, regional_fixtur
     assert result["score"] == 5
     assert result["percentage"] == 100
     assert result["questions"][0]["correct_answer"] == "Créon"
+
+
+def test_regional_draft_answers_share_one_attempt_and_hide_corrections(db_session, regional_fixture):
+    client = build_client(db_session, regional_fixture["student"])
+    exam_id = regional_fixture["assessment"].id
+
+    started = client.post(f"/api/regional-exams/{exam_id}/start").json()
+    save_response = client.post(
+        f"/api/regional-exams/{exam_id}/answers",
+        json={"attempt_id": started["attempt_id"], "answers": {"1": "CrÃ©on", "2": "loi et famille"}},
+    )
+    saved = save_response.json()
+    restarted = client.post(f"/api/regional-exams/{exam_id}/start").json()
+    attempts = db_session.query(AssessmentAttempt).filter_by(
+        assessment_id=exam_id,
+        student_id=regional_fixture["student"].id,
+    ).all()
+    persisted_answers = db_session.query(AssessmentAnswer).filter_by(attempt_id=started["attempt_id"]).all()
+
+    assert save_response.status_code == 200
+    assert restarted["attempt_id"] == started["attempt_id"]
+    assert restarted["answers"]["1"] == "CrÃ©on"
+    assert len(attempts) == 1
+    assert len(persisted_answers) == 2
+    assert saved["status"] == "in_progress"
+    assert saved["correction_available"] is False
+    assert "correct_answer" not in saved["questions"][0]
+    assert saved["questions"][0]["selected_answer"] == "CrÃ©on"
 
 
 def test_regional_attempt_history_and_best_score(db_session, regional_fixture):

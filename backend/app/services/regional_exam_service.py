@@ -150,7 +150,50 @@ def start_regional_exam(db: Session, student: UserProfile, exam_id: int) -> dict
         "status": "in_progress",
         "started_at": attempt.started_at.isoformat() if attempt.started_at else None,
         "attempt_number": attempt.attempt_number,
+        "answers": {str(answer.question_id): answer.selected_answer for answer in attempt.answers},
     }
+
+
+def save_regional_exam_answers(db: Session, student: UserProfile, exam_id: int, payload: dict) -> dict:
+    assignment = get_regional_assignment(db, student, exam_id)
+    assessment = assignment.assessment
+    enforce_regional_assessment_available(assessment)
+    attempt = resolve_open_regional_attempt_for_save(db, student, assessment, payload)
+    answers = normalize_answers(payload.get("answers") or {})
+    answer_times = normalize_answer_times(payload.get("time_spent_seconds") or payload.get("answer_times") or {})
+    active_question_ids = {str(question.id) for question in active_questions(assessment)}
+    existing = {answer.question_id: answer for answer in attempt.answers}
+
+    for question in active_questions(assessment):
+        question_key = str(question.id)
+        if question_key not in answers:
+            continue
+        selected = str(answers.get(question_key, "") or "").strip()
+        row = existing.get(question.id)
+        if row is None:
+            row = AssessmentAnswer(
+                question_id=question.id,
+                selected_answer=selected,
+                correct=False,
+                points_awarded=0,
+                response_time_seconds=0,
+                time_spent_seconds=validate_time_spent(answer_times.get(question_key)),
+            )
+            attempt.answers.append(row)
+        else:
+            row.selected_answer = selected
+            row.correct = False
+            row.points_awarded = 0
+            row.time_spent_seconds = validate_time_spent(answer_times.get(question_key))
+
+    for raw_question_id in set(answers) - active_question_ids:
+        if raw_question_id.strip():
+            raise HTTPException(status_code=422, detail="Question non valide pour cet examen")
+
+    assignment.status = "in_progress"
+    db.commit()
+    db.refresh(attempt)
+    return serialize_regional_attempt(db, attempt, include_correction=False)
 
 
 def submit_regional_exam(db: Session, student: UserProfile, exam_id: int, payload: dict) -> dict:
@@ -564,6 +607,44 @@ def resolve_regional_attempt_for_submit(db: Session, student: UserProfile, asses
             raise HTTPException(status_code=404, detail="Tentative introuvable")
         if attempt.completed:
             raise HTTPException(status_code=409, detail="Tentative déjà soumise")
+        return attempt
+    if completed_attempt_count(db, student, assessment) >= assessment.max_attempts:
+        raise HTTPException(status_code=409, detail="Nombre maximal de tentatives atteint")
+    attempt = AssessmentAttempt(
+        assessment_id=assessment.id,
+        student_id=student.id,
+        started_at=parse_datetime(payload.get("started_at")) or datetime.utcnow(),
+        attempt_number=next_attempt_number(db, student, assessment),
+        completed=False,
+    )
+    db.add(attempt)
+    db.flush()
+    return attempt
+
+
+def resolve_open_regional_attempt_for_save(db: Session, student: UserProfile, assessment: Assessment, payload: dict) -> AssessmentAttempt:
+    attempt_id = payload.get("attempt_id")
+    if attempt_id:
+        attempt = db.scalars(
+            select(AssessmentAttempt)
+            .where(AssessmentAttempt.id == int(attempt_id))
+            .options(selectinload(AssessmentAttempt.answers))
+        ).first()
+        if attempt is None or attempt.student_id != student.id or attempt.assessment_id != assessment.id:
+            raise HTTPException(status_code=404, detail="Tentative introuvable")
+        if attempt.completed:
+            raise HTTPException(status_code=409, detail="Tentative deja soumise")
+        return attempt
+    attempt = db.scalars(
+        select(AssessmentAttempt)
+        .where(
+            AssessmentAttempt.assessment_id == assessment.id,
+            AssessmentAttempt.student_id == student.id,
+            AssessmentAttempt.completed.is_(False),
+        )
+        .options(selectinload(AssessmentAttempt.answers))
+    ).first()
+    if attempt:
         return attempt
     if completed_attempt_count(db, student, assessment) >= assessment.max_attempts:
         raise HTTPException(status_code=409, detail="Nombre maximal de tentatives atteint")

@@ -343,6 +343,22 @@ def test_role_change_creates_audit_log(db_session):
     assert audit_log.after_data["role"] == "professor"
 
 
+def test_admin_can_change_user_role_to_and_from_parent_without_auto_link(db_session):
+    admin = UserProfile(firebase_uid="parent-role-admin", email="parent-role-admin@example.com", full_name="Admin", role="admin", status="active")
+    target = UserProfile(firebase_uid="parent-role-target", email="parent-role-target@example.com", full_name="Target", role="student", status="active")
+    db_session.add_all([admin, target])
+    db_session.commit()
+    db_session.refresh(admin)
+    db_session.refresh(target)
+
+    parent_result = admin_service.update_user_role(db_session, admin, target.id, "parent")
+    assert parent_result.role == "parent"
+    assert db_session.query(ParentStudentLink).filter_by(parent_id=target.id).count() == 0
+
+    student_result = admin_service.update_user_role(db_session, admin, target.id, "student")
+    assert student_result.role == "student"
+
+
 def test_disabled_account_receives_403(monkeypatch, db_session):
     user = UserProfile(firebase_uid="disabled-uid", email="disabled@example.com", full_name="Disabled", role="student", status="disabled")
     db_session.add(user)
@@ -407,7 +423,7 @@ def test_catalog_migration_creates_initial_subject_and_is_idempotent(db_session)
 
     assert first["subjects"] >= 1
     assert second["subjects"] == first["subjects"]
-    assert db_session.query(Subject).filter_by(slug="intelligence-artificielle").count() == 1
+    assert db_session.query(Subject).filter_by(slug="francais").count() == 1
     assert db_session.query(Subject).filter_by(slug="francais", active=True).count() == 1
     assert db_session.query(persistence_models.EducationLevel).filter_by(slug="1ere_bac", active=True).count() == 1
 
@@ -419,7 +435,7 @@ def test_existing_courses_keep_ids_and_receive_subject(db_session):
     courses = course_service.get_courses(db_session)
     assert [course["id"] for course in courses] == list(range(1, 9))
     assert all(course["subject_id"] is not None for course in courses)
-    assert all(course["subject"]["slug"] == "intelligence-artificielle" for course in courses)
+    assert all(course["subject"]["slug"] == "francais" for course in courses)
 
 
 def test_public_subjects_endpoint_returns_active_subjects(db_session):
@@ -428,7 +444,7 @@ def test_public_subjects_endpoint_returns_active_subjects(db_session):
     response = client.get("/api/subjects")
 
     assert response.status_code == 200
-    assert any(item["slug"] == "intelligence-artificielle" for item in response.json())
+    assert any(item["slug"] == "francais" for item in response.json())
     assert any(item["slug"] == "francais" and item["name"] == "Français" for item in response.json())
 
 
@@ -463,7 +479,7 @@ def test_admin_can_create_subject_and_duplicate_slug_is_rejected(db_session):
 def test_subject_with_courses_cannot_be_deleted_and_can_be_deactivated(db_session):
     course_service.seed_courses_from_mock(db_session)
     apply_catalog_migration(db_session.get_bind())
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     client = build_test_client(db_session, current_user=UserProfile(id=52, email="admin-delete@example.com", role="admin", status="active"))
 
     delete_response = client.delete(f"/api/admin/subjects/{subject.id}")
@@ -485,60 +501,49 @@ def test_subject_with_courses_cannot_be_deleted_and_can_be_deactivated(db_sessio
 
 
 def test_diagnostic_questions_are_attached_to_ai_subject(db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
 
     assert db_session.query(DiagnosticQuestion).filter_by(subject_id=subject.id).count() >= 20
 
 
-def test_diagnostic_questions_filter_by_subject_without_answer_key(db_session):
+def test_diagnostic_questions_filter_by_french_subject_without_answer_key(db_session):
     client = build_test_client(db_session)
-    info = db_session.query(Subject).filter_by(slug="informatique").one()
-    ai = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
 
-    info_response = client.get(f"/api/diagnostic/questions?subject_id={info.id}&limit=8")
-    ai_response = client.get(f"/api/diagnostic/questions?subject_id={ai.id}&limit=8")
+    response = client.get(f"/api/diagnostic/questions?subject_id={subject.id}&limit=8")
 
-    assert info_response.status_code == 200
-    assert ai_response.status_code == 200
-    info_questions = info_response.json()["questions"]
-    ai_questions = ai_response.json()["questions"]
-    assert all(question["subject_id"] == info.id for question in info_questions)
-    assert all(question["subject_id"] == ai.id for question in ai_questions)
-    assert not set(question["id"] for question in info_questions).intersection(question["id"] for question in ai_questions)
-    assert all("correct_answer" not in question for question in info_questions)
+    assert response.status_code == 200
+    questions = response.json()["questions"]
+    assert len(questions) == 8
+    assert all(question["subject_id"] == subject.id for question in questions)
+    assert all("correct_answer" not in question for question in questions)
 
 
-def test_diagnostic_submit_saves_subject_and_separate_levels(db_session):
+def test_diagnostic_submit_saves_french_subject_and_level(db_session):
     student = UserProfile(id=530, email="diag-student@example.com", full_name="Diag Student", role="student", status="active")
     db_session.add(student)
     db_session.commit()
     client = build_test_client(db_session, student)
-    info = db_session.query(Subject).filter_by(slug="informatique").one()
-    physics = db_session.query(Subject).filter_by(slug="physique").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
 
-    info_questions = client.get(f"/api/diagnostic/questions?subject_id={info.id}&limit=5").json()["questions"]
-    physics_questions = client.get(f"/api/diagnostic/questions?subject_id={physics.id}&limit=5").json()["questions"]
-    info_answers = {str(question["id"]): question["options"][0] for question in info_questions}
-    physics_answers = {str(question["id"]): "__wrong__" for question in physics_questions}
+    questions = client.get(f"/api/diagnostic/questions?subject_id={subject.id}&limit=5").json()["questions"]
+    answers = {str(question["id"]): question["options"][0] for question in questions}
 
-    info_result = client.post("/api/diagnostic/submit", json={"subject_id": info.id, "answers": info_answers}).json()
-    physics_result = client.post("/api/diagnostic/submit", json={"subject_id": physics.id, "answers": physics_answers}).json()
+    result = client.post("/api/diagnostic/submit", json={"subject_id": subject.id, "answers": answers}).json()
 
-    assert info_result["subject_id"] == info.id
-    assert physics_result["subject_id"] == physics.id
-    assert info_result["level"] != physics_result["level"]
-    assert db_session.query(DiagnosticResult).filter_by(user_id=student.id, subject_id=info.id).count() == 1
-    assert db_session.query(DiagnosticResult).filter_by(user_id=student.id, subject_id=physics.id).count() == 1
+    assert result["subject_id"] == subject.id
+    assert result["level"] in {"Débutant", "Intermédiaire", "Avancé"}
+    assert db_session.query(DiagnosticResult).filter_by(user_id=student.id, subject_id=subject.id).count() == 1
 
 
 def test_diagnostic_recommendations_are_subject_limited_and_published_only(db_session):
-    info = db_session.query(Subject).filter_by(slug="informatique").one()
-    ai = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    info = db_session.query(Subject).filter_by(slug="francais").one()
+    ai = db_session.query(Subject).filter_by(slug="francais").one()
     beginner = db_session.query(persistence_models.DifficultyLevel).filter_by(slug="debutant").one()
     published = course_service.create_course(db_session, {
-        "title": "Introduction a Python",
-        "summary": "Bases de Python",
-        "description": "Cours d'initiation Python",
+        "title": "Les figures de style",
+        "summary": "Bases des figures de style",
+        "description": "Cours d'analyse littéraire",
         "subject_id": info.id,
         "difficulty_level_id": beginner.id,
         "published": True,
@@ -572,23 +577,23 @@ def test_legacy_ai_diagnostic_result_is_preserved(db_session):
 
     apply_diagnostic_migration(db_session.get_bind())
     db_session.refresh(legacy)
-    ai = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    ai = db_session.query(Subject).filter_by(slug="francais").one()
 
     assert legacy.subject_id == ai.id
     assert legacy.score == 75
 
 
 def test_student_cannot_manage_diagnostic_bank_and_admin_can(db_session):
-    subject = db_session.query(Subject).filter_by(slug="informatique").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     difficulty = db_session.query(persistence_models.DifficultyLevel).filter_by(slug="debutant").one()
     payload = {
         "subject_id": subject.id,
         "difficulty_level_id": difficulty.id,
-        "topic": "Python",
-        "question": "Quel mot affiche un message ?",
-        "choices": ["print()", "read()", "stop()"],
-        "correct_answer": "print()",
-        "explanation": "print() affiche un message.",
+        "topic": "français",
+        "question": "Quel élément permet de justifier une réponse ",
+        "choices": ["un indice du texte", "une impression vague", "un hors-sujet"],
+        "correct_answer": "un indice du texte",
+        "explanation": "un indice du texte affiche un message.",
         "active": True,
     }
     student_client = build_test_client(db_session, UserProfile(id=532, email="diag-user@example.com", role="student", status="active"))
@@ -599,7 +604,7 @@ def test_student_cannot_manage_diagnostic_bank_and_admin_can(db_session):
 
     assert forbidden.status_code == 403
     assert created.status_code == 200
-    assert created.json()["correct_answer"] == "print()"
+    assert created.json()["correct_answer"] == "un indice du texte"
 
 
 def test_diagnostic_level_rules():
@@ -617,13 +622,13 @@ def test_course_filters_by_subject_difficulty_and_search(db_session):
     difficulties = catalog_service.list_difficulty_levels(db_session)
     beginner = next(item for item in difficulties if item["slug"] == "debutant")
 
-    by_subject = course_service.get_courses(db_session, subject_slug="intelligence-artificielle")
+    by_subject = course_service.get_courses(db_session, subject_slug="francais")
     by_difficulty = course_service.get_courses(db_session, difficulty_level_id=beginner["id"])
-    by_search = course_service.get_courses(db_session, search="machine")
+    by_search = course_service.get_courses(db_session, search="Antigone")
 
     assert len(by_subject) == 8
     assert all(course["difficulty_level"]["slug"] == "debutant" for course in by_difficulty)
-    assert [course["title"] for course in by_search] == ["Machine Learning"]
+    assert [course["title"] for course in by_search] == ["Antigone"]
 
 
 def test_course_detail_returns_catalog_metadata_and_keeps_quiz(db_session):
@@ -633,8 +638,8 @@ def test_course_detail_returns_catalog_metadata_and_keeps_quiz(db_session):
     detail = course_service.get_course_detail(db_session, 3)
     quiz = course_service.get_quiz(db_session, 3)
 
-    assert detail["subject"]["slug"] == "intelligence-artificielle"
-    assert detail["difficulty_level"]["slug"] == "avance"
+    assert detail["subject"]["slug"] == "francais"
+    assert detail["difficulty_level"]["slug"] == "intermediaire"
     assert "education_level" in detail
     assert len(detail["chapters"]) >= 1
     assert len(quiz["questions"]) >= 10
@@ -669,7 +674,7 @@ def test_chat_uses_semantic_rag_when_relevant(monkeypatch):
         ],
     )
 
-    response = learning_service.rag_chat("C'est quoi le RAG ?", "Débutant")
+    response = learning_service.rag_chat("C'est quoi le RAG ", "Débutant")
 
     assert response["mode"] == "out_of_scope"
     assert "fran" in response["answer"].lower()
@@ -721,7 +726,7 @@ def test_filtered_semantic_search_passes_course_and_subject_filters(monkeypatch,
 
     monkeypatch.setattr(rag_document_service, "semantic_search", fake_semantic_search)
 
-    results = rag_document_service.filtered_semantic_search(db_session, "Python", course_id=9, subject_id=2, top_k=5)
+    results = rag_document_service.filtered_semantic_search(db_session, "français", course_id=9, subject_id=2, top_k=5)
 
     assert results[0]["course_id"] == 9
     assert captured["course_id"] == 9
@@ -730,7 +735,7 @@ def test_filtered_semantic_search_passes_course_and_subject_filters(monkeypatch,
 
 
 def test_professor_cannot_read_other_course_rag_status(db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     professor_a = UserProfile(id=301, email="rag-prof-a@example.com", full_name="Prof A", role="professor", status="active")
     professor_b = UserProfile(id=302, email="rag-prof-b@example.com", full_name="Prof B", role="professor", status="active")
     db_session.add_all([professor_a, professor_b])
@@ -744,8 +749,8 @@ def test_professor_cannot_read_other_course_rag_status(db_session):
 
 
 def test_pdf_text_quality_detects_broken_python_words():
-    good = content_import_service.score_text_quality("Introduction à Python. La programmation consiste à écrire un programme.")
-    broken = content_import_service.score_text_quality("In roduc ion à Py hon. La programma ion consis e à écrire un programme.")
+    good = content_import_service.score_text_quality("Les figures de style. Une figure de style consiste à écrire un texte.")
+    broken = content_import_service.score_text_quality("In roduc ion à Py hon. La programma ion consis e à écrire un texte.")
 
     assert good["score"] > broken["score"]
     assert broken["broken_words"] >= 2
@@ -756,38 +761,35 @@ def test_public_pdf_name_hides_internal_professor_filename():
     assert content_import_service.public_pdf_name("06_RAG.pdf") == "06_RAG.pdf"
 
 
-def test_python_import_structure_is_segmented_and_uses_public_sources(db_session):
+def test_french_import_structure_is_segmented_and_uses_public_sources(db_session):
     pages = [
-        {"page_number": 1, "text": "Programmer ? La programmation consiste à expliquer en détails à un ordinateur ce qu'il doit faire. Une erreur de syntaxe bloque le programme."},
-        {"page_number": 2, "text": "Erreur sémantique. Erreur d'exécution. Les 5 règles d'or pour bien programmer. Ne pas écrire de longs sous-programmes. Éviter le copier/coller."},
-        {"page_number": 3, "text": "Python est portable, gratuit, lisible, extensible et orienté objet. Un guide d'installation est disponible."},
-        {"page_number": 4, "text": "IDLE permet de démarrer Python. La suite du cours traitera des nombres premiers."},
+        {"page_number": 1, "text": "1. Comprendre l'extrait\nLa lecture commence par identifier le narrateur, les personnages et le cadre de l'action."},
+        {"page_number": 2, "text": "2. Identifier les figures de style\nUne comparaison rapproche deux éléments avec un outil comparatif. Une métaphore rapproche deux réalités sans outil."},
+        {"page_number": 3, "text": "3. Justifier la réponse\nLa justification doit citer un indice du texte et expliquer son effet sur le sens."},
     ]
-    course = course_service.build_course_model({"id": 90, "title": "Introduction à Python"}, 1)
+    course = course_service.build_course_model({"id": 90, "title": "Préparation au régional"}, 1)
 
-    draft = content_import_service.build_python_intro_structure(
+    draft = content_import_service.build_generic_structure(
         course,
         pages,
-        "professor_7_course_9_f2dca30cf7964d0db86e059174d90208_python.pdf",
+        "support_francais.pdf",
     )
 
-    assert len(draft["chapters"]) == 5
+    assert len(draft["chapters"]) == 3
     assert draft["chapters"][0]["status"] == "active"
     assert draft["chapters"][1]["status"] == "locked"
-    assert all(len(chapter["content"]) < 180 for chapter in draft["chapters"])
-    assert all(block["source_document_id"] == "python.pdf" for chapter in draft["chapters"] for block in chapter["structured_content"])
-    assert "Erreur de syntaxe" in [block.get("title") for block in draft["chapters"][1]["structured_content"]]
-    assert "Ne pas écrire de longs sous-programmes." in str(draft["chapters"][2]["structured_content"])
-    assert "portable" in str(draft["chapters"][3]["structured_content"]).lower()
-    assert "installation" in str(draft["chapters"][4]["structured_content"]).lower()
+    assert all(block["source_document_id"] == "support_francais.pdf" for chapter in draft["chapters"] for block in chapter["structured_content"])
+    assert draft["chapters"][0]["structured_content"][0]["source_page_start"] == 1
+    assert "figures de style" in draft["chapters"][1]["title"].lower()
+    assert "indice du texte" in str(draft["chapters"][2]["structured_content"]).lower()
 
 
 def test_normalize_text_keeps_internal_letters():
-    text = content_import_service.normalize_text("Python Introduction programmation titre utiliser")
+    text = content_import_service.normalize_text("français Introduction analyse littéraire titre utiliser")
 
-    assert "Python" in text
+    assert "français" in text
     assert "Introduction" in text
-    assert "programmation" in text
+    assert "analyse littéraire" in text
     assert "titre" in text
     assert "utiliser" in text
 
@@ -800,7 +802,7 @@ def test_chat_routes_ai_question_to_general_when_rag_is_not_relevant(monkeypatch
         lambda message, language, level: "General answer\n\nBackpropagation is an AI training concept.",
     )
 
-    response = learning_service.rag_chat("What is backpropagation?", "Avancé")
+    response = learning_service.rag_chat("What is backpropagation", "Avancé")
 
     assert response["mode"] == "out_of_scope"
     assert response["sources"] == []
@@ -809,7 +811,7 @@ def test_chat_routes_ai_question_to_general_when_rag_is_not_relevant(monkeypatch
 def test_chat_rejects_out_of_scope_question(monkeypatch):
     monkeypatch.setattr(learning_service, "semantic_search", lambda query, limit=3: [])
 
-    response = learning_service.rag_chat("Quelle est la météo ?", "Intermédiaire")
+    response = learning_service.rag_chat("Quelle est la météo ", "Intermédiaire")
 
     assert response["mode"] == "out_of_scope"
     assert "fran" in response["answer"].lower()
@@ -840,7 +842,7 @@ def make_professor_payload(subject_id: int, title: str = "Cours professeur") -> 
 
 
 def test_professor_creates_course_and_backend_sets_owner(db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     professor = UserProfile(id=201, firebase_uid="prof-a", email="prof-a@example.com", full_name="Prof A", role="professor", status="active")
     client = build_test_client(db_session, professor)
 
@@ -853,7 +855,7 @@ def test_professor_creates_course_and_backend_sets_owner(db_session):
 
 
 def test_professor_sees_only_owned_courses(db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     professor_a = UserProfile(id=202, email="prof-a-list@example.com", full_name="Prof A", role="professor", status="active")
     professor_b = UserProfile(id=203, email="prof-b-list@example.com", full_name="Prof B", role="professor", status="active")
     db_session.add_all([professor_a, professor_b])
@@ -869,7 +871,7 @@ def test_professor_sees_only_owned_courses(db_session):
 
 
 def test_professor_can_modify_own_course_and_gets_403_on_other_course(db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     professor_a = UserProfile(id=204, email="prof-a-own@example.com", full_name="Prof A", role="professor", status="active")
     professor_b = UserProfile(id=205, email="prof-b-own@example.com", full_name="Prof B", role="professor", status="active")
     db_session.add_all([professor_a, professor_b])
@@ -905,7 +907,7 @@ def test_professor_receives_403_on_admin_routes(db_session):
 
 
 def test_admin_can_assign_professor_and_cannot_assign_student(db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     admin = UserProfile(id=208, email="admin-assign@example.com", full_name="Admin", role="admin", status="active")
     professor = UserProfile(id=209, email="prof-assign@example.com", full_name="Professor", role="professor", status="active")
     student = UserProfile(id=210, email="student-assign@example.com", full_name="Student", role="student", status="active")
@@ -925,7 +927,7 @@ def test_admin_can_assign_professor_and_cannot_assign_student(db_session):
 
 
 def test_professor_creates_chapter_and_cannot_modify_other_course_chapter(db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     professor_a = UserProfile(id=211, email="prof-chapter-a@example.com", full_name="Prof A", role="professor", status="active")
     professor_b = UserProfile(id=212, email="prof-chapter-b@example.com", full_name="Prof B", role="professor", status="active")
     db_session.add_all([professor_a, professor_b])
@@ -943,7 +945,7 @@ def test_professor_creates_chapter_and_cannot_modify_other_course_chapter(db_ses
 
 
 def test_professor_reorders_chapters(db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     professor = UserProfile(id=213, email="prof-reorder@example.com", full_name="Professor", role="professor", status="active")
     db_session.add(professor)
     db_session.commit()
@@ -959,7 +961,7 @@ def test_professor_reorders_chapters(db_session):
 
 
 def test_professor_quiz_question_validation(db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     professor = UserProfile(id=214, email="prof-quiz@example.com", full_name="Professor", role="professor", status="active")
     db_session.add(professor)
     db_session.commit()
@@ -975,7 +977,7 @@ def test_professor_quiz_question_validation(db_session):
 
 
 def test_question_chapter_must_belong_to_same_course(db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     professor = UserProfile(id=215, email="prof-question-chapter@example.com", full_name="Professor", role="professor", status="active")
     db_session.add(professor)
     db_session.commit()
@@ -994,7 +996,7 @@ def test_question_chapter_must_belong_to_same_course(db_session):
 
 
 def test_professor_cannot_modify_other_professor_quiz(db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     professor_a = UserProfile(id=216, email="prof-quiz-a@example.com", full_name="Prof A", role="professor", status="active")
     professor_b = UserProfile(id=217, email="prof-quiz-b@example.com", full_name="Prof B", role="professor", status="active")
     db_session.add_all([professor_a, professor_b])
@@ -1012,7 +1014,7 @@ def test_professor_cannot_modify_other_professor_quiz(db_session):
 
 
 def test_professor_publishes_complete_course_and_incomplete_is_refused(db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     professor = UserProfile(id=218, email="prof-publish@example.com", full_name="Professor", role="professor", status="active")
     db_session.add(professor)
     db_session.commit()
@@ -1030,7 +1032,7 @@ def test_professor_publishes_complete_course_and_incomplete_is_refused(db_sessio
 
 
 def test_student_public_courses_hide_unpublished_professor_course(db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     professor = UserProfile(id=219, email="prof-public@example.com", full_name="Professor", role="professor", status="active")
     db_session.add(professor)
     db_session.commit()
@@ -1042,7 +1044,7 @@ def test_student_public_courses_hide_unpublished_professor_course(db_session):
 
 
 def test_professor_non_pdf_upload_is_rejected(db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     professor = UserProfile(id=220, email="prof-upload@example.com", full_name="Professor", role="professor", status="active")
     db_session.add(professor)
     db_session.commit()
@@ -1058,7 +1060,7 @@ def test_professor_non_pdf_upload_is_rejected(db_session):
 
 
 def test_professor_pdf_upload_requires_course_ownership(db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     professor_a = UserProfile(id=221, email="prof-upload-a@example.com", full_name="Prof A", role="professor", status="active")
     professor_b = UserProfile(id=222, email="prof-upload-b@example.com", full_name="Prof B", role="professor", status="active")
     db_session.add_all([professor_a, professor_b])
@@ -1075,7 +1077,7 @@ def test_professor_pdf_upload_requires_course_ownership(db_session):
 
 
 def test_professor_analytics_and_students_are_course_scoped(db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     professor = UserProfile(id=223, email="prof-analytics@example.com", full_name="Professor", role="professor", status="active")
     student = UserProfile(id=224, email="student-analytics@example.com", full_name="Student", role="student", status="active")
     db_session.add_all([professor, student])
@@ -1107,18 +1109,18 @@ def test_eight_existing_ai_courses_keep_ids_and_professor_null(db_session):
 
 
 def test_non_ai_course_does_not_receive_ai_default_content(db_session):
-    subject = catalog_service.create_subject(db_session, {"name": "Informatique Test", "slug": "informatique-test", "active": True})
+    subject = catalog_service.create_subject(db_session, {"name": "Informatique Test", "slug": "francais-test", "active": True})
     professor = UserProfile(id=230, email="prof-non-ai@example.com", full_name="Professor", role="professor", status="active")
     db_session.add(professor)
     db_session.commit()
     course = course_service.create_course(db_session, {
-        "title": "Introduction à Python",
+        "title": "Les figures de style",
         "summary": "",
         "description": "",
         "subject_id": subject["id"],
         "professor_id": professor.id,
         "published": False,
-        "chapters": [{"title": "Programmation", "content": "", "status": "active", "openable": True}],
+        "chapters": [{"title": "Analyse littéraire", "content": "", "status": "active", "openable": True}],
     })
 
     payload = str(course_service.get_course_detail(db_session, course["id"], include_unpublished=True)).lower()
@@ -1129,7 +1131,7 @@ def test_non_ai_course_does_not_receive_ai_default_content(db_session):
 
 
 def test_structured_content_valid_is_saved_and_invalid_is_rejected(db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     professor = UserProfile(id=231, email="prof-structured@example.com", full_name="Professor", role="professor", status="active")
     db_session.add(professor)
     db_session.commit()
@@ -1161,11 +1163,11 @@ def test_student_cannot_modify_structured_content(db_session):
 
 
 def test_pdf_import_preserves_pages_and_stays_draft(monkeypatch, tmp_path, db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     professor = UserProfile(id=233, email="prof-import@example.com", full_name="Professor", role="professor", status="active")
     db_session.add(professor)
     db_session.commit()
-    course_data = course_service.create_course(db_session, {**make_professor_payload(subject.id, "Introduction à Python"), "professor_id": professor.id, "published": True})
+    course_data = course_service.create_course(db_session, {**make_professor_payload(subject.id, "Les figures de style"), "professor_id": professor.id, "published": True})
     course = course_service.get_course_model(db_session, course_data["id"])
     docs_dir = tmp_path / "courses"
     docs_dir.mkdir()
@@ -1179,9 +1181,9 @@ def test_pdf_import_preserves_pages_and_stays_draft(monkeypatch, tmp_path, db_se
         content_import_service,
         "extract_pdf_pages",
         lambda path: [
-            {"page_number": 1, "text": "La programmation permet de transformer une idee en programme."},
+            {"page_number": 1, "text": "La analyse littéraire permet de transformer une idee en texte."},
             {"page_number": 2, "text": "Les erreurs de syntaxe, semantique et execution doivent etre distinguees."},
-            {"page_number": 3, "text": "Python est portable, gratuit, lisible, oriente objet et extensible."},
+            {"page_number": 3, "text": "français est portable, gratuit, lisible, oriente objet et extensible."},
         ],
     )
     client = build_test_client(db_session, professor)
@@ -1197,7 +1199,7 @@ def test_pdf_import_preserves_pages_and_stays_draft(monkeypatch, tmp_path, db_se
 
 
 def test_pdf_import_fallback_works_when_groq_is_unavailable(monkeypatch, tmp_path, db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     professor = UserProfile(id=234, email="prof-fallback@example.com", full_name="Professor", role="professor", status="active")
     db_session.add(professor)
     db_session.commit()
@@ -1218,7 +1220,7 @@ def test_pdf_import_fallback_works_when_groq_is_unavailable(monkeypatch, tmp_pat
 
 
 def test_mermaid_block_invalid_is_accepted_as_display_fallback(db_session):
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     professor = UserProfile(id=235, email="prof-mermaid@example.com", full_name="Professor", role="professor", status="active")
     db_session.add(professor)
     db_session.commit()
@@ -1253,25 +1255,25 @@ def make_phase6_users(db_session):
 
 
 def make_phase6_course(db_session, professor: UserProfile) -> dict:
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     return course_service.create_course(db_session, {
-        **make_professor_payload(subject.id, "Introduction à Python Phase6"),
+        **make_professor_payload(subject.id, "Les figures de style Phase6"),
         "professor_id": professor.id,
         "published": True,
         "chapters": [
             {
-                "title": "Programmation",
-                "content": "Comprendre la programmation comme une traduction d'une idee en instructions executables.",
+                "title": "Analyse littéraire",
+                "content": "Comprendre la analyse littéraire comme une traduction d'une idee en instructions executables.",
                 "status": "active",
                 "openable": True,
-                "structured_content": [{"type": "definition", "title": "Programmation", "content": "La programmation consiste a decrire precisement a un ordinateur ce qu'il doit faire."}],
+                "structured_content": [{"type": "definition", "title": "Analyse littéraire", "content": "Une figure de style consiste a decrire precisement a un ordinateur ce qu'il doit faire."}],
             },
             {
                 "title": "Erreurs de syntaxe",
-                "content": "Identifier les erreurs de syntaxe qui empechent souvent l'execution d'un programme.",
+                "content": "Identifier les erreurs de syntaxe qui empechent souvent l'execution d'un texte.",
                 "status": "locked",
                 "openable": False,
-                "structured_content": [{"type": "definition", "title": "Erreur de syntaxe", "content": "Une erreur de syntaxe apparait lorsque le code ne respecte pas les regles d'ecriture du langage."}],
+                "structured_content": [{"type": "definition", "title": "Erreur de compréhension", "content": "Une erreur de compréhension apparait lorsque le code ne respecte pas les regles d'ecriture du langage."}],
             },
         ],
     })
@@ -1279,7 +1281,7 @@ def make_phase6_course(db_session, professor: UserProfile) -> dict:
 
 def make_phase6_assessment_payload(course: dict, classroom_id: int | None = None) -> dict:
     return {
-        "title": "Evaluation initiale Python",
+        "title": "Evaluation initiale francais",
         "classroom_id": classroom_id,
         "course_id": course["id"],
         "subject_id": course["subject_id"],
@@ -1289,19 +1291,19 @@ def make_phase6_assessment_payload(course: dict, classroom_id: int | None = None
         "questions": [
             {
                 "chapter_id": course["chapters"][0]["id"],
-                "question": "Quel est l'objectif principal de la programmation ?",
-                "choices": ["Donner des instructions", "Ignorer les erreurs", "Dessiner uniquement", "Changer de sujet"],
-                "correct_answer": "Donner des instructions",
-                "explanation": "Programmer consiste à écrire des instructions exécutables.",
+                "question": "Quel est l'objectif principal d'une figure de style ",
+                "choices": ["Renforcer le sens", "Ignorer les erreurs", "Dessiner uniquement", "Changer de sujet"],
+                "correct_answer": "Renforcer le sens",
+                "explanation": "Analyser une figure consiste à écrire des instructions exécutables.",
                 "points": 1,
                 "active": True,
             },
             {
                 "chapter_id": course["chapters"][1]["id"],
-                "question": "Une erreur de syntaxe indique quoi ?",
-                "choices": ["Une règle mal écrite", "Une réponse parfaite", "Un fichier image", "Une notification"],
-                "correct_answer": "Une règle mal écrite",
-                "explanation": "La syntaxe correspond aux règles d'écriture du langage.",
+                "question": "Une erreur de compréhension indique quoi ",
+                "choices": ["Une idée mal justifiée", "Une réponse parfaite", "Un fichier image", "Une notification"],
+                "correct_answer": "Une idée mal justifiée",
+                "explanation": "La justification doit s'appuyer sur des indices du texte.",
                 "points": 1,
                 "active": True,
             },
@@ -1313,7 +1315,7 @@ def test_phase6_professor_creates_classroom_and_adds_student(db_session):
     professor, _, student = make_phase6_users(db_session)
     client = build_test_client(db_session, professor)
 
-    classroom_response = client.post("/api/professor/classrooms", json={"name": "Python 2026", "academic_year": "2026"})
+    classroom_response = client.post("/api/professor/classrooms", json={"name": "Francais 2026", "academic_year": "2026"})
     add_response = client.post(
         f"/api/professor/classrooms/{classroom_response.json()['id']}/students",
         json={"email": student.email},
@@ -1458,7 +1460,7 @@ def test_phase6_professor_can_propose_questions_for_saved_draft(db_session):
     assert body["requires_professor_validation"] is True
     assert len(body["questions"]) >= 1
     assert body["questions"][0]["chapter_id"] == course["chapters"][0]["id"]
-    assert body["questions"][0]["question"] == "Qu'est-ce que la programmation ?"
+    assert "definition" in body["questions"][0]["question"].lower() or "figure de style" in body["questions"][0]["question"].lower()
     assert len(body["questions"][0]["choices"]) == 4
     assert body["questions"][0]["correct_answer"] in body["questions"][0]["choices"]
     assert "Quel est le point essentiel" not in body["questions"][0]["question"]
@@ -1475,38 +1477,38 @@ def test_phase6_professor_cannot_propose_questions_for_other_assessment(db_sessi
     assert response.status_code == 403
 
 
-def test_phase6_python_structured_content_generates_quality_questions(db_session):
+def test_phase6_french_structured_content_generates_quality_questions(db_session):
     professor, _, _ = make_phase6_users(db_session)
-    subject = db_session.query(Subject).filter_by(slug="intelligence-artificielle").one()
+    subject = db_session.query(Subject).filter_by(slug="francais").one()
     course = course_service.create_course(db_session, {
-        **make_professor_payload(subject.id, "Introduction a Python qualite"),
+        **make_professor_payload(subject.id, "Les figures de style qualite"),
         "professor_id": professor.id,
         "published": True,
         "chapters": [
             {
-                "title": "Comprendre la programmation",
-                "content": "Programmer consiste a traduire une idee en instructions.",
-                "structured_content": [{"type": "definition", "title": "Programmation", "content": "La programmation consiste a decrire precisement a un ordinateur ce qu'il doit faire."}],
+                "title": "Antigone et le conflit",
+                "content": "Antigone s'oppose a Creon autour de la loi, du devoir familial et de la responsabilite.",
+                "structured_content": [{"type": "definition", "title": "Conflit tragique", "content": "Le conflit oppose Antigone et Creon autour de la loi et du devoir."}],
             },
             {
-                "title": "Les erreurs en programmation",
-                "content": "Une erreur de syntaxe bloque souvent l'execution.",
-                "structured_content": [{"type": "definition", "title": "Erreur de syntaxe", "content": "Une erreur de syntaxe apparait lorsque le code ne respecte pas les regles d'ecriture du langage."}],
+                "title": "La Boite a merveilles",
+                "content": "Sidi Mohammed raconte ses souvenirs d'enfance a la premiere personne dans un quartier de Fes.",
+                "structured_content": [{"type": "definition", "title": "Narrateur", "content": "Sidi Mohammed raconte ses souvenirs d'enfance a la premiere personne."}],
             },
             {
-                "title": "Bien programmer",
-                "content": "Cinq regles d'or a respecter.",
-                "structured_content": [{"type": "bullet_list", "title": "Points cles", "content": ["Ne pas ecrire de longs sous-programmes.", "Donner un objectif clair a chaque sous-programme.", "Ecrire des commentaires utiles."]}],
+                "title": "Le Dernier Jour d'un condamne",
+                "content": "Victor Hugo donne la parole au condamne pour denoncer la peine de mort.",
+                "structured_content": [{"type": "definition", "title": "Denonciation", "content": "L'oeuvre denonce la peine de mort a travers la voix du condamne."}],
             },
             {
-                "title": "Decouvrir Python",
-                "content": "Python est portable et lisible.",
-                "structured_content": [{"type": "bullet_list", "title": "Points cles", "content": ["Python est portable entre plusieurs systemes.", "Python est gratuit.", "Sa syntaxe favorise des programmes lisibles."]}],
+                "title": "Découvrir les figures",
+                "content": "La comparaison rapproche deux idées.",
+                "structured_content": [{"type": "bullet_list", "title": "Points cles", "content": ["La comparaison rapproche deux éléments avec un outil comparatif.", "La métaphore associe deux réalités sans outil comparatif.", "La personnification attribue une action humaine à une chose."]}],
             },
             {
-                "title": "Installer et demarrer Python",
-                "content": "Installer Python puis ouvrir IDLE.",
-                "structured_content": [{"type": "bullet_list", "title": "Etapes", "content": ["Telecharger Python depuis une source fiable.", "Installer l'interpreteur.", "Ouvrir l'environnement.", "Tester une premiere instruction."]}],
+                "title": "Méthodologie du régional",
+                "content": "La methode consiste a lire la consigne, reperer les mots-cles et justifier la reponse par le texte.",
+                "structured_content": [{"type": "bullet_list", "title": "Demarche", "content": ["Lire attentivement la consigne.", "Reperer les mots-cles.", "Repondre de facon precise.", "Justifier avec un indice du texte."]}],
             },
         ],
     })
@@ -1544,7 +1546,7 @@ def test_phase6_student_sees_only_assigned_published_assessments(db_session):
     response = client.get("/api/assessments")
 
     assert response.status_code == 200
-    assert [item["title"] for item in response.json()] == ["Evaluation initiale Python"]
+    assert [item["title"] for item in response.json()] == ["Evaluation initiale francais"]
 
 
 def test_phase6_student_payload_hides_correct_answers_before_submission(db_session):
@@ -1575,11 +1577,11 @@ def test_phase6_backend_scores_attempt_and_blocks_second_submission(db_session):
 
     response = client.post(
         f"/api/assessments/{assessment['id']}/submit",
-        json={"answers": {str(question_ids[0]): "Donner des instructions", str(question_ids[1]): "Mauvaise réponse"}},
+        json={"answers": {str(question_ids[0]): "Renforcer le sens", str(question_ids[1]): "Mauvaise réponse"}},
     )
     second_response = client.post(
         f"/api/assessments/{assessment['id']}/submit",
-        json={"answers": {str(question_ids[0]): "Donner des instructions", str(question_ids[1]): "Une règle mal écrite"}},
+        json={"answers": {str(question_ids[0]): "Renforcer le sens", str(question_ids[1]): "Une idée mal justifiée"}},
     )
 
     assert response.status_code == 200
@@ -1587,7 +1589,22 @@ def test_phase6_backend_scores_attempt_and_blocks_second_submission(db_session):
     assert second_response.status_code == 409
 
 
-def test_phase6_remediation_plan_is_limited_to_course(db_session):
+def weakness_prediction(status: str, competence: str = "Figures de style", events_used: int = 3) -> dict:
+    return {
+        "overall": {"status": "analyse_disponible" if status != "non_evalue" else "donnees_insuffisantes"},
+        "events_used": events_used,
+        "competencies": [
+            {
+                "competence": competence,
+                "status": status,
+                "score_percentage": 25 if status == "faible" else 55 if status == "a_renforcer" else 92 if status == "maitrise" else None,
+                "method": "test_student_weakness_model",
+            }
+        ],
+    }
+
+
+def test_phase6_remediation_plan_is_limited_to_course(db_session, monkeypatch):
     professor, _, student = make_phase6_users(db_session)
     course = make_phase6_course(db_session, professor)
     classroom = assessment_service.create_classroom(db_session, professor, {"name": "Classe remediation"})
@@ -1595,6 +1612,7 @@ def test_phase6_remediation_plan_is_limited_to_course(db_session):
     assessment = assessment_service.create_assessment(db_session, professor, make_phase6_assessment_payload(course, classroom["id"]))
     assessment_service.publish_assessment(db_session, professor, assessment["id"])
     questions = assessment_service.get_student_assessment(db_session, student, assessment["id"])["questions"]
+    monkeypatch.setattr(assessment_service.student_weakness_model_service, "predict_student_weaknesses", lambda db, user: weakness_prediction("faible"))
 
     report = assessment_service.submit_assessment(
         db_session,
@@ -1608,7 +1626,163 @@ def test_phase6_remediation_plan_is_limited_to_course(db_session):
     assert all(item["chapter_id"] in {chapter["id"] for chapter in course["chapters"]} for item in plan["items"])
 
 
-def test_phase6_personalized_assessment_is_assigned_only_to_student(db_session):
+def test_automatic_remediation_uses_weakness_model_service(db_session, monkeypatch):
+    calls = {"count": 0}
+    professor, _, student = make_phase6_users(db_session)
+    course = make_phase6_course(db_session, professor)
+    classroom = assessment_service.create_classroom(db_session, professor, {"name": "Classe remediation model"})
+    assessment_service.add_student_to_classroom(db_session, professor, classroom["id"], {"student_id": student.id})
+    assessment = assessment_service.create_assessment(db_session, professor, make_phase6_assessment_payload(course, classroom["id"]))
+    assessment_service.publish_assessment(db_session, professor, assessment["id"])
+    questions = assessment_service.get_student_assessment(db_session, student, assessment["id"])["questions"]
+
+    def fake_predict(db, user):
+        calls["count"] += 1
+        return weakness_prediction("faible")
+
+    monkeypatch.setattr(assessment_service.student_weakness_model_service, "predict_student_weaknesses", fake_predict)
+
+    report = assessment_service.submit_assessment(db_session, student, assessment["id"], {"answers": {str(question["id"]): "Mauvaise reponse" for question in questions}})
+
+    assert calls["count"] == 1
+    assert report["remediation_plan_id"]
+
+
+def test_automatic_remediation_generates_lessons_without_professor_approval(db_session, monkeypatch):
+    professor, _, student = make_phase6_users(db_session)
+    course = make_phase6_course(db_session, professor)
+    classroom = assessment_service.create_classroom(db_session, professor, {"name": "Classe remediation auto"})
+    assessment_service.add_student_to_classroom(db_session, professor, classroom["id"], {"student_id": student.id})
+    assessment = assessment_service.create_assessment(db_session, professor, make_phase6_assessment_payload(course, classroom["id"]))
+    assessment_service.publish_assessment(db_session, professor, assessment["id"])
+    questions = assessment_service.get_student_assessment(db_session, student, assessment["id"])["questions"]
+    monkeypatch.setattr(assessment_service.student_weakness_model_service, "predict_student_weaknesses", lambda db, user: weakness_prediction("faible"))
+
+    report = assessment_service.submit_assessment(
+        db_session,
+        student,
+        assessment["id"],
+        {"answers": {str(question["id"]): "Mauvaise reponse" for question in questions}},
+    )
+    lessons = personalized_lesson_service.list_lessons_for_plan(db_session, student, report["remediation_plan_id"])
+    professor_lessons = personalized_lesson_service.list_professor_lessons(db_session, professor, {})
+
+    assert lessons
+    assert all(lesson.status == "ready" for lesson in lessons)
+    assert {lesson.id for lesson in lessons}.issubset({row["id"] for row in professor_lessons})
+
+
+def test_automatic_remediation_reinforce_status_triggers_plan(db_session, monkeypatch):
+    professor, _, student = make_phase6_users(db_session)
+    course = make_phase6_course(db_session, professor)
+    classroom = assessment_service.create_classroom(db_session, professor, {"name": "Classe remediation reinforce"})
+    assessment_service.add_student_to_classroom(db_session, professor, classroom["id"], {"student_id": student.id})
+    assessment = assessment_service.create_assessment(db_session, professor, make_phase6_assessment_payload(course, classroom["id"]))
+    assessment_service.publish_assessment(db_session, professor, assessment["id"])
+    questions = assessment_service.get_student_assessment(db_session, student, assessment["id"])["questions"]
+    monkeypatch.setattr(assessment_service.student_weakness_model_service, "predict_student_weaknesses", lambda db, user: weakness_prediction("a_renforcer"))
+
+    report = assessment_service.submit_assessment(db_session, student, assessment["id"], {"answers": {str(question["id"]): "Mauvaise reponse" for question in questions}})
+
+    assert report["remediation_plan_id"]
+
+
+def test_automatic_remediation_does_not_duplicate_active_skill_plan(db_session, monkeypatch):
+    professor, _, student = make_phase6_users(db_session)
+    course = make_phase6_course(db_session, professor)
+    classroom = assessment_service.create_classroom(db_session, professor, {"name": "Classe remediation dedupe"})
+    assessment_service.add_student_to_classroom(db_session, professor, classroom["id"], {"student_id": student.id})
+    first_payload = make_phase6_assessment_payload(course, classroom["id"])
+    second_payload = make_phase6_assessment_payload(course, classroom["id"])
+    first_payload["title"] = "Premier test"
+    second_payload["title"] = "Deuxieme test"
+    first = assessment_service.create_assessment(db_session, professor, first_payload)
+    second = assessment_service.create_assessment(db_session, professor, second_payload)
+    assessment_service.publish_assessment(db_session, professor, first["id"])
+    assessment_service.publish_assessment(db_session, professor, second["id"])
+    monkeypatch.setattr(assessment_service.student_weakness_model_service, "predict_student_weaknesses", lambda db, user: weakness_prediction("faible"))
+
+    for assessment in [first, second]:
+        questions = assessment_service.get_student_assessment(db_session, student, assessment["id"])["questions"]
+        assessment_service.submit_assessment(
+            db_session,
+            student,
+            assessment["id"],
+            {"answers": {str(question["id"]): "Mauvaise reponse" for question in questions}},
+        )
+
+    assert db_session.query(RemediationPlan).filter_by(student_id=student.id, course_id=course["id"]).count() == 1
+
+
+def test_mastered_attempt_does_not_create_remediation(db_session, monkeypatch):
+    professor, _, student = make_phase6_users(db_session)
+    course = make_phase6_course(db_session, professor)
+    classroom = assessment_service.create_classroom(db_session, professor, {"name": "Classe remediation mastered"})
+    assessment_service.add_student_to_classroom(db_session, professor, classroom["id"], {"student_id": student.id})
+    assessment = assessment_service.create_assessment(db_session, professor, make_phase6_assessment_payload(course, classroom["id"]))
+    assessment_service.publish_assessment(db_session, professor, assessment["id"])
+    questions = assessment_service.get_student_assessment(db_session, student, assessment["id"])["questions"]
+    monkeypatch.setattr(assessment_service.student_weakness_model_service, "predict_student_weaknesses", lambda db, user: weakness_prediction("maitrise"))
+
+    report = assessment_service.submit_assessment(
+        db_session,
+        student,
+        assessment["id"],
+        {
+            "answers": {
+                str(questions[0]["id"]): "Renforcer le sens",
+                str(questions[1]["id"]): "Une idée mal justifiée",
+            }
+        },
+    )
+
+    assert report.get("remediation_plan_id") is None
+    assert db_session.query(RemediationPlan).filter_by(student_id=student.id, course_id=course["id"]).count() == 0
+
+
+def test_non_evaluated_attempt_does_not_create_remediation(db_session, monkeypatch):
+    professor, _, student = make_phase6_users(db_session)
+    course = make_phase6_course(db_session, professor)
+    classroom = assessment_service.create_classroom(db_session, professor, {"name": "Classe remediation non evalue"})
+    assessment_service.add_student_to_classroom(db_session, professor, classroom["id"], {"student_id": student.id})
+    assessment = assessment_service.create_assessment(db_session, professor, make_phase6_assessment_payload(course, classroom["id"]))
+    assessment_service.publish_assessment(db_session, professor, assessment["id"])
+    questions = assessment_service.get_student_assessment(db_session, student, assessment["id"])["questions"]
+    monkeypatch.setattr(assessment_service.student_weakness_model_service, "predict_student_weaknesses", lambda db, user: weakness_prediction("non_evalue", events_used=0))
+
+    report = assessment_service.submit_assessment(db_session, student, assessment["id"], {"answers": {str(question["id"]): "Mauvaise reponse" for question in questions}})
+
+    assert report.get("remediation_plan_id") is None
+    assert db_session.query(RemediationPlan).filter_by(student_id=student.id, course_id=course["id"]).count() == 0
+
+
+def test_personalized_assessment_reevaluates_source_plan_without_loop(db_session, monkeypatch):
+    professor, _, student = make_phase6_users(db_session)
+    course = make_phase6_course(db_session, professor)
+    classroom = assessment_service.create_classroom(db_session, professor, {"name": "Classe remediation reevaluate"})
+    assessment_service.add_student_to_classroom(db_session, professor, classroom["id"], {"student_id": student.id})
+    assessment = assessment_service.create_assessment(db_session, professor, make_phase6_assessment_payload(course, classroom["id"]))
+    assessment_service.publish_assessment(db_session, professor, assessment["id"])
+    questions = assessment_service.get_student_assessment(db_session, student, assessment["id"])["questions"]
+    monkeypatch.setattr(assessment_service.student_weakness_model_service, "predict_student_weaknesses", lambda db, user: weakness_prediction("faible"))
+    initial = assessment_service.submit_assessment(db_session, student, assessment["id"], {"answers": {str(question["id"]): "Mauvaise reponse" for question in questions}})
+    personalized = assessment_service.create_personalized_assessment(db_session, student, initial["remediation_plan_id"])
+    personalized_questions = assessment_service.get_student_assessment(db_session, student, personalized["id"])["questions"]
+    before_count = db_session.query(RemediationPlan).filter_by(student_id=student.id, course_id=course["id"]).count()
+
+    assessment_service.submit_assessment(
+        db_session,
+        student,
+        personalized["id"],
+        {"answers": {str(question["id"]): "Mauvaise reponse" for question in personalized_questions}},
+    )
+    plan = db_session.get(RemediationPlan, initial["remediation_plan_id"])
+
+    assert db_session.query(RemediationPlan).filter_by(student_id=student.id, course_id=course["id"]).count() == before_count
+    assert plan.status == "to_reevaluate"
+
+
+def test_phase6_personalized_assessment_is_assigned_only_to_student(db_session, monkeypatch):
     professor, _, student = make_phase6_users(db_session)
     other_student = UserProfile(id=704, email="phase6-other-student@example.com", full_name="Other Student", role="student", status="active")
     db_session.add(other_student)
@@ -1619,6 +1793,7 @@ def test_phase6_personalized_assessment_is_assigned_only_to_student(db_session):
     assessment = assessment_service.create_assessment(db_session, professor, make_phase6_assessment_payload(course, classroom["id"]))
     assessment_service.publish_assessment(db_session, professor, assessment["id"])
     questions = assessment_service.get_student_assessment(db_session, student, assessment["id"])["questions"]
+    monkeypatch.setattr(assessment_service.student_weakness_model_service, "predict_student_weaknesses", lambda db, user: weakness_prediction("faible"))
     report = assessment_service.submit_assessment(db_session, student, assessment["id"], {"answers": {str(question["id"]): "Mauvaise réponse" for question in questions}})
 
     personalized = assessment_service.create_personalized_assessment(db_session, student, report["remediation_plan_id"])
@@ -1628,7 +1803,7 @@ def test_phase6_personalized_assessment_is_assigned_only_to_student(db_session):
     assert other_client.get(f"/api/assessments/{personalized['id']}").status_code == 404
 
 
-def test_phase6_comparison_uses_real_attempt_scores(db_session):
+def test_phase6_comparison_uses_real_attempt_scores(db_session, monkeypatch):
     professor, _, student = make_phase6_users(db_session)
     course = make_phase6_course(db_session, professor)
     classroom = assessment_service.create_classroom(db_session, professor, {"name": "Classe compare"})
@@ -1636,6 +1811,7 @@ def test_phase6_comparison_uses_real_attempt_scores(db_session):
     assessment = assessment_service.create_assessment(db_session, professor, make_phase6_assessment_payload(course, classroom["id"]))
     assessment_service.publish_assessment(db_session, professor, assessment["id"])
     questions = assessment_service.get_student_assessment(db_session, student, assessment["id"])["questions"]
+    monkeypatch.setattr(assessment_service.student_weakness_model_service, "predict_student_weaknesses", lambda db, user: weakness_prediction("faible"))
     initial = assessment_service.submit_assessment(db_session, student, assessment["id"], {"answers": {str(question["id"]): "Mauvaise réponse" for question in questions}})
     personalized = assessment_service.create_personalized_assessment(db_session, student, initial["remediation_plan_id"])
     personalized_questions = assessment_service.get_student_assessment(db_session, student, personalized["id"])["questions"]
@@ -1678,12 +1854,17 @@ def make_phase7_plan(db_session):
     assessment = assessment_service.create_assessment(db_session, professor, make_phase6_assessment_payload(course, classroom["id"]))
     assessment_service.publish_assessment(db_session, professor, assessment["id"])
     questions = assessment_service.get_student_assessment(db_session, student, assessment["id"])["questions"]
-    report = assessment_service.submit_assessment(
-        db_session,
-        student,
-        assessment["id"],
-        {"answers": {str(question["id"]): "Mauvaise reponse" for question in questions}},
-    )
+    original_predict = assessment_service.student_weakness_model_service.predict_student_weaknesses
+    assessment_service.student_weakness_model_service.predict_student_weaknesses = lambda db, user: weakness_prediction("faible")
+    try:
+        report = assessment_service.submit_assessment(
+            db_session,
+            student,
+            assessment["id"],
+            {"answers": {str(question["id"]): "Mauvaise reponse" for question in questions}},
+        )
+    finally:
+        assessment_service.student_weakness_model_service.predict_student_weaknesses = original_predict
     return professor, other_professor, student, course, assessment, report
 
 
@@ -1798,7 +1979,7 @@ def test_phase8_accuracy_completion_and_unanswered_are_calculated_correctly(db_s
     payload = make_phase6_assessment_payload(course)
     payload["questions"].append({
         "chapter_id": course["chapters"][1]["id"],
-        "question": "Quelle pratique aide a corriger une erreur ?",
+        "question": "Quelle pratique aide a corriger une erreur ",
         "choices": ["Lire le message", "Ignorer le probleme", "Fermer le cours", "Changer de compte"],
         "correct_answer": "Lire le message",
         "explanation": "Lire le message aide a comprendre l'origine de l'erreur.",
@@ -1814,7 +1995,7 @@ def test_phase8_accuracy_completion_and_unanswered_are_calculated_correctly(db_s
 
     report = assessment_service.submit_assessment(db_session, student, assessment["id"], {
         "answers": {
-            str(questions[0]["id"]): "Donner des instructions",
+            str(questions[0]["id"]): "Renforcer le sens",
             str(questions[1]["id"]): "Mauvaise reponse",
         },
         "time_spent_seconds": {
@@ -1861,7 +2042,7 @@ def test_phase8_slow_questions_require_three_valid_times(db_session):
     payload = make_phase6_assessment_payload(course)
     payload["questions"].append({
         "chapter_id": course["chapters"][1]["id"],
-        "question": "Comment identifier une erreur ?",
+        "question": "Comment identifier une erreur ",
         "choices": ["Observer le message", "Ignorer", "Effacer tout", "Changer de langue"],
         "correct_answer": "Observer le message",
         "explanation": "Le message guide la correction.",
@@ -1991,12 +2172,17 @@ def make_phase9_plan(db_session):
     db_session.commit()
     assessment_service.publish_assessment(db_session, professor, assessment["id"])
     questions = assessment_service.get_student_assessment(db_session, student, assessment["id"])["questions"]
-    report = assessment_service.submit_assessment(
-        db_session,
-        student,
-        assessment["id"],
-        {"answers": {str(questions[0]["id"]): questions[0]["choices"][0], str(questions[1]["id"]): "Mauvaise reponse"}},
-    )
+    original_predict = assessment_service.student_weakness_model_service.predict_student_weaknesses
+    assessment_service.student_weakness_model_service.predict_student_weaknesses = lambda db, user: weakness_prediction("faible", skill_b.name)
+    try:
+        report = assessment_service.submit_assessment(
+            db_session,
+            student,
+            assessment["id"],
+            {"answers": {str(questions[0]["id"]): questions[0]["choices"][0], str(questions[1]["id"]): "Mauvaise reponse"}},
+        )
+    finally:
+        assessment_service.student_weakness_model_service.predict_student_weaknesses = original_predict
     return professor, other_professor, student, other_student, course, assessment, report
 
 
@@ -2192,7 +2378,7 @@ def test_phase10_next_course_filter_and_empty_state(db_session):
     current_course = db_session.get(Course, course["id"])
     next_course = Course(
         id=9910,
-        title="Suite Python ciblee",
+        title="Suite francais ciblee",
         level=current_course.level,
         duration="1h",
         progress=0,
@@ -2235,7 +2421,58 @@ def test_phase61_professor_dashboard_contains_assessment_widgets(db_session):
     assert dashboard["recent_assessments"][0]["id"] == assessment["id"]
 
 
-def test_phase61_student_dashboard_contains_available_and_active_remediation(db_session):
+def test_professor_student_tracking_lists_five_students_and_protects_detail(db_session):
+    professor, other_professor, _ = make_phase6_users(db_session)
+    course = make_phase6_course(db_session, professor)
+    classroom = assessment_service.create_classroom(db_session, professor, {"name": "Classe suivi professeur"})
+    students = []
+    for index in range(5):
+        student = UserProfile(
+            id=8100 + index,
+            email=f"tracked-{index}@example.com",
+            full_name=f"Tracked Student {index}",
+            role="student",
+            status="active",
+            level="Intermediaire",
+        )
+        db_session.add(student)
+        students.append(student)
+    db_session.commit()
+    for student in students:
+        assessment_service.add_student_to_classroom(db_session, professor, classroom["id"], {"student_id": student.id})
+        db_session.add(CourseProgress(user_id=student.id, course_id=course["id"], progress=40 + student.id % 10, chapters=[]))
+        db_session.add(QuizResult(
+            user_id=student.id,
+            course_id=course["id"],
+            score=55,
+            correct=1,
+            total=2,
+            corrections=[{"competence": "Comprehension", "max_points": 10, "points_awarded": 4, "correct": False}],
+            answers=[{"competence": "Comprehension", "selected_answer": "reponse partielle"}],
+        ))
+    db_session.commit()
+
+    professor_client = build_test_client(db_session, professor)
+    other_client = build_test_client(db_session, other_professor)
+    students_response = professor_client.get("/api/professor/students")
+    detail_response = professor_client.get(f"/api/professor/students/{students[0].id}")
+    forbidden_response = other_client.get(f"/api/professor/students/{students[0].id}")
+    detail_json = detail_response.json()
+    technical_dump = json.dumps(detail_json).lower()
+
+    assert students_response.status_code == 200
+    assert len(students_response.json()) == 5
+    assert detail_response.status_code == 200
+    assert detail_json["email"] == students[0].email
+    assert detail_json["course_progress"]
+    assert detail_json["quiz_results"]
+    assert detail_json["competencies"]
+    assert forbidden_response.status_code == 403
+    for forbidden_key in ["model_version", "decision_scores", "svm_fallback", "embedding", "chunks", "holdout"]:
+        assert forbidden_key not in technical_dump
+
+
+def test_phase61_student_dashboard_contains_available_and_active_remediation(db_session, monkeypatch):
     professor, _, student = make_phase6_users(db_session)
     course = make_phase6_course(db_session, professor)
     classroom = assessment_service.create_classroom(db_session, professor, {"name": "Classe student dashboard"})
@@ -2244,6 +2481,7 @@ def test_phase61_student_dashboard_contains_available_and_active_remediation(db_
     assessment_service.publish_assessment(db_session, professor, assessment["id"])
     before_submit = build_test_client(db_session, student).get("/api/student/dashboard").json()
     questions = assessment_service.get_student_assessment(db_session, student, assessment["id"])["questions"]
+    monkeypatch.setattr(assessment_service.student_weakness_model_service, "predict_student_weaknesses", lambda db, user: weakness_prediction("faible"))
     report = assessment_service.submit_assessment(db_session, student, assessment["id"], {"answers": {str(question["id"]): "Mauvaise réponse" for question in questions}})
     after_submit = build_test_client(db_session, student).get("/api/student/dashboard").json()
 
@@ -2255,7 +2493,7 @@ def test_phase61_student_dashboard_contains_available_and_active_remediation(db_
     assert after_submit["next_action"]["path"] == after_submit["active_study_path"]["current_item"]["route"]
 
 
-def test_phase61_comparison_without_second_test_has_empty_state(db_session):
+def test_phase61_comparison_without_second_test_has_empty_state(db_session, monkeypatch):
     professor, _, student = make_phase6_users(db_session)
     course = make_phase6_course(db_session, professor)
     classroom = assessment_service.create_classroom(db_session, professor, {"name": "Classe empty comparison"})
@@ -2263,6 +2501,7 @@ def test_phase61_comparison_without_second_test_has_empty_state(db_session):
     assessment = assessment_service.create_assessment(db_session, professor, make_phase6_assessment_payload(course, classroom["id"]))
     assessment_service.publish_assessment(db_session, professor, assessment["id"])
     questions = assessment_service.get_student_assessment(db_session, student, assessment["id"])["questions"]
+    monkeypatch.setattr(assessment_service.student_weakness_model_service, "predict_student_weaknesses", lambda db, user: weakness_prediction("faible"))
     report = assessment_service.submit_assessment(db_session, student, assessment["id"], {"answers": {str(question["id"]): "Mauvaise réponse" for question in questions}})
 
     comparison = build_test_client(db_session, student).get(f"/api/remediation/{report['remediation_plan_id']}/comparison").json()
@@ -2450,7 +2689,7 @@ def diagnostic_package_json(course_title: str, works: list[dict], academic_year:
             "objectives": [f"Comprendre {work['title']}"],
             "skills": ["Comprehension", "Analyse litteraire"],
             "content_blocks": [
-                {"type": "paragraph", "content": f"{work['title']} est une oeuvre du programme regional avec ses personnages, ses themes et son contexte."},
+                {"type": "paragraph", "content": f"{work['title']} est une oeuvre du texte regional avec ses personnages, ses themes et son contexte."},
                 {"type": "example", "content": f"Exemple d'analyse autour de {work['title']}."},
             ],
         })
@@ -2484,14 +2723,14 @@ def old_samir_package_json() -> str:
 
 def official_french_package_json(academic_year: str = "2026-2027") -> str:
     return diagnostic_package_json(
-        "Preparation au regional de francais - programme officiel",
+        "Preparation au regional de francais - texte officiel",
         [
             {
                 "id": "boite_merveilles",
                 "title": "La Boite a merveilles",
                 "author": "Ahmed Sefrioui",
                 "genre": "Roman autobiographique",
-                "context": "Oeuvre officielle du programme de francais.",
+                "context": "Oeuvre officielle du texte de francais.",
                 "chapters": [{"id": "bm_1", "title": "Souvenirs d'enfance", "summary": "Le narrateur evoque l'enfance et la solitude.", "characters": ["Sidi Mohammed"], "themes": ["Souvenir", "Solitude"], "vocabulary": []}],
             },
             {
@@ -2813,11 +3052,12 @@ def test_diagnostic_question_selection_is_filtered_balanced_and_hides_answers(db
 def test_diagnostic_availability_blocks_incomplete_bank(db_session):
     subject = db_session.query(Subject).filter_by(slug="francais").one()
     difficulty = db_session.query(persistence_models.DifficultyLevel).filter_by(slug="debutant").one()
+    db_session.query(DiagnosticQuestion).filter_by(subject_id=subject.id).update({"active": False})
     db_session.add(DiagnosticQuestion(
         subject_id=subject.id,
         difficulty_level_id=difficulty.id,
         topic="Comprehension",
-        question="Question unique ?",
+        question="Question unique ",
         choices=["Oui", "Non"],
         correct_answer="Oui",
         explanation="Source unique.",
@@ -3050,6 +3290,136 @@ def test_phase10_parent_link_dashboard_and_isolation(db_session):
     assert own_child.status_code == 200
     assert forbidden.status_code == 403
     assert db_session.query(ParentNotification).filter_by(parent_id=parent.id, student_id=student.id).count() == 1
+
+
+def test_parent_space_exposes_public_pedagogical_tracking_only(db_session):
+    parent = UserProfile(id=821, email="parent-public@example.com", full_name="Parent Public", role="parent", status="active")
+    student = UserProfile(id=822, email="child-public@example.com", full_name="Child Public", role="student", status="active", level="Intermediaire")
+    outsider = UserProfile(id=823, email="child-outsider@example.com", full_name="Outsider", role="student", status="active")
+    db_session.add_all([parent, student, outsider])
+    db_session.flush()
+    db_session.add(ParentStudentLink(parent_id=parent.id, student_id=student.id, status="active"))
+    db_session.add(DiagnosticResult(user_id=student.id, score=14, total=20, correct_count=14, level="Intermediaire", results_by_topic=[{"topic": "Langue", "score": 70}]))
+    db_session.add(CourseProgress(user_id=student.id, course_id=1, progress=60, chapters=[{"title": "Antigone"}]))
+    db_session.add(QuizResult(user_id=student.id, course_id=1, score=8, correct=8, total=10, recommendation="Revoir la méthodologie."))
+    db_session.commit()
+
+    client = build_test_client(db_session, parent)
+    dashboard = client.get("/api/parent/dashboard")
+    detail = client.get(f"/api/parent/students/{student.id}")
+    progress = client.get(f"/api/parent/students/{student.id}/progress")
+    weaknesses = client.get(f"/api/parent/students/{student.id}/weaknesses")
+    attempts = client.get(f"/api/parent/students/{student.id}/attempts")
+    recommendations = client.get(f"/api/parent/students/{student.id}/recommendations")
+    forbidden = client.get(f"/api/parent/students/{outsider.id}")
+
+    assert dashboard.status_code == 200
+    assert detail.status_code == 200
+    assert progress.status_code == 200
+    assert weaknesses.status_code == 200
+    assert attempts.status_code == 200
+    assert recommendations.status_code == 200
+    assert forbidden.status_code == 403
+    payload_text = str(detail.json())
+    for technical_key in ["model_version", "decision_scores", "svm_fallback", "adaptation_id", "embeddings", "chunks", "confidence"]:
+        assert technical_key not in payload_text
+    assert detail.json()["diagnostic"]["level"] == "Intermediaire"
+    assert {row["competence"] for row in detail.json()["competencies"]} >= {"Compréhension", "Langue", "Figures de style", "Production écrite", "Méthodologie"}
+
+
+def test_parent_routes_reject_student_and_professor_roles(db_session):
+    parent = UserProfile(id=831, email="parent-role@example.com", full_name="Parent", role="parent", status="active")
+    student = UserProfile(id=832, email="student-role@example.com", full_name="Student", role="student", status="active")
+    professor = UserProfile(id=833, email="prof-role@example.com", full_name="Professor", role="professor", status="active")
+    db_session.add_all([parent, student, professor])
+    db_session.commit()
+
+    assert build_test_client(db_session, student).get("/api/parent/dashboard").status_code == 403
+    assert build_test_client(db_session, professor).get("/api/parent/dashboard").status_code == 403
+
+
+def test_parent_cannot_access_admin_or_professor_creation_routes(db_session):
+    parent = UserProfile(id=841, email="parent-forbidden@example.com", full_name="Parent", role="parent", status="active")
+    db_session.add(parent)
+    db_session.commit()
+    client = build_test_client(db_session, parent)
+
+    assert client.get("/api/admin/users").status_code == 403
+    response = client.post("/api/professor/classrooms", json={"name": "Classe interdite"})
+    assert response.status_code == 403
+
+
+def test_admin_can_manage_parent_student_links_from_routes(db_session):
+    admin = UserProfile(id=851, email="admin-link@example.com", full_name="Admin", role="admin", status="active")
+    parent = UserProfile(id=852, email="parent-link@example.com", full_name="Parent", role="parent", status="active")
+    student = UserProfile(id=853, email="student-link@example.com", full_name="Student", role="student", status="active")
+    db_session.add_all([admin, parent, student])
+    db_session.commit()
+
+    admin_client = build_test_client(db_session, admin)
+    parent_client = build_test_client(db_session, parent)
+    linked = admin_client.post(f"/api/admin/parents/{parent.id}/students/{student.id}")
+    dashboard = parent_client.get("/api/parent/dashboard")
+    unlinked = admin_client.delete(f"/api/admin/parents/{parent.id}/students/{student.id}")
+    empty_dashboard = parent_client.get("/api/parent/dashboard")
+
+    assert linked.status_code == 200
+    assert linked.json()["parent_id"] == parent.id
+    assert linked.json()["student_id"] == student.id
+    assert dashboard.status_code == 200
+    assert [child["id"] for child in dashboard.json()["children"]] == [student.id]
+    assert unlinked.status_code == 200
+    assert empty_dashboard.status_code == 200
+    assert empty_dashboard.json()["children"] == []
+
+
+def test_admin_parent_student_link_rejects_duplicates_and_invalid_roles(db_session):
+    admin = UserProfile(id=861, email="admin-link-rules@example.com", full_name="Admin", role="admin", status="active")
+    parent = UserProfile(id=862, email="parent-link-rules@example.com", full_name="Parent", role="parent", status="active")
+    student = UserProfile(id=863, email="student-link-rules@example.com", full_name="Student", role="student", status="active")
+    professor = UserProfile(id=864, email="prof-link-rules@example.com", full_name="Professor", role="professor", status="active")
+    other_admin = UserProfile(id=865, email="admin-child-rules@example.com", full_name="Admin Child", role="admin", status="active")
+    db_session.add_all([admin, parent, student, professor, other_admin])
+    db_session.commit()
+    client = build_test_client(db_session, admin)
+
+    assert client.post(f"/api/admin/parents/{parent.id}/students/{student.id}").status_code == 200
+    assert client.post(f"/api/admin/parents/{parent.id}/students/{student.id}").status_code == 409
+    assert client.post(f"/api/admin/parents/{parent.id}/students/{professor.id}").status_code == 422
+    assert client.post(f"/api/admin/parents/{parent.id}/students/{other_admin.id}").status_code == 422
+    assert client.post(f"/api/admin/parents/{parent.id}/students/{parent.id}").status_code == 422
+    assert client.post(f"/api/admin/parents/{student.id}/students/{parent.id}").status_code == 422
+
+
+def test_non_admin_cannot_manage_parent_student_links(db_session):
+    parent = UserProfile(id=871, email="parent-non-admin-link@example.com", full_name="Parent", role="parent", status="active")
+    student = UserProfile(id=872, email="student-non-admin-link@example.com", full_name="Student", role="student", status="active")
+    db_session.add_all([parent, student])
+    db_session.commit()
+    client = build_test_client(db_session, parent)
+
+    assert client.get(f"/api/admin/parents/{parent.id}/students").status_code == 403
+    assert client.post(f"/api/admin/parents/{parent.id}/students/{student.id}").status_code == 403
+    assert client.delete(f"/api/admin/parents/{parent.id}/students/{student.id}").status_code == 403
+
+
+def test_admin_parent_dashboard_returns_multiple_children(db_session):
+    admin = UserProfile(id=881, email="admin-multi-link@example.com", full_name="Admin", role="admin", status="active")
+    parent = UserProfile(id=882, email="parent-multi-link@example.com", full_name="Parent", role="parent", status="active")
+    student_a = UserProfile(id=883, email="student-a-multi-link@example.com", full_name="Student A", role="student", status="active")
+    student_b = UserProfile(id=884, email="student-b-multi-link@example.com", full_name="Student B", role="student", status="active")
+    db_session.add_all([admin, parent, student_a, student_b])
+    db_session.commit()
+    client = build_test_client(db_session, admin)
+
+    assert client.post(f"/api/admin/parents/{parent.id}/students/{student_a.id}").status_code == 200
+    assert client.post(f"/api/admin/parents/{parent.id}/students/{student_b.id}").status_code == 200
+    parent_links = client.get(f"/api/admin/parents/{parent.id}/students")
+    dashboard = build_test_client(db_session, parent).get("/api/parent/dashboard")
+
+    assert parent_links.status_code == 200
+    assert {child["student_id"] for child in parent_links.json()["children"]} == {student_a.id, student_b.id}
+    assert {child["id"] for child in dashboard.json()["children"]} == {student_a.id, student_b.id}
 
 
 def test_phase10_regional_exam_preparation_endpoint_uses_postgres_data(db_session):

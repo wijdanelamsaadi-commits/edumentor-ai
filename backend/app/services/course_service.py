@@ -10,6 +10,7 @@ from fastapi import HTTPException, UploadFile
 from sqlalchemy import or_, select
 from sqlalchemy.orm import Session, selectinload
 
+from app.core.config import get_settings
 from app.models.persistence import (
     Classroom,
     ClassroomCourseAssignment,
@@ -33,7 +34,7 @@ from app.models.persistence import (
 from app.schemas.lesson_content import validate_structured_blocks
 from app.services.mock_data import COURSES as FALLBACK_COURSES, QUIZZES as FALLBACK_QUIZZES
 
-DOCS_DIR = Path(__file__).resolve().parents[2] / "docs" / "courses"
+DOCS_DIR = Path(get_settings().get("docs_dir") or Path(__file__).resolve().parents[2] / "docs") / "courses"
 MAX_PDF_SIZE = 20 * 1024 * 1024
 
 
@@ -52,7 +53,7 @@ def seed_courses_from_mock(db: Session) -> None:
 
 
 def attach_default_catalog_metadata(db: Session) -> None:
-    subject = db.scalars(select(Subject).where(Subject.slug == "intelligence-artificielle")).first()
+    subject = db.scalars(select(Subject).where(Subject.slug == "francais")).first()
     difficulty_by_slug = {
         item.slug: item
         for item in db.scalars(select(DifficultyLevel).where(DifficultyLevel.slug.in_(["debutant", "intermediaire", "avance"])))

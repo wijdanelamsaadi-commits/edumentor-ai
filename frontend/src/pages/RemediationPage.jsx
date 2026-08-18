@@ -4,7 +4,6 @@ import {
   compareRemediationPlan,
   completeRemediationItem,
   createPersonalizedAssessment,
-  generateRemediationLessons,
   getRemediationPlan,
 } from '../services/api.js'
 
@@ -13,7 +12,6 @@ function RemediationPage() {
   const [plan, setPlan] = useState(null)
   const [comparison, setComparison] = useState(null)
   const [message, setMessage] = useState('')
-  const [generatingLessons, setGeneratingLessons] = useState(false)
 
   const refresh = useCallback(() => {
     Promise.allSettled([getRemediationPlan(planId), compareRemediationPlan(planId)])
@@ -40,19 +38,6 @@ function RemediationPage() {
       setPlan(updated)
     } catch (err) {
       setMessage(err.message || 'Mise a jour impossible.')
-    }
-  }
-
-  async function generateLessons() {
-    try {
-      setGeneratingLessons(true)
-      const result = await generateRemediationLessons(planId)
-      setMessage(result.lessons?.length ? 'Mini-cours personnalises prets.' : 'Aucun mini-cours supplementaire a generer.')
-      refresh()
-    } catch (err) {
-      setMessage(err.message || 'Generation des mini-cours impossible.')
-    } finally {
-      setGeneratingLessons(false)
     }
   }
 
@@ -100,9 +85,6 @@ function RemediationPage() {
           <p>Le test final cible les competences faibles, les chapitres a renforcer et les mini-cours termines.</p>
         </div>
         <div className="admin-actions">
-          <button className="outline-button" disabled={generatingLessons} onClick={generateLessons} type="button">
-            {generatingLessons ? 'Generation en cours...' : 'Generer les mini-cours'}
-          </button>
           <button className="primary-button" disabled={plan.progress < 100} onClick={createTest} type="button">Passer le test personnalise</button>
         </div>
       </article>
@@ -123,10 +105,7 @@ function RemediationPage() {
           </div>
         )) : (
           <div className="admin-empty">
-            <p>Aucun mini-cours personnalise genere pour ce parcours.</p>
-            <button className="outline-button" disabled={generatingLessons} onClick={generateLessons} type="button">
-              {generatingLessons ? 'Generation en cours...' : 'Generer maintenant'}
-            </button>
+            <p>Les mini-cours personnalises sont prepares automatiquement a partir de vos resultats.</p>
           </div>
         )}
       </article>

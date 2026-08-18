@@ -19,6 +19,7 @@ from app.models.persistence import (
     Assessment,
     AssessmentAnswer,
     AssessmentAttempt,
+    AssessmentQuestion,
     Course,
     CourseChapter,
     Notification,
@@ -59,7 +60,7 @@ ALLOWED_BLOCK_TYPES = {
 def generate_lessons_for_plan(db: Session, user: UserProfile, plan_id: int, use_groq: bool = False, commit: bool = True) -> dict:
     plan = get_student_plan(db, user, plan_id)
     source_attempt = get_source_attempt(db, plan)
-    weak_groups = group_incorrect_answers(source_attempt)
+    weak_groups = plan_groups_from_items(plan, source_attempt)
     created_or_existing: list[PersonalizedLesson] = []
 
     for group in weak_groups:
@@ -187,7 +188,7 @@ def list_professor_lessons(db: Session, user: UserProfile, filters: dict) -> lis
         query = query.where(PersonalizedLesson.status == str(filters["status"]))
     if filters.get("classroom_id"):
         query = query.where(Assessment.classroom_id == int(filters["classroom_id"]))
-    return [serialize_lesson(item, professor_view=True) for item in db.scalars(query.order_by(PersonalizedLesson.created_at.desc()))]
+    return [serialize_professor_tracking_lesson(db, item) for item in db.scalars(query.order_by(PersonalizedLesson.created_at.desc()))]
 
 
 def get_professor_lesson(db: Session, user: UserProfile, lesson_id: int) -> PersonalizedLesson:
@@ -227,6 +228,40 @@ def approve_professor_lesson(db: Session, user: UserProfile, lesson_id: int) -> 
     db.commit()
     db.refresh(lesson)
     return serialize_lesson(lesson, professor_view=True)
+
+
+def serialize_professor_tracking_lesson(db: Session, lesson: PersonalizedLesson) -> dict:
+    data = serialize_lesson(lesson, professor_view=True)
+    plan = lesson.plan
+    after_score = latest_personalized_score_for_plan(db, plan)
+    initial_score = float(plan.initial_score or 0) if plan else None
+    data.update(
+        {
+            "plan_status": plan.status if plan else None,
+            "initial_score": initial_score,
+            "after_score": after_score,
+            "evolution_points": round(after_score - initial_score, 2) if after_score is not None and initial_score is not None else None,
+        }
+    )
+    return data
+
+
+def latest_personalized_score_for_plan(db: Session, plan: RemediationPlan | None) -> float | None:
+    if plan is None:
+        return None
+    attempts = db.scalars(
+        select(AssessmentAttempt)
+        .join(Assessment, Assessment.id == AssessmentAttempt.assessment_id)
+        .join(AssessmentQuestion, AssessmentQuestion.assessment_id == Assessment.id)
+        .where(
+            AssessmentAttempt.student_id == plan.student_id,
+            AssessmentAttempt.completed.is_(True),
+            Assessment.assessment_type == "personalized",
+            AssessmentQuestion.source_attempt_id == plan.source_attempt_id,
+        )
+        .order_by(AssessmentAttempt.submitted_at.desc(), AssessmentAttempt.id.desc())
+    ).all()
+    return float(attempts[0].percentage or 0) if attempts else None
 
 
 def serialize_lesson(lesson: PersonalizedLesson, professor_view: bool = False) -> dict:
@@ -313,6 +348,18 @@ def group_incorrect_answers(attempt: AssessmentAttempt) -> list[dict]:
         )
         group["answers"].append(answer)
     return list(groups.values())
+
+
+def plan_groups_from_items(plan: RemediationPlan, attempt: AssessmentAttempt) -> list[dict]:
+    allowed_keys = {
+        (item.chapter_id, item.skill_id)
+        for item in plan.items
+        if item.required and (item.chapter_id is not None or item.skill_id is not None)
+    }
+    if not allowed_keys:
+        return []
+    groups = group_incorrect_answers(attempt)
+    return [group for group in groups if (group["chapter_id"], group["skill_id"]) in allowed_keys]
 
 
 def build_deterministic_lesson(db: Session, plan: RemediationPlan, attempt: AssessmentAttempt, group: dict) -> dict:

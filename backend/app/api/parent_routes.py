@@ -28,6 +28,42 @@ def get_parent_student_detail(
     return parent_service.get_child_dashboard(db, current_parent, student_id)
 
 
+@router.get("/students/{student_id}/progress")
+def get_parent_student_progress(
+    student_id: int,
+    db: Session = Depends(get_db),
+    current_parent: UserProfile = Depends(get_current_parent),
+) -> dict:
+    return parent_service.get_child_progress(db, current_parent, student_id)
+
+
+@router.get("/students/{student_id}/weaknesses")
+def get_parent_student_weaknesses(
+    student_id: int,
+    db: Session = Depends(get_db),
+    current_parent: UserProfile = Depends(get_current_parent),
+) -> dict:
+    return parent_service.get_child_weaknesses(db, current_parent, student_id)
+
+
+@router.get("/students/{student_id}/attempts")
+def get_parent_student_attempts(
+    student_id: int,
+    db: Session = Depends(get_db),
+    current_parent: UserProfile = Depends(get_current_parent),
+) -> dict:
+    return parent_service.get_child_attempts(db, current_parent, student_id)
+
+
+@router.get("/students/{student_id}/recommendations")
+def get_parent_student_recommendations(
+    student_id: int,
+    db: Session = Depends(get_db),
+    current_parent: UserProfile = Depends(get_current_parent),
+) -> dict:
+    return parent_service.get_child_recommendations(db, current_parent, student_id)
+
+
 @router.get("/notification-preferences")
 def get_parent_notification_preferences(
     db: Session = Depends(get_db),

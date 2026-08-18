@@ -72,6 +72,16 @@ def submit_regional_exam(
     return regional_exam_service.submit_regional_exam(db, current_student, exam_id, payload)
 
 
+@router.post("/regional-exams/{exam_id}/answers")
+def save_regional_exam_answers(
+    exam_id: int,
+    payload: dict,
+    db: Session = Depends(get_db),
+    current_student: UserProfile = Depends(get_current_student),
+) -> dict:
+    return regional_exam_service.save_regional_exam_answers(db, current_student, exam_id, payload)
+
+
 @router.get("/regional-exams/{exam_id}/attempts")
 def list_regional_attempts(
     exam_id: int,

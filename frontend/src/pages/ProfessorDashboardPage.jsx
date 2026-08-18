@@ -137,6 +137,22 @@ function ProfessorDashboardPage() {
       </div>
       <article className="panel-card">
         <div className="panel-title">
+          <h2>Suivi des etudiants</h2>
+          <Link to="/professor/classrooms">Voir les classes</Link>
+        </div>
+        {(dashboard?.student_tracking || []).length ? dashboard.student_tracking.map((student) => (
+          <div className="history-item" key={student.student_id}>
+            <span><Users size={18} /></span>
+            <div>
+              <strong>{student.full_name}</strong>
+              <p>{student.email} - {student.level || '--'} - {student.global_progress || 0}% - Point faible : {student.main_weak_point?.competence || 'Non evalue'}</p>
+            </div>
+            <Link to={`/professor/students/${student.student_id}`}>Suivi</Link>
+          </div>
+        )) : <p className="admin-empty">Aucun etudiant affecte a vos classes.</p>}
+      </article>
+      <article className="panel-card">
+        <div className="panel-title">
           <h2>Parcours personnalises actifs</h2>
           <span>{dashboard?.study_path_active_count || 0}</span>
         </div>

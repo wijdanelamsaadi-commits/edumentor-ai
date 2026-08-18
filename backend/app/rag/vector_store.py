@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import re
+import shutil
 import unicodedata
 from pathlib import Path
 from threading import Lock
@@ -10,9 +11,11 @@ from typing import Any
 
 os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
 
+from app.core.config import BACKEND_DIR, get_settings
 from app.rag.document_store import RagChunk, get_chunks, load_course_documents
 
-CHROMA_DIR = Path(__file__).resolve().parents[2] / "data" / "chroma"
+CHROMA_DIR = Path(get_settings().get("chroma_dir") or Path(__file__).resolve().parents[2] / "data" / "chroma")
+DEFAULT_CHROMA_DIR = BACKEND_DIR / "data" / "chroma"
 COLLECTION_NAME = "edumentor_course_chunks"
 EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
 
@@ -82,6 +85,15 @@ def initialize_vector_store() -> dict[str, Any]:
             _index_status.update({"error": str(exc)})
 
     return get_vector_store_status()
+
+
+def bootstrap_chroma_volume() -> None:
+    if CHROMA_DIR == DEFAULT_CHROMA_DIR or not DEFAULT_CHROMA_DIR.exists():
+        return
+    CHROMA_DIR.mkdir(parents=True, exist_ok=True)
+    if any(CHROMA_DIR.iterdir()):
+        return
+    shutil.copytree(DEFAULT_CHROMA_DIR, CHROMA_DIR, dirs_exist_ok=True)
 
 
 def semantic_search(

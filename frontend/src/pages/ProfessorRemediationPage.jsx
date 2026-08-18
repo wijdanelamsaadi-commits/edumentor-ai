@@ -1,19 +1,19 @@
-import { CheckCircle2, Edit3 } from 'lucide-react'
+import { CheckCircle2, Eye } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { approveProfessorPersonalizedLesson, getProfessorRemediationLessons, updateProfessorPersonalizedLesson } from '../services/api.js'
+import { getProfessorRemediationLessons } from '../services/api.js'
 
 const SECTIONS = [
-  { key: 'ready', label: 'A verifier' },
-  { key: 'approved', label: 'Approuves' },
+  { key: 'generated', label: 'Generees' },
+  { key: 'assigned', label: 'Assignees' },
   { key: 'active', label: 'En cours' },
   { key: 'completed', label: 'Termines' },
+  { key: 'reevaluate', label: 'A reevaluer' },
 ]
 
 function ProfessorRemediationPage() {
   const [lessons, setLessons] = useState([])
   const [selectedLesson, setSelectedLesson] = useState(null)
   const [message, setMessage] = useState('')
-  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     refresh()
@@ -26,50 +26,19 @@ function ProfessorRemediationPage() {
   }
 
   const groupedLessons = useMemo(() => ({
-    ready: lessons.filter((lesson) => ['draft', 'ready'].includes(lesson.status)),
-    approved: lessons.filter((lesson) => lesson.status === 'approved'),
+    generated: lessons.filter((lesson) => ['draft', 'ready'].includes(lesson.status)),
+    assigned: lessons.filter((lesson) => lesson.status === 'approved'),
     active: lessons.filter((lesson) => !['draft', 'ready', 'approved', 'completed', 'archived'].includes(lesson.status)),
     completed: lessons.filter((lesson) => lesson.status === 'completed'),
+    reevaluate: lessons.filter((lesson) => lesson.plan_status === 'to_reevaluate'),
   }), [lessons])
-
-  async function approveLesson(lesson) {
-    try {
-      setSaving(true)
-      await approveProfessorPersonalizedLesson(lesson.id)
-      setMessage('Mini-cours approuve.')
-      refresh()
-    } catch (err) {
-      setMessage(err.message || 'Approbation impossible.')
-    } finally {
-      setSaving(false)
-    }
-  }
-
-  async function saveLesson() {
-    if (!selectedLesson) return
-    try {
-      setSaving(true)
-      await updateProfessorPersonalizedLesson(selectedLesson.id, {
-        title: selectedLesson.title,
-        objective: selectedLesson.objective,
-        structured_content: selectedLesson.structured_content,
-      })
-      setMessage('Mini-cours mis a jour.')
-      setSelectedLesson(null)
-      refresh()
-    } catch (err) {
-      setMessage(err.message || 'Modification impossible.')
-    } finally {
-      setSaving(false)
-    }
-  }
 
   return (
     <section className="page-section admin-page">
       <div className="page-heading-row">
         <div className="page-heading">
           <h1>Remediation</h1>
-          <p>Suivi et validation des mini-cours personnalises.</p>
+          <p>Suivi automatique des mini-cours personnalises et de l'evolution des competences.</p>
         </div>
       </div>
       {message && <article className="panel-card"><p>{message}</p></article>}
@@ -83,48 +52,49 @@ function ProfessorRemediationPage() {
                 <strong>{lesson.title}</strong>
                 <p>{lesson.student_name} - {lesson.course_title} - {lesson.skill_name || lesson.chapter_title || 'Notion ciblee'}</p>
                 <small>{lesson.reason}</small>
+                <p>
+                  Avant : {formatScore(lesson.initial_score)} - Apres : {formatScore(lesson.after_score)}
+                  {Number.isFinite(Number(lesson.evolution_points)) ? ` - Evolution : ${Number(lesson.evolution_points) >= 0 ? '+' : ''}${Math.round(Number(lesson.evolution_points))} pts` : ''}
+                </p>
               </div>
-              <button className="outline-button" onClick={() => setSelectedLesson(lesson)} type="button"><Edit3 size={16} /> Modifier</button>
-              {['draft', 'ready'].includes(lesson.status) && (
-                <button className="primary-button" disabled={saving} onClick={() => approveLesson(lesson)} type="button">Approuver</button>
-              )}
+              <button className="outline-button" onClick={() => setSelectedLesson(lesson)} type="button"><Eye size={16} /> Consulter</button>
             </div>
           )) : <p className="admin-empty">Aucun mini-cours dans cette section.</p>}
         </article>
       ))}
       {selectedLesson && (
         <article className="panel-card">
-          <div className="panel-title"><h2>Modifier le mini-cours</h2><p>Validation professeur</p></div>
-          <label>
-            Titre
-            <input value={selectedLesson.title} onChange={(event) => setSelectedLesson({ ...selectedLesson, title: event.target.value })} />
-          </label>
-          <label>
-            Objectif
-            <textarea value={selectedLesson.objective} onChange={(event) => setSelectedLesson({ ...selectedLesson, objective: event.target.value })} />
-          </label>
-          <label>
-            Contenu structure JSON
-            <textarea
-              rows={10}
-              value={JSON.stringify(selectedLesson.structured_content || [], null, 2)}
-              onChange={(event) => {
-                try {
-                  setSelectedLesson({ ...selectedLesson, structured_content: JSON.parse(event.target.value) })
-                } catch {
-                  setMessage('JSON invalide.')
-                }
-              }}
-            />
-          </label>
+          <div className="panel-title"><h2>{selectedLesson.title}</h2><p>Lecture seule</p></div>
+          <p><strong>Etudiant :</strong> {selectedLesson.student_name}</p>
+          <p><strong>Competence :</strong> {selectedLesson.skill_name || selectedLesson.chapter_title || 'Notion ciblee'}</p>
+          <p><strong>Statut :</strong> {selectedLesson.status}</p>
+          <p>{selectedLesson.objective}</p>
+          {(selectedLesson.structured_content || []).map((block, index) => (
+            <div className="history-item" key={`${selectedLesson.id}-${block.type}-${index}`}>
+              <span>{index + 1}</span>
+              <div>
+                <strong>{block.title || block.type}</strong>
+                <p>{formatBlockContent(block.content)}</p>
+              </div>
+            </div>
+          ))}
           <div className="admin-actions">
-            <button className="outline-button" onClick={() => setSelectedLesson(null)} type="button">Annuler</button>
-            <button className="primary-button" disabled={saving} onClick={saveLesson} type="button">Sauvegarder</button>
+            <button className="outline-button" onClick={() => setSelectedLesson(null)} type="button">Fermer</button>
           </div>
         </article>
       )}
     </section>
   )
+}
+
+function formatScore(value) {
+  return Number.isFinite(Number(value)) ? `${Math.round(Number(value))}%` : 'En attente'
+}
+
+function formatBlockContent(content) {
+  if (Array.isArray(content)) return content.join(' - ')
+  if (content && typeof content === 'object') return content.question || content.explanation || JSON.stringify(content)
+  return content || ''
 }
 
 export default ProfessorRemediationPage

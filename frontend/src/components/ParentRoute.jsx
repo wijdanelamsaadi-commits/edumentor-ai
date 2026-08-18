@@ -2,7 +2,7 @@ import RequireRole from './RequireRole.jsx'
 
 function ParentRoute({ children }) {
   return (
-    <RequireRole allowedRoles={['parent', 'admin']} fallback="/login">
+    <RequireRole allowedRoles={['parent']} fallback="/login">
       {children}
     </RequireRole>
   )

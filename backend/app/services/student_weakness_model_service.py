@@ -4,6 +4,7 @@ from collections import defaultdict
 from datetime import datetime
 from functools import lru_cache
 import json
+import os
 from pathlib import Path
 import re
 import unicodedata
@@ -25,7 +26,10 @@ from app.models.persistence import (
 MODEL_VERSION = "student-weakness-v1-20260802"
 DATASET_VERSION = "synthetic-controlled-v1-20260802"
 COLLECTOR_VERSION = "weakness-event-collector-v1.2-20260802"
-MODEL_PATH = Path(__file__).resolve().parents[1] / "nlp_runtime" / "models" / "student_weakness_predictor_v1.joblib"
+APP_ROOT = Path(__file__).resolve().parents[1]
+BACKEND_ROOT = APP_ROOT.parent
+MODEL_PATH = APP_ROOT / "nlp_runtime" / "models" / "student_weakness_predictor_v1.joblib"
+V2_MODEL_PATH = BACKEND_ROOT / "model_evaluation_v2_artifacts" / "models" / "student-weakness-v2-20260806.joblib"
 FEATURE_NAMES = [
     "average_score",
     "correct_rate",
@@ -48,13 +52,29 @@ MIN_EVENTS_FOR_PREDICTION = 2
 
 @lru_cache(maxsize=1)
 def load_model_artifact() -> dict | None:
-    if not MODEL_PATH.exists():
+    model_path = selected_model_path()
+    if not model_path.exists():
         return None
     try:
-        artifact = joblib.load(MODEL_PATH)
+        artifact = joblib.load(model_path)
     except Exception:
         return None
     return artifact if isinstance(artifact, dict) else None
+
+
+def selected_model_key() -> str:
+    requested = os.getenv("STUDENT_WEAKNESS_MODEL_VERSION", "v1").strip().lower()
+    return "v2" if requested == "v2" else "v1"
+
+
+def selected_model_path() -> Path:
+    return V2_MODEL_PATH if selected_model_key() == "v2" else MODEL_PATH
+
+
+def model_activation_status() -> str:
+    if selected_model_key() == "v2":
+        return "v2_candidate_pending_human_validation"
+    return "v1_default_active"
 
 
 def get_model_debug() -> dict:
@@ -65,7 +85,10 @@ def get_model_debug() -> dict:
         "dataset_version": (artifact or {}).get("dataset_version", DATASET_VERSION),
         "dataset_type": "synthetic_controlled",
         "collector_version": COLLECTOR_VERSION,
-        "model_path": str(MODEL_PATH),
+        "selected_model_version": selected_model_key(),
+        "activation_status": model_activation_status(),
+        "human_validation_status": "pending_pedagogical_validation" if selected_model_key() == "v2" else "not_required_for_v1",
+        "model_path": str(selected_model_path()),
         "feature_names": (artifact or {}).get("feature_names", FEATURE_NAMES),
         "labels": (artifact or {}).get("labels", ["faible", "a_renforcer", "maitrise"]),
         "metrics": (artifact or {}).get("metrics", {}),
@@ -102,7 +125,7 @@ def predict_student_weaknesses(db: Session, student: UserProfile) -> dict:
             "competence": row["competence"],
             "status": row["status"],
             "confidence": row["confidence"],
-            "source": "student_weakness_predictor_v1",
+            "source": "student_weakness_predictor_v2" if selected_model_key() == "v2" else "student_weakness_predictor_v1",
         }
         for row in weak_rows[:5]
     ]
@@ -350,7 +373,7 @@ def predict_competence(competence: str, features: dict) -> dict:
         classes = list(model.classes_)
         probability_map = {str(name): float(probabilities[index]) for index, name in enumerate(classes)}
         confidence = max(probability_map.values()) if probability_map else 0.0
-        method = "logistic_regression"
+        method = str((artifact or {}).get("version") or "student_weakness_model")
     else:
         label = rule_fallback_label(features)
         probability_map = {label: 1.0}

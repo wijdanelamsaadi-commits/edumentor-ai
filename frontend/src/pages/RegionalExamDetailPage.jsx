@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   ArrowLeft,
   ArrowRight,
@@ -14,7 +14,7 @@ import {
   Target,
 } from 'lucide-react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { getRegionalExam, getRegionalExamAttempts, startRegionalExam, submitRegionalExam } from '../services/api.js'
+import { getRegionalExam, getRegionalExamAttempts, saveRegionalExamAnswers, startRegionalExam, submitRegionalExam } from '../services/api.js'
 
 function RegionalExamDetailPage() {
   const { examId } = useParams()
@@ -29,7 +29,10 @@ function RegionalExamDetailPage() {
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
+  const [viewMode, setViewMode] = useState('guided')
+  const [saveStatus, setSaveStatus] = useState('')
   const [supportExpanded, setSupportExpanded] = useState(false)
+  const lastSavedSignatureRef = useRef('')
 
   useEffect(() => {
     let cancelled = false
@@ -59,11 +62,39 @@ function RegionalExamDetailPage() {
   const progress = questions.length ? Math.round((answeredCount / questions.length) * 100) : 0
   const latestCompleted = useMemo(() => attempts.find((item) => item.status === 'completed'), [attempts])
 
+  useEffect(() => {
+    if (!attempt?.attempt_id) return undefined
+    const signature = JSON.stringify(answers)
+    if (signature === lastSavedSignatureRef.current) return undefined
+    const timeout = window.setTimeout(async () => {
+      try {
+        setSaveStatus('Enregistrement...')
+        const saved = await saveRegionalExamAnswers(examId, {
+          attempt_id: attempt.attempt_id,
+          started_at: startedAt || attempt.started_at || new Date().toISOString(),
+          answers,
+        })
+        lastSavedSignatureRef.current = signature
+        const savedAnswers = extractAnswersFromAttempt(saved)
+        if (Object.keys(savedAnswers).length) {
+          setAnswers((current) => ({ ...current, ...savedAnswers }))
+        }
+        setSaveStatus('Réponse enregistrée')
+      } catch (error) {
+        setSaveStatus(error?.message || 'Enregistrement impossible')
+      }
+    }, 700)
+    return () => window.clearTimeout(timeout)
+  }, [answers, attempt, examId, startedAt])
+
   async function start() {
     try {
       const data = await startRegionalExam(examId)
       setAttempt(data)
       setStartedAt(data.started_at || new Date().toISOString())
+      const savedAnswers = data.answers || {}
+      setAnswers(savedAnswers)
+      lastSavedSignatureRef.current = JSON.stringify(savedAnswers)
       setMessage('')
     } catch (error) {
       setMessage(error?.message || 'Impossible de démarrer cet examen.')
@@ -89,6 +120,7 @@ function RegionalExamDetailPage() {
         answers,
       })
       setResult(data)
+      setAttempts((current) => [data, ...current.filter((item) => item.attempt_id !== data.attempt_id)])
       setMessage('')
     } catch (error) {
       setMessage(error?.message || 'Soumission impossible.')
@@ -173,45 +205,62 @@ function RegionalExamDetailPage() {
           <button className="primary-button" onClick={start} type="button">Commencer</button>
         </article>
       ) : (
-        <div className="regional-taking-layout">
-          <main className="regional-taking-main">
-            <SupportTextCard
-              currentIndex={currentIndex}
-              expanded={supportExpanded}
-              onToggle={() => setSupportExpanded((value) => !value)}
-              progress={progress}
-              questionCount={questions.length}
-              supportText={exam.support_text}
-            />
-            <QuestionCard
-              answer={answers[currentQuestion.id] || ''}
-              currentIndex={currentIndex}
-              onAnswer={updateAnswer}
-              onNext={() => setCurrentIndex(Math.min(questions.length - 1, currentIndex + 1))}
-              onPrevious={() => setCurrentIndex(Math.max(0, currentIndex - 1))}
-              onSubmit={submit}
-              question={currentQuestion}
-              questionCount={questions.length}
-              submitting={submitting}
-            />
-          </main>
-          <aside className="regional-taking-aside" aria-label="Navigation de l'examen">
-            <QuestionNavigation
-              answers={answers}
-              currentIndex={currentIndex}
-              onSelect={setCurrentIndex}
-              questions={questions}
-            />
-            <ExamSummaryCard
+        <>
+          <ExamModeSwitcher mode={viewMode} onChange={setViewMode} saveStatus={saveStatus} />
+          {viewMode === 'guided' ? (
+            <div className="regional-taking-layout">
+              <main className="regional-taking-main">
+                <SupportTextCard
+                  currentIndex={currentIndex}
+                  expanded={supportExpanded}
+                  onToggle={() => setSupportExpanded((value) => !value)}
+                  progress={progress}
+                  questionCount={questions.length}
+                  supportText={exam.support_text}
+                />
+                <QuestionCard
+                  answer={answers[currentQuestion.id] || ''}
+                  currentIndex={currentIndex}
+                  onAnswer={updateAnswer}
+                  onNext={() => setCurrentIndex(Math.min(questions.length - 1, currentIndex + 1))}
+                  onPrevious={() => setCurrentIndex(Math.max(0, currentIndex - 1))}
+                  onSubmit={submit}
+                  question={currentQuestion}
+                  questionCount={questions.length}
+                  submitting={submitting}
+                />
+              </main>
+              <aside className="regional-taking-aside" aria-label="Navigation de l'examen">
+                <QuestionNavigation
+                  answers={answers}
+                  currentIndex={currentIndex}
+                  onSelect={setCurrentIndex}
+                  questions={questions}
+                />
+                <ExamSummaryCard
+                  answeredCount={answeredCount}
+                  onSubmit={submit}
+                  progress={progress}
+                  questionCount={questions.length}
+                  submitting={submitting}
+                  unansweredCount={unansweredCount}
+                />
+              </aside>
+            </div>
+          ) : (
+            <FullExamMode
               answeredCount={answeredCount}
+              answers={answers}
+              exam={exam}
+              onAnswer={updateAnswer}
               onSubmit={submit}
-              questionCount={questions.length}
-              score={latestCompleted?.score_on_20 ? `${formatNumber(latestCompleted.score_on_20)} / 20` : '0 / 20'}
+              progress={progress}
+              questions={questions}
               submitting={submitting}
               unansweredCount={unansweredCount}
             />
-          </aside>
-        </div>
+          )}
+        </>
       )}
     </section>
   )
@@ -226,6 +275,76 @@ function RegionalTakingHeader({ exam, onBack }) {
       <h1>{exam.title}</h1>
       <span className="regional-verified-badge"><CheckCircle2 size={16} /> Officiel vérifié</span>
     </header>
+  )
+}
+
+function ExamModeSwitcher({ mode, onChange, saveStatus }) {
+  return (
+    <article className="regional-mode-switcher" aria-label="Mode d'affichage de l'examen">
+      <div>
+        <button className={mode === 'guided' ? 'active' : ''} onClick={() => onChange('guided')} type="button">
+          Mode guidé
+        </button>
+        <button className={mode === 'full' ? 'active' : ''} onClick={() => onChange('full')} type="button">
+          Voir l'examen complet
+        </button>
+      </div>
+      {saveStatus && <span>{saveStatus}</span>}
+    </article>
+  )
+}
+
+function FullExamMode({ answeredCount, answers, exam, onAnswer, onSubmit, progress, questions, submitting, unansweredCount }) {
+  return (
+    <div className="regional-taking-layout regional-full-layout">
+      <main className="regional-taking-main">
+        <article className="regional-support-card regional-full-overview">
+          <header>
+            <div><ClipboardList size={22} /><h2>{exam.title}</h2></div>
+          </header>
+          <dl>
+            <div><dt>Œuvre</dt><dd>{exam.work_title || '--'}</dd></div>
+            <div><dt>Région</dt><dd>{exam.region || '--'}</dd></div>
+            <div><dt>Année</dt><dd>{exam.year || '--'}</dd></div>
+            <div><dt>Session</dt><dd>{exam.session || 'Normale'}</dd></div>
+            <div><dt>Durée</dt><dd>{exam.duration_minutes ? `${exam.duration_minutes} min` : '--'}</dd></div>
+            <div><dt>Barème</dt><dd>{formatNumber(exam.total_points || 0)} pts</dd></div>
+          </dl>
+        </article>
+
+        <article className="regional-support-card">
+          <header>
+            <div><BookOpen size={22} /><h2>Texte support</h2></div>
+          </header>
+          <div className="regional-support-text expanded">
+            {exam.support_text ? splitParagraphs(exam.support_text).map((paragraph, index) => (
+              <p key={`${index}-${paragraph.slice(0, 24)}`}>{paragraph}</p>
+            )) : <p>Aucun texte support fourni pour cet examen.</p>}
+          </div>
+        </article>
+
+        <div className="regional-full-question-list">
+          {questions.map((question, index) => (
+            <article className="regional-question-card regional-full-question" key={question.id}>
+              <p>{question.section || question.competence || 'Étude de texte'}</p>
+              <h2>Question {index + 1}</h2>
+              <h3>{question.question}</h3>
+              <QuestionRenderer answer={answers[question.id] || ''} onChange={(value) => onAnswer(question.id, value)} question={question} />
+            </article>
+          ))}
+        </div>
+      </main>
+      <aside className="regional-taking-aside" aria-label="Progression de l'examen">
+        <ExamSummaryCard
+          answeredCount={answeredCount}
+          onSubmit={onSubmit}
+          progress={progress}
+          questionCount={questions.length}
+          submitting={submitting}
+          unansweredCount={unansweredCount}
+        />
+      </aside>
+    </div>
   )
 }
 
@@ -289,6 +408,7 @@ function QuestionCard({ answer, currentIndex, onAnswer, onNext, onPrevious, onSu
 }
 
 function QuestionRenderer({ answer, onChange, question }) {
+  const questionType = String(question.question_type || '').toLowerCase()
   if (Array.isArray(question.choices) && question.choices.length) {
     return (
       <div className="regional-choice-list" role="radiogroup" aria-label={question.question}>
@@ -307,7 +427,15 @@ function QuestionRenderer({ answer, onChange, question }) {
       </div>
     )
   }
-  const rows = question.question_type === 'response_long' || question.question_type === 'production_ecrite' ? 8 : 5
+  if (questionType === 'response_short' || questionType === 'short_answer' || questionType === 'reponse_courte') {
+    return (
+      <label className="regional-answer-field">
+        <span>Votre réponse</span>
+        <input value={answer} onChange={(event) => onChange(event.target.value)} placeholder="Écrivez votre réponse ici..." />
+      </label>
+    )
+  }
+  const rows = questionType === 'response_long' || questionType === 'production_ecrite' || questionType === 'open_answer' ? 8 : 5
   return (
     <label className="regional-answer-field">
       <span>Votre réponse</span>
@@ -366,7 +494,7 @@ function QuestionNavigation({ answers, currentIndex, onSelect, questions }) {
   )
 }
 
-function ExamSummaryCard({ answeredCount, onSubmit, questionCount, score, submitting, unansweredCount }) {
+function ExamSummaryCard({ answeredCount, onSubmit, progress, questionCount, submitting, unansweredCount }) {
   return (
     <article className="regional-exam-summary-card">
       <h2>Résumé de l'examen</h2>
@@ -374,8 +502,13 @@ function ExamSummaryCard({ answeredCount, onSubmit, questionCount, score, submit
         <div><dt>Questions totales</dt><dd>{questionCount}</dd></div>
         <div><dt>Répondues</dt><dd>{answeredCount}</dd></div>
         <div><dt>Non répondues</dt><dd>{unansweredCount}</dd></div>
-        <div><dt>Score actuel</dt><dd>{score}</dd></div>
+        <div><dt>Progression</dt><dd>{answeredCount}/{questionCount}</dd></div>
       </dl>
+      {typeof progress === 'number' && (
+        <div className="regional-taking-progress" aria-label={`Progression ${progress}%`}>
+          <i style={{ width: `${progress}%` }} />
+        </div>
+      )}
       <button disabled={submitting} onClick={onSubmit} type="button">
         {submitting ? 'Soumission...' : "Terminer l'examen"}
       </button>
@@ -607,6 +740,16 @@ function splitParagraphs(text) {
     .split(/\n{2,}|\r\n{2,}/)
     .map((item) => item.trim())
     .filter(Boolean)
+}
+
+function extractAnswersFromAttempt(attemptData) {
+  const answers = {}
+  for (const question of attemptData?.questions || []) {
+    if (question?.id && question.selected_answer) {
+      answers[String(question.id)] = question.selected_answer
+    }
+  }
+  return answers
 }
 
 export default RegionalExamDetailPage

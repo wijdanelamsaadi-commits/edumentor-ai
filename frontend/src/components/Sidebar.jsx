@@ -62,7 +62,11 @@ const professorItems = [
 ]
 
 const parentItems = [
-  { icon: 'Home', path: '/parent/dashboard', label: 'Suivi parent' },
+  { icon: 'Home', path: '/parent/dashboard', label: 'Tableau de bord' },
+  { icon: 'BarChart3', path: '/parent/progress', label: 'Progression' },
+  { icon: 'ClipboardCheck', path: '/parent/results', label: 'Résultats' },
+  { icon: 'Target', path: '/parent/weaknesses', label: 'Points faibles' },
+  { icon: 'FileText', path: '/parent/regional-exams', label: 'Examens régionaux' },
   { icon: 'Settings', path: '/parent/settings', label: 'Parametres' },
 ]
 

@@ -89,7 +89,10 @@ function ProfessorClassroomDetailPage() {
               <span>{student.student_name}</span>
               <span>{student.email}</span>
               <span>{formatDate(student.joined_at)}</span>
-              <span><button className="outline-button" onClick={() => removeStudent(student.student_id)} type="button">Retirer</button></span>
+              <span className="admin-actions">
+                <Link className="outline-button" to={`/professor/students/${student.student_id}`}>Suivi</Link>
+                <button className="outline-button" onClick={() => removeStudent(student.student_id)} type="button">Retirer</button>
+              </span>
             </div>
           ))}
         </div>

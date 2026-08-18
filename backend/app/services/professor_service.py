@@ -8,8 +8,9 @@ from uuid import uuid4
 
 from fastapi import HTTPException, UploadFile, status
 from sqlalchemy import case, func, or_, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
+from app.core.config import get_settings
 from app.core.roles import UserRole
 from app.models.persistence import (
     AdminAuditLog,
@@ -23,6 +24,7 @@ from app.models.persistence import (
     CourseObjective,
     CourseProgress,
     CourseSkill,
+    DiagnosticResult,
     Quiz,
     QuizQuestion,
     QuizResult,
@@ -32,9 +34,9 @@ from app.models.persistence import (
     UserProfile,
 )
 from app.schemas.lesson_content import validate_structured_blocks
-from app.services import course_service, study_path_service
+from app.services import course_service, regional_exam_service, student_weakness_model_service, study_path_service
 
-DOCS_DIR = Path(__file__).resolve().parents[2] / "docs" / "courses"
+DOCS_DIR = Path(get_settings().get("docs_dir") or Path(__file__).resolve().parents[2] / "docs") / "courses"
 MAX_PDF_SIZE = 20 * 1024 * 1024
 
 
@@ -114,8 +116,97 @@ def get_dashboard(db: Session, current_user: UserProfile) -> dict:
         "average_course_progress": average_course_progress,
         "recent_courses": [serialize_professor_course(course) for course in sorted(courses, key=lambda item: item.updated_at or item.created_at, reverse=True)[:5]],
         "recent_student_activity": _recent_student_activity(db, course_ids),
+        "student_tracking": list_tracked_students(db, current_user)[:8],
         **assessment_stats,
         **study_path_service.professor_dashboard_stats(db, current_user),
+    }
+
+
+def list_tracked_students(db: Session, current_user: UserProfile) -> list[dict]:
+    student_ids = professor_student_ids(db, current_user)
+    users = list(db.scalars(select(UserProfile).where(UserProfile.id.in_(student_ids)).order_by(UserProfile.full_name))) if student_ids else []
+    return [serialize_tracked_student(db, student) for student in users]
+
+
+def get_tracked_student_detail(db: Session, current_user: UserProfile, student_id: int) -> dict:
+    student = get_professor_tracked_student(db, current_user, student_id)
+    prediction = student_weakness_model_service.predict_student_weaknesses(db, student)
+    progress_rows = list(db.scalars(select(CourseProgress).where(CourseProgress.user_id == student.id).order_by(CourseProgress.updated_at.desc())))
+    quiz_rows = list(db.scalars(select(QuizResult).where(QuizResult.user_id == student.id).order_by(QuizResult.created_at.desc())))
+    attempt_rows = list(db.scalars(
+        select(AssessmentAttempt)
+        .where(AssessmentAttempt.student_id == student.id)
+        .options(selectinload(AssessmentAttempt.assessment))
+        .order_by(AssessmentAttempt.submitted_at.desc(), AssessmentAttempt.started_at.desc())
+    ))
+    diagnostic_rows = list(db.scalars(select(DiagnosticResult).where(DiagnosticResult.user_id == student.id).order_by(DiagnosticResult.created_at.desc())))
+    classrooms = list(db.scalars(
+        select(Classroom)
+        .join(ClassroomMembership, ClassroomMembership.classroom_id == Classroom.id)
+        .where(ClassroomMembership.student_id == student.id, ClassroomMembership.active.is_(True))
+        .order_by(Classroom.name)
+    ))
+    return {
+        **serialize_tracked_student(db, student),
+        "classrooms": [
+            {"id": classroom.id, "name": classroom.name, "code": classroom.code}
+            for classroom in classrooms
+            if is_admin(current_user) or classroom.professor_id == current_user.id
+        ],
+        "diagnostics": [
+            {
+                "id": row.id,
+                "level": row.level,
+                "score": row.score,
+                "total": row.total,
+                "created_at": row.created_at.isoformat() if row.created_at else None,
+                "results_by_topic": row.results_by_topic or [],
+            }
+            for row in diagnostic_rows[:5]
+        ],
+        "course_progress": [
+            {
+                "course_id": row.course_id,
+                "course_title": db.get(Course, row.course_id).title if db.get(Course, row.course_id) else "Cours",
+                "progress": row.progress,
+                "chapters": row.chapters or [],
+                "updated_at": row.updated_at.isoformat() if row.updated_at else None,
+            }
+            for row in progress_rows
+        ],
+        "quiz_results": [
+            {
+                "id": row.id,
+                "course_id": row.course_id,
+                "course_title": db.get(Course, row.course_id).title if db.get(Course, row.course_id) else "Cours",
+                "score": row.score,
+                "correct": row.correct,
+                "total": row.total,
+                "recommendation": row.recommendation,
+                "created_at": row.created_at.isoformat() if row.created_at else None,
+            }
+            for row in quiz_rows[:10]
+        ],
+        "regional_attempts": [
+            {
+                "attempt_id": attempt.id,
+                "assessment_id": attempt.assessment_id,
+                "title": attempt.assessment.title if attempt.assessment else "Examen regional",
+                "status": "completed" if attempt.completed else "in_progress",
+                "score": attempt.score,
+                "percentage": attempt.percentage,
+                "submitted_at": attempt.submitted_at.isoformat() if attempt.submitted_at else None,
+                "started_at": attempt.started_at.isoformat() if attempt.started_at else None,
+            }
+            for attempt in attempt_rows
+            if regional_exam_service.is_regional_assessment(attempt.assessment)
+        ][:10],
+        "competencies": [
+            sanitize_prediction_row(row)
+            for row in prediction.get("competencies", [])
+        ],
+        "weak_points": [sanitize_weak_point(row) for row in prediction.get("weak_points", [])],
+        "recommendations": prediction.get("priority_recommendations", []),
     }
 
 
@@ -607,6 +698,93 @@ def _owned_courses(db: Session, current_user: UserProfile) -> list[Course]:
     if not is_admin(current_user):
         query = query.where(Course.professor_id == current_user.id)
     return list(db.scalars(query))
+
+
+def professor_student_ids(db: Session, current_user: UserProfile) -> list[int]:
+    query = (
+        select(ClassroomMembership.student_id)
+        .join(Classroom, Classroom.id == ClassroomMembership.classroom_id)
+        .where(ClassroomMembership.active.is_(True), Classroom.active.is_(True))
+    )
+    if not is_admin(current_user):
+        query = query.where(Classroom.professor_id == current_user.id)
+    return sorted({int(row) for row in db.scalars(query).all()})
+
+
+def get_professor_tracked_student(db: Session, current_user: UserProfile, student_id: int) -> UserProfile:
+    if student_id not in professor_student_ids(db, current_user):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Etudiant non autorise")
+    student = db.get(UserProfile, student_id)
+    if student is None or student.role != UserRole.STUDENT.value:
+        raise HTTPException(status_code=404, detail="Etudiant introuvable")
+    return student
+
+
+def serialize_tracked_student(db: Session, student: UserProfile) -> dict:
+    progress_rows = list(db.scalars(select(CourseProgress).where(CourseProgress.user_id == student.id)))
+    quiz_rows = list(db.scalars(select(QuizResult).where(QuizResult.user_id == student.id)))
+    attempts = list(db.scalars(
+        select(AssessmentAttempt)
+        .where(AssessmentAttempt.student_id == student.id)
+        .options(selectinload(AssessmentAttempt.assessment))
+        .order_by(AssessmentAttempt.submitted_at.desc(), AssessmentAttempt.started_at.desc())
+    ))
+    diagnostic = db.scalars(select(DiagnosticResult).where(DiagnosticResult.user_id == student.id).order_by(DiagnosticResult.created_at.desc())).first()
+    prediction = student_weakness_model_service.predict_student_weaknesses(db, student)
+    weak_points = [sanitize_weak_point(row) for row in prediction.get("weak_points", [])]
+    completed_attempts = [attempt for attempt in attempts if attempt.completed]
+    latest_attempt = completed_attempts[0] if completed_attempts else None
+    last_dates = [row.updated_at for row in progress_rows if row.updated_at]
+    last_dates.extend(row.created_at for row in quiz_rows if row.created_at)
+    last_dates.extend(attempt.submitted_at or attempt.started_at for attempt in attempts if attempt.submitted_at or attempt.started_at)
+    average_progress = round(sum(row.progress for row in progress_rows) / len(progress_rows), 2) if progress_rows else 0
+    average_quiz = round(sum(row.score for row in quiz_rows) / len(quiz_rows), 2) if quiz_rows else 0
+    return {
+        "student_id": student.id,
+        "full_name": student.full_name,
+        "email": student.email,
+        "level": diagnostic.level if diagnostic else student.level,
+        "global_progress": average_progress,
+        "started_courses": sum(1 for row in progress_rows if row.progress > 0),
+        "completed_courses": sum(1 for row in progress_rows if row.progress >= 100),
+        "quiz_attempts": len(quiz_rows),
+        "average_quiz_score": average_quiz,
+        "regional_attempts": len([attempt for attempt in attempts if regional_exam_service.is_regional_assessment(attempt.assessment)]),
+        "latest_score": latest_attempt.percentage if latest_attempt else None,
+        "main_weak_point": weak_points[0] if weak_points else None,
+        "general_status": build_student_general_status(average_progress, latest_attempt, weak_points),
+        "last_activity": max(last_dates).isoformat() if last_dates else None,
+    }
+
+
+def sanitize_weak_point(row: dict) -> dict:
+    return {
+        "competence": row.get("competence"),
+        "status": row.get("status"),
+        "score": row.get("score"),
+        "message": row.get("message"),
+        "confidence": row.get("confidence"),
+    }
+
+
+def sanitize_prediction_row(row: dict) -> dict:
+    return {
+        "competence": row.get("competence"),
+        "status": row.get("status"),
+        "score_percentage": row.get("score_percentage"),
+        "recommendation": row.get("recommendation"),
+        "confidence": row.get("confidence"),
+    }
+
+
+def build_student_general_status(progress: float, latest_attempt: AssessmentAttempt | None, weak_points: list[dict]) -> str:
+    if latest_attempt and latest_attempt.percentage >= 85 and progress >= 75 and not weak_points:
+        return "maitrise"
+    if weak_points:
+        return "a_renforcer"
+    if progress <= 20 and latest_attempt is None:
+        return "donnees_insuffisantes"
+    return "en_progression"
 
 
 def _with_activity_counts(db: Session, course: dict) -> dict:

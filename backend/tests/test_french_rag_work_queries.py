@@ -1,9 +1,11 @@
 from app.rag.vector_store import _expand_long_list_results, _rerank_results
 from app.services.learning_service import (
+    _build_known_work_fact_answer,
     _build_work_explanation_answer,
     _detect_french_bac_intent,
     _extract_work_characters,
     _format_chat_sources,
+    _repair_mojibake_text,
     _select_results_for_intent,
 )
 
@@ -179,3 +181,42 @@ La structure de l'oeuvre :""",
     assert sources[0]["page_start"] == 16
     assert sources[0]["page_end"] == 17
     assert "16–17" in sources[0]["display_source"]
+
+
+def test_author_and_genre_questions_use_known_work_facts():
+    antigone_answer = _build_known_work_fact_answer("Qui est l\u2019auteur d\u2019Antigone ?", [])
+    boite_answer = _build_known_work_fact_answer("Qui a \u00e9crit La Bo\u00eete \u00e0 merveilles ?", [])
+    dernier_jour_answer = _build_known_work_fact_answer("Qui est l\u2019auteur du Dernier Jour d\u2019un condamn\u00e9 ?", [])
+    genre_answer = _build_known_work_fact_answer("Quel est le genre d\u2019Antigone ?", [])
+
+    assert "Jean Anouilh" in antigone_answer
+    assert "Ahmed Sefrioui" in boite_answer
+    assert "Victor Hugo" in dernier_jour_answer
+    assert "trag\u00e9die moderne" in genre_answer
+
+
+def test_author_question_variants_are_detected():
+    for question in (
+        "auteur antigone",
+        "qui a ecrit antigone",
+        "auteur de antigone",
+        "ki ecrit antigone",
+    ):
+        assert "Jean Anouilh" in _build_known_work_fact_answer(question, [])
+
+
+def test_chatbot_cleaner_removes_visible_mojibake_sequences():
+    dirty = (
+        "La Bo\u00c3\u0192\u00c2\u00aete \u00c3\u0192\u00c2\u00a0 merveilles : "
+        "m\u00c3\u0192\u00c2\u00a8re, p\u00c3\u0192\u00c2\u00a8re, "
+        "l\u00e2\u20ac\u2122\u00c5\u201cuvre, \u00c3\u0192\u00e2\u201a\u00ac retenir"
+    )
+    cleaned = _repair_mojibake_text(dirty)
+
+    assert "La Bo\u00eete \u00e0 merveilles" in cleaned
+    assert "m\u00e8re" in cleaned
+    assert "p\u00e8re" in cleaned
+    assert "\u0153uvre" in cleaned
+    assert "\u00c0 retenir" in cleaned
+    for marker in ("\u00c3\u0192", "\u00c3\u201a", "\u00c3\u00a2\u20ac", "\u00c5\u201c"):
+        assert marker not in cleaned

@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import os
 import re
@@ -312,20 +312,20 @@ def extract_json_text(raw: bytes) -> str:
 
 def extract_latex_text(raw: bytes) -> str:
     text = raw.decode("utf-8-sig")
-    text = re.sub(r"(?<!\\)%.*$", " ", text, flags=re.MULTILINE)
+    text = re.sub(r"(<!\\)%.*$", " ", text, flags=re.MULTILINE)
     text = re.sub(
-        r"\\(?:part|chapter|section|subsection|subsubsection)\*?\{([^{}]*)\}",
+        r"\\(:part|chapter|section|subsection|subsubsection)\*\{([^{}]*)\}",
         r"\n\n\1\n\n",
         text,
     )
     for _ in range(4):
         text = re.sub(
-            r"\\[A-Za-z@]+\*?(?:\[[^\]]*\])?\{([^{}]*)\}",
+            r"\\[A-Za-z@]+\*(:\[[^\]]*\])\{([^{}]*)\}",
             r"\1",
             text,
         )
     text = re.sub(r"\\begin\{[^{}]+\}|\\end\{[^{}]+\}", " ", text)
-    text = re.sub(r"\\[A-Za-z@]+\*?(?:\[[^\]]*\])?", " ", text)
+    text = re.sub(r"\\[A-Za-z@]+\*(:\[[^\]]*\])", " ", text)
     text = text.replace("{", " ").replace("}", " ")
     text = text.replace(r"\%", "%").replace(r"\&", "&")
     text = re.sub(r"[ \t]+", " ", text)
@@ -424,7 +424,7 @@ def split_text_units(text: str, max_units: int = 30) -> list[str]:
         if len(paragraph) > 700:
             candidates = [
                 normalize_text(value)
-                for value in re.split(r"(?<=[.!?])\s+", paragraph)
+                for value in re.split(r"(<=[.!])\s+", paragraph)
                 if normalize_text(value)
             ]
 

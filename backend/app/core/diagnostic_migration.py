@@ -17,38 +17,30 @@ from app.models.persistence import (
 
 QUESTION_BANK_PATH = Path(__file__).resolve().parents[2] / "data" / "edumentor_questions.json"
 
-DEMO_QUESTION_BANKS = {
-    "informatique": [
-        ("debutant", "Programmation", "A quoi sert une variable en programmation ?", ["A stocker une valeur", "A eteindre l'ordinateur", "A dessiner une image", "A supprimer un fichier"], "A stocker une valeur", "Une variable garde une information que le programme peut reutiliser."),
-        ("debutant", "Python", "Quelle instruction affiche un message en Python ?", ["echo()", "print()", "show()", "write()"], "print()", "print() affiche une valeur dans la console Python."),
-        ("debutant", "Algorithmes", "Qu'est-ce qu'un algorithme ?", ["Une suite d'etapes pour resoudre un probleme", "Un type d'ecran", "Un fichier PDF", "Une erreur"], "Une suite d'etapes pour resoudre un probleme", "Un algorithme decrit clairement les actions a executer."),
-        ("intermediaire", "Erreurs", "Quelle erreur arrive quand Python ne comprend pas la structure du code ?", ["Erreur de syntaxe", "Erreur reseau", "Erreur physique", "Erreur de clavier"], "Erreur de syntaxe", "Une erreur de syntaxe vient d'une instruction mal ecrite."),
-        ("intermediaire", "Conditions", "Quel mot-cle permet de tester une condition en Python ?", ["if", "for", "class", "import"], "if", "if execute un bloc seulement si une condition est vraie."),
-        ("intermediaire", "Boucles", "A quoi sert une boucle for ?", ["Repeter des instructions", "Créer un PDF", "Changer la langue", "Fermer le systeme"], "Repeter des instructions", "Une boucle for parcourt une sequence et repete un traitement."),
-        ("avance", "Complexite", "Que mesure la complexite algorithmique ?", ["Le cout en temps ou memoire", "La couleur du code", "Le poids du clavier", "Le nombre de fichiers PDF"], "Le cout en temps ou memoire", "La complexite estime les ressources necessaires quand la taille des donnees augmente."),
-        ("avance", "Structures", "Quelle structure associe une cle a une valeur en Python ?", ["dictionnaire", "tuple seulement", "chaine", "commentaire"], "dictionnaire", "Un dictionnaire permet de retrouver une valeur a partir d'une cle."),
-    ],
-    "mathematiques": [
-        ("debutant", "Calcul", "Combien vaut 7 x 8 ?", ["54", "56", "64", "78"], "56", "7 multiplie par 8 donne 56."),
-        ("debutant", "Equations", "Quelle est la solution de x + 3 = 8 ?", ["3", "5", "8", "11"], "5", "On retire 3 des deux cotes : x = 5."),
-        ("debutant", "Logique", "Si une affirmation est vraie, sa negation est...", ["vraie", "fausse", "identique", "impossible"], "fausse", "La negation inverse la valeur logique."),
-        ("intermediaire", "Fonctions", "Dans f(x)=2x+1, combien vaut f(3) ?", ["6", "7", "8", "9"], "7", "On remplace x par 3 : 2 x 3 + 1 = 7."),
-        ("intermediaire", "Statistiques", "La moyenne de 10, 12 et 14 est...", ["10", "12", "14", "36"], "12", "La moyenne vaut (10+12+14)/3 = 12."),
-        ("intermediaire", "Pourcentages", "20% de 50 vaut...", ["5", "10", "20", "25"], "10", "20% correspond a 0,2 ; 0,2 x 50 = 10."),
-        ("avance", "Fonctions", "La derivee de x^2 est...", ["x", "2x", "x^3", "2"], "2x", "La derivee de x^n vaut n x^(n-1)."),
-        ("avance", "Probabilites", "Une probabilite doit toujours etre comprise entre...", ["-1 et 1", "0 et 1", "1 et 10", "0 et 1000"], "0 et 1", "Une probabilite normalisee varie de 0 a 1."),
-    ],
-    "physique": [
-        ("debutant", "Unites", "Quelle est l'unite de la vitesse dans le systeme international ?", ["m/s", "kg", "N", "J"], "m/s", "La vitesse exprime une distance parcourue par unite de temps."),
-        ("debutant", "Vitesse", "Si une voiture parcourt 100 km en 2 h, sa vitesse moyenne est...", ["25 km/h", "50 km/h", "100 km/h", "200 km/h"], "50 km/h", "Vitesse = distance / temps = 100 / 2."),
-        ("debutant", "Energie", "Quelle grandeur mesure la capacite a produire un travail ?", ["energie", "masse", "temperature", "longueur"], "energie", "L'energie est la grandeur associee a la capacite d'effectuer un travail."),
-        ("intermediaire", "Force", "Selon Newton, une force peut modifier...", ["le mouvement d'un objet", "le nom d'un fichier", "une adresse email", "une couleur"], "le mouvement d'un objet", "Une force peut accelerer, ralentir ou deformer un objet."),
-        ("intermediaire", "Electricite", "Quelle relation relie tension, resistance et intensite ?", ["U = R x I", "P = m x g", "v = d + t", "E = h / t"], "U = R x I", "La loi d'Ohm relie U, R et I."),
-        ("intermediaire", "Puissance", "La puissance electrique peut s'ecrire...", ["P = U x I", "P = U + I", "P = R / t", "P = m x v"], "P = U x I", "La puissance consommee depend de la tension et de l'intensite."),
-        ("avance", "Energie cinetique", "L'energie cinetique depend directement de...", ["la masse et le carre de la vitesse", "la couleur", "le volume seul", "la temperature seule"], "la masse et le carre de la vitesse", "Ec = 1/2 m v^2."),
-        ("avance", "Champ electrique", "Un champ electrique agit principalement sur...", ["les charges electriques", "les sons", "la lumiere uniquement", "les textes"], "les charges electriques", "Une charge placee dans un champ electrique subit une force."),
-    ],
-}
+DEMO_QUESTION_BANKS = {}
+
+FRENCH_QUESTION_BANK = [
+    ("debutant", "ComprÃ©hension", "Qui est le narrateur principal dans La BoÃ®te Ã  merveilles ", ["Sidi Mohammed", "CrÃ©on", "Victor Hugo", "Antigone"], "Sidi Mohammed", "La BoÃ®te Ã  merveilles est racontÃ©e Ã  la premiÃ¨re personne par Sidi Mohammed."),
+    ("debutant", "ComprÃ©hension", "Quelle oeuvre est Ã©crite par Ahmed Sefrioui ", ["La BoÃ®te Ã  merveilles", "Antigone", "Le Dernier Jour d'un condamnÃ©", "Les MisÃ©rables"], "La BoÃ®te Ã  merveilles", "Ahmed Sefrioui est l'auteur de La BoÃ®te Ã  merveilles."),
+    ("debutant", "Figures de style", "Dans une comparaison, on trouve souvent un outil comme...", ["comme", "mais", "donc", "car"], "comme", "La comparaison rapproche deux Ã©lÃ©ments avec un outil comparatif."),
+    ("debutant", "Langue", "Un antonyme est un mot de sens...", ["contraire", "identique", "flou", "technique"], "contraire", "Un antonyme exprime le sens opposÃ© d'un autre mot."),
+    ("debutant", "MÃ©thodologie", "Pour justifier une rÃ©ponse, il faut s'appuyer sur...", ["un indice du texte", "une idÃ©e inventÃ©e", "un autre cours", "une opinion sans preuve"], "un indice du texte", "La justification doit venir du passage Ã©tudiÃ©."),
+    ("intermediaire", "ComprÃ©hension", "Dans Antigone, le conflit central oppose principalement...", ["Antigone et CrÃ©on", "Sidi Mohammed et Zineb", "Victor Hugo et le lecteur", "Lalla AÃ¯cha et Rahma"], "Antigone et CrÃ©on", "La piÃ¨ce met en scÃ¨ne l'opposition entre la loi de CrÃ©on et le choix d'Antigone."),
+    ("intermediaire", "Production Ã©crite", "Un paragraphe argumentatif doit contenir surtout...", ["une idÃ©e, un argument et un exemple", "une liste sans ordre", "une seule citation", "un titre dÃ©coratif"], "une idÃ©e, un argument et un exemple", "La production Ã©crite exige une organisation claire et justifiÃ©e."),
+    ("intermediaire", "Langue", "Le champ lexical regroupe des mots liÃ©s Ã ...", ["une mÃªme idÃ©e", "une mÃªme rime seulement", "un calcul", "une date"], "une mÃªme idÃ©e", "Le champ lexical rassemble des mots autour d'un thÃ¨me commun."),
+    ("intermediaire", "Figures de style", "Attribuer une action humaine Ã  un objet correspond Ã ...", ["la personnification", "la synonymie", "la conjugaison", "la ponctuation"], "la personnification", "La personnification donne une caractÃ©ristique humaine Ã  un Ãªtre non humain ou Ã  une chose."),
+    ("intermediaire", "MÃ©thodologie", "Avant de rÃ©pondre, il faut d'abord repÃ©rer...", ["les mots-clÃ©s de la consigne", "la couleur de la page", "le nombre de lignes uniquement", "le nom du navigateur"], "les mots-clÃ©s de la consigne", "Les mots-clÃ©s indiquent ce que la question demande exactement."),
+    ("avance", "ComprÃ©hension", "Le Dernier Jour d'un condamnÃ© est principalement un roman qui...", ["dÃ©nonce la peine de mort", "raconte une aventure comique", "dÃ©crit une enfance marocaine", "prÃ©sente une lÃ©gende antique"], "dÃ©nonce la peine de mort", "Victor Hugo utilise la voix du condamnÃ© pour critiquer la peine capitale."),
+    ("avance", "Production Ã©crite", "Dans une conclusion argumentative, il faut surtout...", ["rÃ©pondre clairement au sujet", "ajouter un nouvel argument long", "changer de thÃ¨me", "copier la consigne"], "rÃ©pondre clairement au sujet", "La conclusion ferme le raisonnement et rappelle la position dÃ©fendue."),
+    ("avance", "Figures de style", "Une antithÃ¨se met en relation...", ["deux idÃ©es opposÃ©es", "deux mots synonymes", "deux dates", "deux consignes identiques"], "deux idÃ©es opposÃ©es", "L'antithÃ¨se rapproche des termes ou idÃ©es contraires pour crÃ©er un contraste."),
+    ("avance", "Langue", "Au discours indirect, la parole rapportÃ©e devient gÃ©nÃ©ralement...", ["intÃ©grÃ©e dans une phrase principale", "un titre", "un calcul", "un nom propre uniquement"], "intÃ©grÃ©e dans une phrase principale", "Le discours indirect reformule la parole en l'insÃ©rant dans une phrase."),
+    ("avance", "MÃ©thodologie", "Une rÃ©ponse complÃ¨te au rÃ©gional doit Ãªtre...", ["claire, prÃ©cise et justifiÃ©e", "longue mais hors sujet", "sans lien avec le texte", "uniquement personnelle"], "claire, prÃ©cise et justifiÃ©e", "La clartÃ©, la prÃ©cision et la justification permettent d'obtenir tous les points."),
+    ("debutant", "ComprÃ©hension", "Qui est l'auteur d'Antigone Ã©tudiÃ©e au programme ", ["Jean Anouilh", "Ahmed Sefrioui", "Victor Hugo", "MoliÃ¨re"], "Jean Anouilh", "L'Antigone du programme est une piÃ¨ce de Jean Anouilh."),
+    ("intermediaire", "ComprÃ©hension", "Dans La BoÃ®te Ã  merveilles, Lalla Zoubida est...", ["la mÃ¨re de Sidi Mohammed", "la soeur d'Antigone", "la fille de CrÃ©on", "une narratrice externe"], "la mÃ¨re de Sidi Mohammed", "Lalla Zoubida est la mÃ¨re du narrateur Sidi Mohammed."),
+    ("avance", "MÃ©thodologie", "Pour analyser un extrait, l'ordre le plus efficace est...", ["situation, personnages, indices, interprÃ©tation", "rÃ©ponse, hasard, conclusion, lecture", "copie, opinion, hors sujet, fin", "calcul, rÃ©sultat, formule, unitÃ©"], "situation, personnages, indices, interprÃ©tation", "Cette dÃ©marche Ã©vite le hors sujet et construit une analyse progressive."),
+    ("debutant", "Langue", "Un synonyme est un mot de sens...", ["proche", "contraire", "absent", "numÃ©rique"], "proche", "Un synonyme exprime une idÃ©e proche d'un autre mot."),
+    ("intermediaire", "Production Ã©crite", "Un connecteur logique sert Ã ...", ["organiser les idÃ©es", "remplacer le texte", "supprimer l'argument", "donner une note"], "organiser les idÃ©es", "Les connecteurs rendent la progression du raisonnement plus claire."),
+]
 
 
 def apply_diagnostic_migration(engine: Engine) -> dict[str, int]:
@@ -97,6 +89,8 @@ def ensure_diagnostic_question_generation_columns(engine: Engine) -> None:
             if column not in columns:
                 connection.execute(text(f"ALTER TABLE diagnostic_questions ADD COLUMN {column} {definition}"))
         for column in definitions:
+            if column == "source_snapshot":
+                continue
             create_index_if_missing(connection, f"ix_diagnostic_questions_{column}", "diagnostic_questions", column)
 
 
@@ -176,30 +170,28 @@ def create_index_if_missing(connection, index_name: str, table_name: str, column
 def seed_diagnostic_questions(db: Session) -> None:
     subject_by_slug = {subject.slug: subject for subject in db.scalars(select(Subject))}
     difficulty_by_slug = {difficulty.slug: difficulty for difficulty in db.scalars(select(DifficultyLevel))}
-    if "intelligence-artificielle" in subject_by_slug:
-        seed_ai_questions(db, subject_by_slug["intelligence-artificielle"], difficulty_by_slug)
-
-    for subject_slug, questions in DEMO_QUESTION_BANKS.items():
-        subject = subject_by_slug.get(subject_slug)
-        if subject is None:
-            continue
-        if db.query(DiagnosticQuestion).filter_by(subject_id=subject.id).count() > 0:
-            continue
-        for difficulty_slug, topic, question, choices, correct_answer, explanation in questions:
-            difficulty = difficulty_by_slug.get(difficulty_slug)
-            if difficulty is None:
-                continue
-            db.add(DiagnosticQuestion(
-                subject_id=subject.id,
-                difficulty_level_id=difficulty.id,
-                topic=topic,
-                question=question,
-                choices=choices,
-                correct_answer=correct_answer,
-                explanation=explanation,
-                active=True,
-            ))
+    if "francais" in subject_by_slug:
+        seed_french_questions(db, subject_by_slug["francais"], difficulty_by_slug)
     db.commit()
+
+
+def seed_french_questions(db: Session, subject: Subject, difficulty_by_slug: dict[str, DifficultyLevel]) -> None:
+    if db.query(DiagnosticQuestion).filter_by(subject_id=subject.id).count() > 0:
+        return
+    for difficulty_slug, topic, question, choices, correct_answer, explanation in FRENCH_QUESTION_BANK:
+        difficulty = difficulty_by_slug.get(difficulty_slug)
+        if difficulty is None:
+            continue
+        db.add(DiagnosticQuestion(
+            subject_id=subject.id,
+            difficulty_level_id=difficulty.id,
+            topic=topic,
+            question=question,
+            choices=choices,
+            correct_answer=correct_answer,
+            explanation=explanation,
+            active=True,
+        ))
 
 
 def seed_ai_questions(db: Session, subject: Subject, difficulty_by_slug: dict[str, DifficultyLevel]) -> None:
@@ -239,7 +231,7 @@ def get_seed_difficulty(index: int, difficulty_by_slug: dict[str, DifficultyLeve
 
 
 def attach_legacy_results_to_ai(db: Session) -> None:
-    subject = db.scalars(select(Subject).where(Subject.slug == "intelligence-artificielle")).first()
+    subject = db.scalars(select(Subject).where(Subject.slug == "francais")).first()
     if subject is None:
         return
     db.query(DiagnosticResult).filter(DiagnosticResult.subject_id.is_(None)).update(

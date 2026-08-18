@@ -413,7 +413,7 @@ function AdaptationPreview({ adaptation, editingSection, editValue, loading, onE
             <h3>{section.metadata?.title || section.section_type}</h3>
             <p>{section.section_type} - {section.source_level} vers {section.target_level}</p>
           </div>
-          <p className="muted-text">{section.original_content}</p>
+          <StructuredSectionPreview section={section} />
           {editingSection === section.id ? (
             <>
               <textarea value={editValue} onChange={(event) => onSetEditValue(event.target.value)} rows={5} />
@@ -430,6 +430,50 @@ function AdaptationPreview({ adaptation, editingSection, editValue, loading, onE
           )}
         </article>
       ))}
+    </div>
+  )
+}
+
+function StructuredSectionPreview({ section }) {
+  const payload = section.metadata?.adapted_payload || {}
+  return (
+    <div className="import-section-preview">
+      <PreviewRow label="Titre" value={section.metadata?.title || payload.title || section.section_type} />
+      <PreviewRow label="Type" value={section.section_type} />
+      <PreviewRow label="Niveau" value={`${section.source_level} -> ${section.target_level}`} />
+      <PreviewRow label="Contenu original" value={section.original_content} muted />
+      <PreviewRow label="Contenu adapte" value={payload.content || section.adapted_content} />
+      <PreviewRow label="Exemple" value={payload.example} />
+      <PreviewRow label="Question" value={payload.question} />
+      <PreviewList label="Choix" items={payload.choices} />
+      <PreviewRow label="Reponse" value={payload.answer} />
+      <PreviewRow label="Explication" value={payload.explanation} />
+      <PreviewRow label="Solution" value={payload.solution} />
+      <PreviewList label="Liste" items={payload.items} />
+    </div>
+  )
+}
+
+function PreviewRow({ label, value, muted = false }) {
+  if (value === undefined || value === null || value === '') return null
+  return (
+    <div className="import-preview-row">
+      <strong>{label}</strong>
+      <p className={muted ? 'muted-text' : ''}>{String(value)}</p>
+    </div>
+  )
+}
+
+function PreviewList({ label, items }) {
+  if (!Array.isArray(items) || items.length === 0) return null
+  return (
+    <div className="import-preview-row">
+      <strong>{label}</strong>
+      <ul>
+        {items.map((item, index) => (
+          <li key={`${label}-${index}-${String(item)}`}>{String(item)}</li>
+        ))}
+      </ul>
     </div>
   )
 }

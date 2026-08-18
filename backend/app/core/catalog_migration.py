@@ -4,21 +4,12 @@ from sqlalchemy import Engine, inspect, text
 
 
 INITIAL_SUBJECTS = [
-    ("Intelligence Artificielle", "intelligence-artificielle", "Cours officiels EduMentor AI sur l'intelligence artificielle.", "brain", True, 1),
-    ("Mathematiques", "mathematiques", "Matiere de demonstration sans cours dans cette phase.", "calculator", True, 2),
-    ("Informatique", "informatique", "Matiere de demonstration sans cours dans cette phase.", "code", True, 3),
-    ("Physique", "physique", "Matiere de demonstration sans cours dans cette phase.", "atom", True, 4),
-    ("Français", "francais", "Matiere cible pour la preparation de l'examen regional de francais en 1ere annee Baccalaureat.", "book-open", True, 5),
+    ("Français", "francais", "Matière cible pour la préparation de l'examen régional de français en 1ère année Baccalauréat.", "book-open", True, 1),
 ]
 
 INITIAL_EDUCATION_LEVELS = [
-    ("Primaire", "primaire", "", 1, True),
-    ("College", "college", "", 2, True),
-    ("Lycee", "lycee", "", 3, True),
-    ("Enseignement superieur", "enseignement-superieur", "", 4, True),
-    ("Formation professionnelle", "formation-professionnelle", "", 5, True),
-    ("Autre", "autre", "", 6, True),
-    ("1ère année Baccalauréat", "1ere_bac", "Cycle parent: Lycee. Niveau cible pour la preparation de l'examen regional au Maroc.", 7, True),
+    ("Lycée", "lycee", "", 1, True),
+    ("1ère année Baccalauréat", "1ere_bac", "Cycle parent: Lycée. Niveau cible pour la préparation de l'examen régional au Maroc.", 2, True),
 ]
 
 INITIAL_DIFFICULTY_LEVELS = [
@@ -26,7 +17,6 @@ INITIAL_DIFFICULTY_LEVELS = [
     ("Intermediaire", "intermediaire", 2, True),
     ("Avance", "avance", 3, True),
 ]
-
 
 def apply_catalog_migration(engine: Engine) -> dict[str, int | list[int]]:
     if engine.dialect.name == "postgresql":
@@ -183,7 +173,7 @@ def attach_existing_courses(connection) -> None:
         text(
             """
             UPDATE courses
-            SET subject_id = (SELECT id FROM subjects WHERE slug = 'intelligence-artificielle')
+            SET subject_id = (SELECT id FROM subjects WHERE slug = 'francais')
             WHERE subject_id IS NULL
             """
         )
@@ -254,17 +244,17 @@ def get_catalog_counts(engine: Engine) -> dict[str, int | list[int]]:
         course_count = scalar_count(connection, "courses") if inspector.has_table("courses") else 0
         if "subject_id" in course_columns and inspector.has_table("subjects"):
             courses_without_subject = connection.execute(text("SELECT COUNT(*) FROM courses WHERE subject_id IS NULL")).scalar_one()
-            ai_courses = connection.execute(
+            french_courses = connection.execute(
                 text(
                     """
                     SELECT COUNT(*) FROM courses
-                    WHERE subject_id = (SELECT id FROM subjects WHERE slug = 'intelligence-artificielle')
+                    WHERE subject_id = (SELECT id FROM subjects WHERE slug = 'francais')
                     """
                 )
             ).scalar_one()
         else:
             courses_without_subject = course_count
-            ai_courses = 0
+            french_courses = 0
         course_ids = [row[0] for row in connection.execute(text("SELECT id FROM courses ORDER BY id")).all()]
     return {
         "subjects": int(subject_count),
@@ -272,7 +262,7 @@ def get_catalog_counts(engine: Engine) -> dict[str, int | list[int]]:
         "difficulty_levels": int(difficulty_count),
         "courses": int(course_count),
         "courses_without_subject": int(courses_without_subject),
-        "ai_courses": int(ai_courses),
+        "french_courses": int(french_courses),
         "course_ids": course_ids,
     }
 

@@ -21,6 +21,23 @@ def get_professor_dashboard(
     return professor_service.get_dashboard(db, current_user)
 
 
+@router.get("/students")
+def get_professor_students(
+    db: Session = Depends(get_db),
+    current_user: UserProfile = Depends(get_current_professor_or_admin),
+) -> list[dict]:
+    return professor_service.list_tracked_students(db, current_user)
+
+
+@router.get("/students/{student_id}")
+def get_professor_student_detail(
+    student_id: int,
+    db: Session = Depends(get_db),
+    current_user: UserProfile = Depends(get_current_professor_or_admin),
+) -> dict:
+    return professor_service.get_tracked_student_detail(db, current_user, student_id)
+
+
 @router.get("/courses")
 def get_professor_courses(
     search: str = "",

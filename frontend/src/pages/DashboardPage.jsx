@@ -463,10 +463,6 @@ function isFrenchSubject(subject) {
   return normalizeText(`${subject?.slug || ''} ${subject?.name || ''}`).includes('francais')
 }
 
-function isFrenchCourse(course) {
-  return isFrenchSubject(course?.subject)
-}
-
 function dedupeRecommendations(recommendations) {
   const seenTitles = new Set()
 

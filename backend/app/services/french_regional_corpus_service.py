@@ -615,7 +615,7 @@ def write_corpus_report(dataset: dict[str, Any], documents: list[CorpusDocument]
         "## Limites",
         "- Aucun numero de page n'est invente pour les documents Markdown.",
         "- Le corpus ne remplace pas les oeuvres completes.",
-        "- Les anciens PDF IA restent dans Chroma mais sont exclus du chatbot francais par metadata subject/course.",
+        "- Le corpus actif est limite aux ressources de francais 1ere Bac et aux examens regionaux.",
         "",
         "## Requetes de test",
         "- Qui est l'auteur de La Boite a merveilles ?",
@@ -626,7 +626,6 @@ def write_corpus_report(dataset: dict[str, Any], documents: list[CorpusDocument]
         "- Quels sont les criteres d'une production ecrite ?",
         "- Corrige : Sidi Mohamed est un narrateur externe.",
         "- Donne-moi un exercice sur ma competence la plus faible.",
-        "- Explique le Deep Learning.",
     ]
     REPORT_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
 

@@ -55,6 +55,35 @@ def create_admin_parent_student_link(
     return admin_service.create_parent_student_link(db, current_admin, payload)
 
 
+@router.get("/parents/{parent_id}/students")
+def get_admin_parent_students(
+    parent_id: int,
+    db: Session = Depends(get_db),
+    current_admin: UserProfile = Depends(get_current_admin),
+):
+    return admin_service.list_parent_students(db, current_admin, parent_id)
+
+
+@router.post("/parents/{parent_id}/students/{student_id}")
+def link_admin_parent_student(
+    parent_id: int,
+    student_id: int,
+    db: Session = Depends(get_db),
+    current_admin: UserProfile = Depends(get_current_admin),
+):
+    return admin_service.link_parent_student(db, current_admin, parent_id, student_id)
+
+
+@router.delete("/parents/{parent_id}/students/{student_id}")
+def unlink_admin_parent_student(
+    parent_id: int,
+    student_id: int,
+    db: Session = Depends(get_db),
+    current_admin: UserProfile = Depends(get_current_admin),
+):
+    return admin_service.unlink_parent_student(db, current_admin, parent_id, student_id)
+
+
 @router.get("/parents/notifications")
 def get_admin_parent_notifications(
     db: Session = Depends(get_db),

@@ -40,6 +40,7 @@ import ProfessorCourseViewPage from './pages/ProfessorCourseViewPage.jsx'
 import ProfessorDashboardPage from './pages/ProfessorDashboardPage.jsx'
 import ProfessorRemediationPage from './pages/ProfessorRemediationPage.jsx'
 import ProfessorStudyPathPage from './pages/ProfessorStudyPathPage.jsx'
+import ProfessorStudentDetailPage from './pages/ProfessorStudentDetailPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
 import ParentDashboardPage from './pages/ParentDashboardPage.jsx'
 import ParentStudentDetailPage from './pages/ParentStudentDetailPage.jsx'
@@ -87,6 +88,7 @@ function App() {
               <Route path="/professor/classrooms" element={<ProfessorClassroomsPage />} />
               <Route path="/professor/classrooms/new" element={<ProfessorClassroomFormPage />} />
               <Route path="/professor/classrooms/:id" element={<ProfessorClassroomDetailPage />} />
+              <Route path="/professor/students/:studentId" element={<ProfessorStudentDetailPage />} />
               <Route path="/professor/assessments" element={<ProfessorAssessmentsPage />} />
               <Route path="/professor/assessments/new" element={<ProfessorAssessmentEditorPage />} />
               <Route path="/professor/assessments/:id/edit" element={<ProfessorAssessmentEditorPage />} />
@@ -118,7 +120,12 @@ function App() {
               <Route path="/settings" element={<SettingsPage />} />
             </Route>
             <Route element={<ParentRoute><AppLayout /></ParentRoute>}>
+              <Route path="/parent" element={<Navigate to="/parent/dashboard" replace />} />
               <Route path="/parent/dashboard" element={<ParentDashboardPage />} />
+              <Route path="/parent/progress" element={<ParentDashboardPage section="progress" />} />
+              <Route path="/parent/results" element={<ParentDashboardPage section="results" />} />
+              <Route path="/parent/weaknesses" element={<ParentDashboardPage section="weaknesses" />} />
+              <Route path="/parent/regional-exams" element={<ParentDashboardPage section="regional" />} />
               <Route path="/parent/students/:studentId" element={<ParentStudentDetailPage />} />
               <Route path="/parent/settings" element={<SettingsPage />} />
             </Route>
